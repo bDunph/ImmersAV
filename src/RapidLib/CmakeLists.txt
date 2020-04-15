@@ -1,0 +1,2 @@
+add_library(RapidLib STATIC baseModel.h knnClassification.cpp knnClassification.h modelSet.cpp modelSet.h neuralNetwork.cpp neuralNetwork.h regression.cpp regression.h svmClassification.cpp svmClassification.h trainingExample.h)
+target_include_directories(RapidLib PUBLIC ./ LibSVM JSON)
