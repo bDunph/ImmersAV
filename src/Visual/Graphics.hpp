@@ -7,7 +7,7 @@
 //#include <glm/gtx/quaternion.hpp>
 //#include <ctime>
 
-#include "FiveCell.hpp"
+#include "Studio.hpp"
 #include "VR_Manager.hpp"
 
 #ifdef __APPLE__ 
@@ -160,10 +160,10 @@ private:
 	GLuint skyboxShaderProg;
 	GLuint soundObjShaderProg;
 	GLuint groundPlaneShaderProg;
-	GLuint fiveCellShaderProg;
+	GLuint studioShaderProg;
 	GLuint quadShaderProg;
 
-	FiveCell fiveCell;
+	Studio studio;
 	
 	//quad
 	//glm::mat4 quadModelMatrix;
@@ -189,11 +189,11 @@ private:
 	GLuint mengerShaderProg;
 
 	
-	FiveCell::RaymarchData raymarchData;
+	Studio::RaymarchData raymarchData;
 	float m_fFov;
 	
 	//rapidmix
-	FiveCell::MachineLearning machineLearning;
+	Studio::MachineLearning machineLearning;
 
 	//movement controls
 	glm::vec2 m_vVRPos;
@@ -226,7 +226,7 @@ private:
 	glm::vec3 m_vec3ControllerWorldPos[2];
 	glm::quat m_quatController[2];
 
-	FiveCell::PBOInfo m_structPboInfo;	
+	Studio::PBOInfo m_structPboInfo;	
 
 	glm::vec4 m_vec4TranslationVal;
 	float m_fMaxDist;

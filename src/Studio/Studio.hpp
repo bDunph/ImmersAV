@@ -20,7 +20,7 @@
 #include "SoundObject.hpp"
 #include "CsoundSession.hpp"
 
-class FiveCell {
+class Studio {
 
 public:
 	
@@ -67,7 +67,7 @@ private:
 	//matrices 
 	glm::mat4 modelMatrix;
 	glm::mat4 scale5CellMatrix;
-	glm::mat4 fiveCellModelMatrix;
+	glm::mat4 studioModelMatrix;
 	glm::mat4 groundModelMatrix;
 	glm::mat4 skyboxModelMatrix;
 	glm::vec3 m_vec3Translation;

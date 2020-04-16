@@ -1,4 +1,4 @@
-#include "FiveCell.hpp"
+#include "Studio.hpp"
 
 #include <cstdio>
 #include <cstdarg>
@@ -28,7 +28,7 @@
 #define _countof(x) (sizeof(x)/sizeof((x)[0]))
 #endif
 
-bool FiveCell::setup(std::string csd)
+bool Studio::setup(std::string csd)
 {
 
 //************************************************************
@@ -286,7 +286,7 @@ bool FiveCell::setup(std::string csd)
 	return true;
 }
 
-bool FiveCell::BSetupRaymarchQuad(GLuint shaderProg)
+bool Studio::BSetupRaymarchQuad(GLuint shaderProg)
 {
 	float sceneVerts[] = {
 		-1.0f, 1.0f, 0.0f,
@@ -379,7 +379,7 @@ bool FiveCell::BSetupRaymarchQuad(GLuint shaderProg)
 //*******************************************************************************************
 // Update Stuff Here
 //*******************************************************************************************
-void FiveCell::update(glm::mat4 viewMat, glm::vec3 camPos, MachineLearning& machineLearning, glm::vec3 controllerWorldPos_0, glm::vec3 controllerWorldPos_1, glm::quat controllerQuat_0, glm::quat controllerQuat_1, PBOInfo& pboInfo, glm::vec3 translateVec){
+void Studio::update(glm::mat4 viewMat, glm::vec3 camPos, MachineLearning& machineLearning, glm::vec3 controllerWorldPos_0, glm::vec3 controllerWorldPos_1, glm::quat controllerQuat_0, glm::quat controllerQuat_1, PBOInfo& pboInfo, glm::vec3 translateVec){
 
 	modelMatrix = glm::mat4(1.0f);
 
@@ -825,7 +825,7 @@ void FiveCell::update(glm::mat4 viewMat, glm::vec3 camPos, MachineLearning& mach
 //*********************************************************************************************
 // Draw Stuff Here
 //*********************************************************************************************
-void FiveCell::draw(glm::mat4 projMat, glm::mat4 viewMat, glm::mat4 eyeMat, RaymarchData& raymarchData, GLuint mengerProg)
+void Studio::draw(glm::mat4 projMat, glm::mat4 viewMat, glm::mat4 eyeMat, RaymarchData& raymarchData, GLuint mengerProg)
 {
 	//std::cout << m_vec3Translation.x << "	" << m_vec3Translation.y << "	" << m_vec3Translation.z << std::endl;
 	//std::cout << m_fTranslationMag << std::endl;
@@ -903,7 +903,7 @@ void FiveCell::draw(glm::mat4 projMat, glm::mat4 viewMat, glm::mat4 eyeMat, Raym
 }
 
 
-void FiveCell::exit(){
+void Studio::exit(){
 	//stop csound
 	session->StopPerformance();
 	//close GL context and any other GL resources

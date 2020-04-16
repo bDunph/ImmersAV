@@ -198,7 +198,7 @@ bool VR_Manager::HandleInput()
 	}
 
 	//TODO I have button logic here because it is switching based on the opposite value of 
-	//m_bViveRunModel. It would be better to keep the button logic in FiveCell.cpp with the other 
+	//m_bViveRunModel. It would be better to keep the button logic in Studio.cpp with the other 
 	//controls and just have a true/false switch here.
 	vr::VRInputValueHandle_t ulRunDevice;
 	bool deviceCall = helper->GetDigitalActionState(m_actionRunModel, &ulRunDevice);
