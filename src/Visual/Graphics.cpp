@@ -173,25 +173,25 @@ bool Graphics::BInitGL(bool fullscreen)
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	mengerShaderProg = BCreateSceneShaders("kifs_sierpinski");
+	mengerShaderProg = BCreateSceneShaders("example");
 	if(mengerShaderProg == NULL)
 	{
 		std::cout << "mengerShaderProg returned NULL: Graphics::BInitGL" << std::endl;
 		return false;
 	}
 
-	std::string csdFileName = "avr_mandelGrain.csd";
-	if(!studio.setup(csdFileName)) 
+	std::string csdFileName = "example.csd";
+	if(!studio.setup(csdFileName, mengerShaderProg)) 
 	{
 		std::cout << "studio setup failed: Graphics BInitGL" << std::endl;
 		return false;
 	}
 
-	if(!studio.BSetupRaymarchQuad(mengerShaderProg))
-	{
-		std::cout << "raymarch quad failed setup: Graphics::BInitGL" << std::endl;
-		return false;
-	}
+	//if(!studio.BSetupRaymarchQuad(mengerShaderProg))
+	//{
+	//	std::cout << "raymarch quad failed setup: Graphics::BInitGL" << std::endl;
+	//	return false;
+	//}
 
 	//create matrices for devmode
 	if(m_bDevMode)
