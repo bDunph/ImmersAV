@@ -150,12 +150,12 @@ float sphereSDF(vec3 p, float radius)
 //}
 
 
-float recVal = 0.0;
+//float recVal = 0.0;
 
 float DE(vec3 p)
 {
 	//float rad = SPHERE_RAD + recVal;
-	float rad = 10.0;
+	float rad = 1.0;
 
 	//float kifDist = kifSDF(p);
 	//float planeDist = planeSDF(p, PLANE_NORMAL);
@@ -264,7 +264,6 @@ void main()
 	//************* ray setup code from 
 	//https://encreative.blogspot.com/2019/05/computing-ray-origin-and-direction-from.html*/
 	
-	
 	//******* Perform raymarch *********************//
 	vec3 rayOrigin = nearPos.xyz / nearPos.w;
 	vec3 rayEnd = farPos.xyz / farPos.w;
@@ -284,7 +283,6 @@ void main()
 
 	vec3 pos = rayOrigin + dist * rayDir;// + (noiseCalc * 0.01);
 
-		    
 	// material colour
 	//float specMappedVal = (specCentVal - 20.0) / (10000.0 - 20.0) * (1.0 - 0.0) + 0.0;
 
@@ -302,27 +300,26 @@ void main()
 	//	vec3 matCol2 = vec3(pow(0.15, 1.0 / log(smootherVal)), pow(0.45, 1.0 / log(smootherVal)), pow(0.14, 1.0 / log(smootherVal)));
 	//	totMatCol = mix(matCol1, matCol2, clamp(6.0*orbit.x, 0.0, 1.0));
 	//	//totMatCol = mix(totMatCol, matCol1, pow(clamp(1.0 - 2.0 * orbit.z, 0.0, 1.0), 8.0 + (specMappedVal * fbm(gl_FragCoord.xyz))));
-		totMatCol = vec3(0.45, 0.05, 0.16);
+		totMatCol = vec3(1.0, 0.0, 0.0);
 
 	//	// lighting
 	//	float ao = ao(pos, norm, 0.5, 5.0);
 		float sun = clamp(dot(norm, SUN_DIR), 0.0, 1.0);
-		float sky = clamp(0.5 + 0.5 * norm.y, 0.0, 1.0);
-		float ind = clamp(dot(norm, normalize(SUN_DIR * vec3(-1.0, 0.0, -1.0))), 0.0, 1.0);
+		//float sky = clamp(0.5 + 0.5 * norm.y, 0.0, 1.0);
+		//float ind = clamp(dot(norm, normalize(SUN_DIR * vec3(-1.0, 0.0, -1.0))), 0.0, 1.0);
 		    
 		vec3 lightRig = sun * vec3(1.64, 1.27, 0.99);
-		lightRig += sky * vec3(0.16, 0.2, 0.28);// * ao;
-		lightRig += ind * vec3(0.4, 0.28, 0.2);// * ao;
+		//lightRig += sky * vec3(0.16, 0.2, 0.28);// * ao;
+		//lightRig += ind * vec3(0.4, 0.28, 0.2);// * ao;
 		    
 		colour = totMatCol * lightRig;
+		//colour = vec3(1.0, 0.0, 0.0);
 	//}
 	//else
 	//{
 		//colour = vec3(0.16, 0.2, 0.28);
 	//}
 	
-	
-	    
 	//float fog = 1.0 / (1.0 + dist * dist * 0.5);
 	    
 	//colour = pow(colour, vec3(fog));

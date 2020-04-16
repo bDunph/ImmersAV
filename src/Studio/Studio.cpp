@@ -310,8 +310,8 @@ bool Studio::setup(std::string csd, GLuint shaderProg)
 	//m_uiglGroundPlaneSpecularLoc = glGetUniformLocation(shaderProg, "ground.specular");
 	//m_uiglGroundPlaneShininessLoc = glGetUniformLocation(shaderProg, "ground.shininess");
 	//
-	//m_gliMVEPMatrixLocation = glGetUniformLocation(shaderProg, "MVEPMat");
-	//m_gliInverseMVEPLocation = glGetUniformLocation(shaderProg, "InvMVEP");
+	m_gliMVEPMatrixLocation = glGetUniformLocation(shaderProg, "MVEPMat");
+	m_gliInverseMVEPLocation = glGetUniformLocation(shaderProg, "InvMVEP");
 	//m_gliRandomSizeLocation = glGetUniformLocation(shaderProg, "randSize");
 	//m_gliValBinScaleLoc = glGetUniformLocation(shaderProg, "fftBinValScale");
 	//m_gliRMSModulateValLocation = glGetUniformLocation(shaderProg, "rmsModVal");
