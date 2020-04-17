@@ -169,14 +169,6 @@ bool Studio::setup(std::string csd, GLuint shaderProg)
 	m_gliSineControlValLoc = glGetUniformLocation(shaderProg, "sineControlVal");
 	
 //**********************************************************
-// Lighting Components
-//**********************************************************
-
-//**********************************************************
-// Material Properties
-//**********************************************************
-
-//**********************************************************
 // Matrices
 //**********************************************************	
 
@@ -235,6 +227,7 @@ void Studio::update(glm::mat4 viewMat, glm::vec3 camPos, MachineLearning& machin
 	m_vSoundSources.clear();
 
 	//example control signal - sine function
+	//sent to shader and csound
 	sineControlVal = sin(glfwGetTime() * 0.33f);
 
 	*m_cspSineControlVal = (MYFLT)sineControlVal;
@@ -254,22 +247,16 @@ void Studio::draw(glm::mat4 projMat, glm::mat4 viewMat, glm::mat4 eyeMat, Raymar
 
 	glBindVertexArray(m_uiglSceneVAO);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_uiglIndexBuffer);
-
 	glUseProgram(mengerProg);
 
 	glUniformMatrix4fv(m_gliMVEPMatrixLocation, 1, GL_FALSE, &modelViewEyeProjectionMat[0][0]);
 	glUniformMatrix4fv(m_gliInverseMVEPLocation, 1, GL_FALSE, &inverseMVEPMat[0][0]);
-
 	glUniform1f(m_gliSineControlValLoc, sineControlVal);
 		
 	glDrawElements(GL_TRIANGLES, m_uiNumSceneIndices * sizeof(unsigned int), GL_UNSIGNED_INT, (void*)0);
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
-	//glActiveTexture(GL_TEXTURE0 + 1);
-	//glBindTexture(GL_TEXTURE_2D, 0);
-	//glActiveTexture(GL_TEXTURE0 + 0);
-	//glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 
 	// update first loop switch
 	m_bFirstLoop = false;
