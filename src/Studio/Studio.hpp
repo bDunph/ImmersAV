@@ -6,6 +6,8 @@
 
 #include <string>
 #include <vector>
+
+#include <GL/glew.h>
 #include <glm/gtc/quaternion.hpp>
 
 #ifdef __APPLE__
@@ -14,7 +16,6 @@
 #include "RapidLib/regression.h"
 #endif
 
-#include "SoundObject.hpp"
 #include "CsoundSession.hpp"
 
 class Studio {
@@ -47,9 +48,24 @@ public:
 		bool bLoadModel;
 	};
 
+	struct SoundSourceData
+	{
+		glm::vec4 position;
+		glm::vec4 posCamSpace;
+		float distCamSpace;
+		float azimuth;
+		float elevation;
+	};
+
 	bool setup(std::string csd, GLuint shaderProg);
 	void update(glm::mat4 viewMat, glm::vec3 camPos, MachineLearning& machineLearning, glm::vec3 controllerWorldPos_0, glm::vec3 controllerWorldPos_1, glm::quat controllerQuat_0, glm::quat controllerQuat_1, PBOInfo& pboInfo, glm::vec3 translateVec);
 	void draw(glm::mat4 projMat, glm::mat4 viewMat, glm::mat4 eyeMat, RaymarchData& raymarchData, GLuint mengerProg);
+	CsoundSession* PCsoundSetup(std::string _csdName);
+	bool BSoundSourceSetup(CsoundSession* _session, int numSources);
+	void SoundSourceUpdate(std::vector<SoundSourceData>& soundSources, glm::mat4 _viewMat);
+	void RaymarchQuadSetup(GLuint _shaderProg);
+	void DrawStart(glm::mat4 _projMat, glm::mat4 _eyeMat, glm::mat4 _viewMat, GLuint _shaderProg);
+	void DrawEnd();
 	void exit();
 
 private:
@@ -87,15 +103,6 @@ private:
 	float sineControlVal;
 
 	bool m_bFirstLoop; 
-
-	struct SoundSourceData
-	{
-		glm::vec4 position;
-		glm::vec4 posCamSpace;
-		float distCamSpace;
-		float azimuth;
-		float elevation;
-	};
 
 	std::vector<SoundSourceData> m_vSoundSources;
 };
