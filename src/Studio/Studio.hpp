@@ -56,6 +56,14 @@ public:
 		float azimuth;
 		float elevation;
 	};
+	
+	struct AudioParameter 
+	{
+		float distributionLow;
+		float distributionHigh;
+		const char* name;
+		float value;
+	};
 
 	bool setup(std::string csd, GLuint shaderProg);
 	void update(glm::mat4 viewMat, glm::vec3 camPos, MachineLearning& machineLearning, glm::vec3 controllerWorldPos_0, glm::vec3 controllerWorldPos_1, glm::quat controllerQuat_0, glm::quat controllerQuat_1, PBOInfo& pboInfo, glm::vec3 translateVec);
@@ -69,7 +77,7 @@ public:
 	bool BCsoundSend(CsoundSession* _session, std::vector<const char*>& sendName, std::vector<MYFLT*>& sendVal);
 	bool BCsoundReturn(CsoundSession* _session, std::vector<const char*>& returnName, std::vector<MYFLT*>& returnVal);
 	void MLRegressionSetup();
-	void MLRegressionUpdate(MachineLearning& machineLearning, PBOInfo& pboInfo);
+	void MLRegressionUpdate(MachineLearning& machineLearning, PBOInfo& pboInfo, std::vector<AudioParameter>& params);
 	void exit();
 
 private:
@@ -115,6 +123,8 @@ private:
 	std::vector<MYFLT*> m_vSendVals;
 	std::vector<const char*> m_vReturnNames;
 	std::vector<MYFLT*> m_vReturnVals;
+	std::vector<const char*> m_vMLParamSendNames;
+	std::vector<MYFLT*> m_vMLParamSendVals;
 
 	//machine learning controls
 	bool m_bPrevSaveState;

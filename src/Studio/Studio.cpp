@@ -34,12 +34,10 @@
 bool Studio::setup(std::string csd, GLuint shaderProg)
 {
 	// bool to indicate first loop through update and draw functions to 
-	// set initial paramaters
+	// set initial paramaters. For reading from pboInfo in update
 	m_bFirstLoop = true;
 
-
-//*****************************Audio Setup********************************************************
-
+	//audio setup
 	CsoundSession* csSession = PCsoundSetup(csd);
 	
 	if(!BSoundSourceSetup(csSession, NUM_SOUND_SOURCES))
@@ -48,42 +46,29 @@ bool Studio::setup(std::string csd, GLuint shaderProg)
 		return false;
 	}
 
-//********* send values to csound *******************//
-
+	//setup sends to csound
 	m_vSendNames.push_back("sineControlVal");
 	m_vSendVals.push_back(m_cspSineControlVal);	
 	m_vSendNames.push_back("randomVal");
 	m_vSendVals.push_back(m_cspRandVal);
 	BCsoundSend(csSession, m_vSendNames, m_vSendVals);
 
-//********* return values from csound *******************//
-
-	// example return value - RMS
+	//setup returns from csound 
 	m_vReturnNames.push_back("rmsOut");
 	m_vReturnVals.push_back(m_pRmsOut);
 	BCsoundReturn(csSession, m_vReturnNames, m_vReturnVals);	
 	
-//************************************************************************************************
-//************************************************************************************************
-
-
-
-
-//*************************************Visual Setup***********************************************
-
-	// Set up quad to use for raymarching
+	//setup quad to use for raymarching
 	RaymarchQuadSetup(shaderProg);
 	
-	// shader uniforms
+	//shader uniforms
 	m_gliSineControlValLoc = glGetUniformLocation(shaderProg, "sineControlVal");
 	m_gliRmsOutLoc = glGetUniformLocation(shaderProg, "rmsOut");
 	
+	//identity matrix
 	modelMatrix = glm::mat4(1.0f);
 
-//************************************************************************************************
-//************************************************************************************************
-
-
+	//machine learning setup
 	MLRegressionSetup();
 
 	return true;
@@ -119,7 +104,13 @@ void Studio::update(glm::mat4 viewMat, glm::vec3 camPos, MachineLearning& machin
 	*m_vSendVals[0] = (MYFLT)sineControlVal;
 
 	//run machine learning
-	MLRegressionUpdate(machineLearning, pboInfo);	
+	//MLParameterData paramData;
+	//paramData.distributionLow = 50.0f;
+	//paramData.distributionHigh = 1000.0f;
+	//paramData.sendVec = m_vMLParamSendVals;	
+	std::vector<AudioParameter> dataVec;
+	//dataVec.push_back(paramData);
+	MLRegressionUpdate(machineLearning, pboInfo, dataVec);	
 }
 //*********************************************************************************************
 
@@ -368,7 +359,7 @@ void Studio::MLRegressionSetup()
 	m_bModelTrained = false;
 }
 
-void Studio::MLRegressionUpdate(MachineLearning& machineLearning, PBOInfo& pboInfo)
+void Studio::MLRegressionUpdate(MachineLearning& machineLearning, PBOInfo& pboInfo, std::vector<AudioParameter>& params)
 {
 //*********************************************************************************************
 // Machine Learning 
@@ -390,6 +381,15 @@ void Studio::MLRegressionUpdate(MachineLearning& machineLearning, PBOInfo& pboIn
 		std::default_random_engine genFreq(rd());
 		float valFreq = distFreq(genFreq);
 		*m_vSendVals[1] = (MYFLT)valFreq;
+
+		//for(int i = 0; i < params.size(); i++)
+		//{
+
+		//	std::uniform_real_distribution<float> distribution(params[i].distributionLow, params[i].distributionHigh);
+		//	std::default_random_engine generator(rd());
+		//	float val = distribution(generator);
+		//	*params[i].sendVec[i] = (MYFLT)val;		
+		//}
 			
 	}
 	m_bPrevRandomState = machineLearning.bRandomParams;
