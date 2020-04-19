@@ -14,7 +14,7 @@ in vec4 nearPos;
 in vec4 farPos;
 
 layout(location = 0) out vec4 fragColor; 
-//layout(location = 1) out vec4 orbitOut;
+layout(location = 1) out vec4 dataOut;
 
 int index;
 
@@ -124,7 +124,7 @@ void main()
 	fragColor = vec4(colour,1.0);
 
 	// Output to PBO
-	//orbitOut = vec4(1.0, 0.75, 0.2, 1.0);
+	dataOut = fragColor;
 
 //-----------------------------------------------------------------------------
 // To calculate depth for use with rasterized material e.g. VR controllers

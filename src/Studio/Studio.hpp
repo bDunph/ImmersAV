@@ -68,6 +68,8 @@ public:
 	void DrawEnd();
 	bool BCsoundSend(CsoundSession* _session, std::vector<const char*>& sendName, std::vector<MYFLT*>& sendVal);
 	bool BCsoundReturn(CsoundSession* _session, std::vector<const char*>& returnName, std::vector<MYFLT*>& returnVal);
+	void MLRegressionSetup();
+	void MLRegressionUpdate(MachineLearning& machineLearning, PBOInfo& pboInfo);
 	void exit();
 
 private:
@@ -85,6 +87,7 @@ private:
 	MYFLT* distanceVals[NUM_SOUND_SOURCES];
 	MYFLT* m_pRmsOut;
 	MYFLT* m_cspSineControlVal;
+	MYFLT* m_cspRandVal;
 
 	//raymarching quad
 	unsigned int m_uiNumSceneVerts;
@@ -112,5 +115,34 @@ private:
 	std::vector<MYFLT*> m_vSendVals;
 	std::vector<const char*> m_vReturnNames;
 	std::vector<MYFLT*> m_vReturnVals;
+
+	//machine learning controls
+	bool m_bPrevSaveState;
+	bool m_bPrevRandomState;
+	bool m_bPrevTrainState;
+	bool m_bPrevHaltState;
+	bool m_bPrevLoadState;
+	bool m_bCurrentMsgState;
+	bool m_bMsg;
+	bool m_bRunMsg;
+	bool m_bCurrentRunMsgState;
+	float sizeVal;
+	bool m_bModelTrained;
+
+	//machine learning 
+#ifdef __APPLE__
+	rapidmix::staticRegression staticRegression;
+	rapidmix::trainingData trainingData;
+#elif _WIN32
+	regression staticRegression;
+	trainingExample trainingData;
+	std::vector<trainingExample> trainingSet;
+	bool m_bPrevRunHaltState;
+#endif
+
+	std::vector<double> inputData;
+	std::vector<double> outputData;	
+
+
 };
 #endif

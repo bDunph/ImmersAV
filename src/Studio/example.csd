@@ -24,8 +24,9 @@ nchnls = 2
 instr 1 ; Example Instrument
 ;**************************************************************************************
 kSineControlVal chnget "sineControlVal"
+kRandomParam chnget "randomVal"
 
-aSig oscil .7, 220 * kSineControlVal
+aSig oscil .7 * kSineControlVal, 220 * kRandomParam; * kSineControlVal
 
 gaOut = aSig
 
