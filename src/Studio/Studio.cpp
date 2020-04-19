@@ -37,38 +37,35 @@ bool Studio::setup(std::string csd, GLuint shaderProg)
 	// set initial paramaters
 	m_bFirstLoop = true;
 
+
 //*****************************Audio Setup********************************************************
 
 	CsoundSession* csSession = PCsoundSetup(csd);
 	
-//********* send values from avr to csound *******************//
-
 	if(!BSoundSourceSetup(csSession, NUM_SOUND_SOURCES))
 	{
 		std::cout << "Studio::setup sound sources not set up" << std::endl;
 		return false;
 	}
 
-	const char* sineVal = "sineControlVal";
-	if(session->GetChannelPtr(m_cspSineControlVal, sineVal, CSOUND_INPUT_CHANNEL | CSOUND_CONTROL_CHANNEL) != 0)
-	{
-		std::cout << "GetChannelPtr could not get the sineControlVal value" << std::endl;
-		return false;
-	}
+//********* send values to csound *******************//
 
+	m_vSendNames.push_back("sineControlVal");
+	m_vSendVals.push_back(m_cspSineControlVal);	
+	BCsoundSend(csSession, m_vSendNames, m_vSendVals);
 
-//********* get return values from csound *******************//
+//********* return values from csound *******************//
 
 	// example return value - RMS
-	//m_fPrevRms = 0.0f;
-	//const char* rmsOut = "rmsOut";
-	//if(session->GetChannelPtr(m_pRmsOut, rmsOut, CSOUND_OUTPUT_CHANNEL | CSOUND_CONTROL_CHANNEL) != 0)
-	//{
-	//	std::cout << "Csound output value rmsOut not available" << std::endl;
-	//	return false;
-	//}
+	m_vReturnNames.push_back("rmsOut");
+	m_vReturnVals.push_back(m_pRmsOut);
+	BCsoundReturn(csSession, m_vReturnNames, m_vReturnVals);	
 	
 //************************************************************************************************
+//************************************************************************************************
+
+
+
 
 //*************************************Visual Setup***********************************************
 
@@ -77,10 +74,16 @@ bool Studio::setup(std::string csd, GLuint shaderProg)
 	
 	// shader uniforms
 	m_gliSineControlValLoc = glGetUniformLocation(shaderProg, "sineControlVal");
+	m_gliRmsOutLoc = glGetUniformLocation(shaderProg, "rmsOut");
 	
 	modelMatrix = glm::mat4(1.0f);
 
 //************************************************************************************************
+//************************************************************************************************
+
+
+
+
 	return true;
 }
 //*******************************************************************************************
@@ -111,8 +114,8 @@ void Studio::update(glm::mat4 viewMat, glm::vec3 camPos, MachineLearning& machin
 	//example control signal - sine function
 	//sent to shader and csound
 	sineControlVal = sin(glfwGetTime() * 0.33f);
+	*m_vSendVals[0] = (MYFLT)sineControlVal;
 
-	*m_cspSineControlVal = (MYFLT)sineControlVal;
 }
 //*********************************************************************************************
 
@@ -125,6 +128,7 @@ void Studio::draw(glm::mat4 projMat, glm::mat4 viewMat, glm::mat4 eyeMat, Raymar
 	DrawStart(projMat, eyeMat, viewMat, mengerProg);
 	
 	glUniform1f(m_gliSineControlValLoc, sineControlVal);
+	glUniform1f(m_gliRmsOutLoc, *m_vReturnVals[0]);
 
 	DrawEnd();
 
@@ -312,6 +316,37 @@ void Studio::DrawEnd()
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
+}
+
+bool Studio::BCsoundSend(CsoundSession* _session, std::vector<const char*>& sendName, std::vector<MYFLT*>& sendVal)
+{
+	for(int i = 0; i < sendName.size(); i++)
+	{
+		const char* chName = sendName[i];
+		std::cout << chName << std::endl;
+		if(_session->GetChannelPtr(sendVal[i], chName, CSOUND_INPUT_CHANNEL | CSOUND_CONTROL_CHANNEL) != 0)
+		{
+			std::cout << "GetChannelPtr could not get the send value at position " << sendName[i] << std::endl;
+			return false;
+		}
+	}
+	
+	return true;
+}
+
+bool Studio::BCsoundReturn(CsoundSession* _session, std::vector<const char*>& returnName, std::vector<MYFLT*>& returnVal)
+{
+	for(int i = 0; i < returnName.size(); i++)
+	{
+		const char* retName = returnName[i];
+		if(_session->GetChannelPtr(returnVal[i], retName, CSOUND_OUTPUT_CHANNEL | CSOUND_CONTROL_CHANNEL) != 0)
+		{
+			std::cout << "Csound return value not available at position " << returnName[i] << std::endl;
+			return false;
+		}
+	}
+	
+	return true;
 }
 
 void Studio::exit(){

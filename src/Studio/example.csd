@@ -29,6 +29,9 @@ aSig oscil .7, 220 * kSineControlVal
 
 gaOut = aSig
 
+kRms	rms	gaOut
+	chnset	kRms,	"rmsOut"
+
 endin
 
 ;**************************************************************************************

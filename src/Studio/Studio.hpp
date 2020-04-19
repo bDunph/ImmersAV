@@ -66,6 +66,8 @@ public:
 	void RaymarchQuadSetup(GLuint _shaderProg);
 	void DrawStart(glm::mat4 _projMat, glm::mat4 _eyeMat, glm::mat4 _viewMat, GLuint _shaderProg);
 	void DrawEnd();
+	bool BCsoundSend(CsoundSession* _session, std::vector<const char*>& sendName, std::vector<MYFLT*>& sendVal);
+	bool BCsoundReturn(CsoundSession* _session, std::vector<const char*>& returnName, std::vector<MYFLT*>& returnVal);
 	void exit();
 
 private:
@@ -96,6 +98,7 @@ private:
 	GLint m_gliMVEPMatrixLocation;
 	GLint m_gliInverseMVEPLocation;
 	GLint m_gliSineControlValLoc;
+	GLint m_gliRmsOutLoc;
 	glm::mat4 modelViewEyeProjectionMat;
 	glm::mat4 inverseMVEPMat;
 	
@@ -105,5 +108,9 @@ private:
 	bool m_bFirstLoop; 
 
 	std::vector<SoundSourceData> m_vSoundSources;
+	std::vector<const char*> m_vSendNames;
+	std::vector<MYFLT*> m_vSendVals;
+	std::vector<const char*> m_vReturnNames;
+	std::vector<MYFLT*> m_vReturnVals;
 };
 #endif
