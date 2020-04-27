@@ -39,12 +39,11 @@ public:
 		bool bLoadModel;
 	};
 
-	struct AudioParameter 
+	struct MLAudioParameter 
 	{
 		float distributionLow;
 		float distributionHigh;
-		const char* name;
-		float value;
+		int sendVecPosition;
 	};
 
 	bool Setup(std::string csd, GLuint shaderProg);
@@ -52,7 +51,7 @@ public:
 	void Draw(glm::mat4 projMat, glm::mat4 viewMat, glm::mat4 eyeMat, GLuint mengerProg, glm::vec3 translateVec);
 	bool BCsoundReturn(CsoundSession* _session, std::vector<const char*>& returnName, std::vector<MYFLT*>& returnVal);
 	void MLRegressionSetup();
-	void MLRegressionUpdate(MachineLearning& machineLearning, PBOInfo& pboInfo, std::vector<AudioParameter>& params);
+	void MLRegressionUpdate(MachineLearning& machineLearning, PBOInfo& pboInfo, std::vector<MLAudioParameter>& params);
 	void Exit();
 
 private:

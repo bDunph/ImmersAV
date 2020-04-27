@@ -86,13 +86,13 @@ void Studio::Update(glm::mat4 viewMat, MachineLearning& machineLearning, glm::ve
 	*m_vSendVals[0] = (MYFLT)m_fSineControlVal;
 
 	//run machine learning
-	//MLParameterData paramData;
-	//paramData.distributionLow = 50.0f;
-	//paramData.distributionHigh = 1000.0f;
-	//paramData.sendVec = m_vMLParamSendVals;	
-	std::vector<AudioParameter> dataVec;
-	//dataVec.push_back(paramData);
-	MLRegressionUpdate(machineLearning, pboInfo, dataVec);	
+	MLAudioParameter paramData;
+	paramData.distributionLow = 50.0f;
+	paramData.distributionHigh = 200.0f;
+	paramData.sendVecPosition = 1;
+	std::vector<MLAudioParameter> paramVec;
+	paramVec.push_back(paramData);
+	MLRegressionUpdate(machineLearning, pboInfo, paramVec);	
 }
 //*********************************************************************************************
 
@@ -134,7 +134,7 @@ void Studio::MLRegressionSetup()
 	m_bModelTrained = false;
 }
 
-void Studio::MLRegressionUpdate(MachineLearning& machineLearning, PBOInfo& pboInfo, std::vector<AudioParameter>& params)
+void Studio::MLRegressionUpdate(MachineLearning& machineLearning, PBOInfo& pboInfo, std::vector<MLAudioParameter>& params)
 {
 
 	bool currentRandomState = m_bPrevRandomState;
@@ -149,19 +149,19 @@ void Studio::MLRegressionUpdate(MachineLearning& machineLearning, PBOInfo& pboIn
 		
 		// example randomised parameter
 		// oscil frequency (kcps) 
-		std::uniform_real_distribution<float> distFreq(50.0f, 200.0f);
-		std::default_random_engine genFreq(rd());
-		float valFreq = distFreq(genFreq);
-		*m_vSendVals[1] = (MYFLT)valFreq;
+		//std::uniform_real_distribution<float> distFreq(50.0f, 200.0f);
+		//std::default_random_engine genFreq(rd());
+		//float valFreq = distFreq(genFreq);
+		//*m_vSendVals[1] = (MYFLT)valFreq;
 
-		//for(int i = 0; i < params.size(); i++)
-		//{
+		for(int i = 0; i < params.size(); i++)
+		{
 
-		//	std::uniform_real_distribution<float> distribution(params[i].distributionLow, params[i].distributionHigh);
-		//	std::default_random_engine generator(rd());
-		//	float val = distribution(generator);
-		//	*params[i].sendVec[i] = (MYFLT)val;		
-		//}
+			std::uniform_real_distribution<float> distribution(params[i].distributionLow, params[i].distributionHigh);
+			std::default_random_engine generator(rd());
+			float val = distribution(generator);
+			*m_vSendVals[params[i].sendVecPosition] = (MYFLT)val;		
+		}
 			
 	}
 	m_bPrevRandomState = machineLearning.bRandomParams;
@@ -176,7 +176,10 @@ void Studio::MLRegressionUpdate(MachineLearning& machineLearning, PBOInfo& pboIn
 		}
 
 		//neural network outputs to audio parameter
-		outputData.push_back((double)*m_vSendVals[1]); //0
+		for(int i = 0; i < params.size(); i++)
+		{
+			outputData.push_back((double)*m_vSendVals[params[i].sendVecPosition]); //0
+		}
 
 #ifdef __APPLE__
 		trainingData.recordSingleElement(inputData, outputData);	
@@ -227,10 +230,17 @@ void Studio::MLRegressionUpdate(MachineLearning& machineLearning, PBOInfo& pboIn
 		}
 		
 		modelOut = staticRegression.run(modelIn);
+		
+		//if(modelOut[0] > 200.0f) modelOut[0] = 200.0f;
+		//if(modelOut[0] < 50.0f) modelOut[0] = 50.0f;
+		//*m_vSendVals[1] = (MYFLT)modelOut[0];
 
-		if(modelOut[0] > 200.0f) modelOut[0] = 200.0f;
-		if(modelOut[0] < 50.0f) modelOut[0] = 50.0f;
-		*m_vSendVals[1] = (MYFLT)modelOut[0];
+		for(int i = 0; i < modelOut.size(); i++)
+		{
+			if(modelOut[i] > params[i].distributionHigh) modelOut[i] = params[i].distributionHigh;
+			if(modelOut[i] < params[i].distributionLow) modelOut[i] = params[i].distributionLow;
+			*m_vSendVals[params[i].sendVecPosition] = (MYFLT)modelOut[i];
+		}
 		
 		std::cout << "Model Running" << std::endl;
 		modelIn.clear();
@@ -255,9 +265,16 @@ void Studio::MLRegressionUpdate(MachineLearning& machineLearning, PBOInfo& pboIn
 
 		modelOut = staticRegression.run(modelIn);
 		
-		if(modelOut[0] > 200.0f) modelOut[0] = 200.0f;
-		if(modelOut[0] < 50.0f) modelOut[0] = 50.0f;
-		*m_vSendVals[1] = (MYFLT)modelOut[0];
+		//if(modelOut[0] > 200.0f) modelOut[0] = 200.0f;
+		//if(modelOut[0] < 50.0f) modelOut[0] = 50.0f;
+		//*m_vSendVals[1] = (MYFLT)modelOut[0];
+
+		for(int i = 0; i < modelOut.size(); i++)
+		{
+			if(modelOut[i] > params[i].distributionHigh) modelOut[i] = params[i].distributionHigh;;
+			if(modelOut[i] < params[i].distributionLow) modelOut[i] = params[i].distributionLow;
+			*m_vSendVals[params[i].sendVecPosition] = (MYFLT)modelOut[i];
+		}
 
 		bool prevRunMsgState = m_bCurrentRunMsgState;
 		if(m_bRunMsg != prevRunMsgState && m_bRunMsg == true)
