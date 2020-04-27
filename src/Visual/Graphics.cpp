@@ -85,7 +85,7 @@ Graphics::Graphics(std::unique_ptr<ExecutionFlags>& flagPtr) :
 //----------------------------------------------------------------------
 // Initialise OpenGL context, companion window, glew and vsync.
 // ---------------------------------------------------------------------	
-bool Graphics::BInitGL(bool fullscreen)
+bool Graphics::BInitGL(std::string avFileName, bool fullscreen)
 {
 	
 	//start gl context and O/S window using the glfw helper library
@@ -173,14 +173,14 @@ bool Graphics::BInitGL(bool fullscreen)
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	mengerShaderProg = BCreateSceneShaders("example");
+	mengerShaderProg = BCreateSceneShaders(avFileName);
 	if(mengerShaderProg == NULL)
 	{
 		std::cout << "mengerShaderProg returned NULL: Graphics::BInitGL" << std::endl;
 		return false;
 	}
 
-	std::string csdFileName = "example.csd";
+	std::string csdFileName = avFileName + ".csd";
 	if(!studio.Setup(csdFileName, mengerShaderProg)) 
 	{
 		std::cout << "studio setup failed: Graphics BInitGL" << std::endl;
@@ -970,7 +970,7 @@ void Graphics::UpdateSceneData(std::unique_ptr<VR_Manager>& vrm)
 	//glm::vec3 vec3TranslationVal = glm::vec3(m_vec4TranslationVal.x / m_vec4TranslationVal.w, m_vec4TranslationVal.y / m_vec4TranslationVal.w, m_vec4TranslationVal.z / m_vec4TranslationVal.w);
 	m_vec3TranslationVal = glm::vec3(m_vec4TranslationVal.x, m_vec4TranslationVal.y, m_vec4TranslationVal.z);
 	//update variables for studio
-	studio.Update(m_mat4CurrentViewMatrix, cameraPosition, machineLearning, m_vec3ControllerWorldPos[0], m_vec3ControllerWorldPos[1], m_quatController[0], m_quatController[1], m_structPboInfo);
+	studio.Update(m_mat4CurrentViewMatrix, machineLearning, m_vec3ControllerWorldPos[0], m_vec3ControllerWorldPos[1], m_quatController[0], m_quatController[1], m_structPboInfo);
 
 	//delete[] m_pDataSize;
 	delete[] m_structPboInfo.pboPtr;
@@ -1354,8 +1354,6 @@ void Graphics::RenderScene(vr::Hmd_Eye nEye, std::unique_ptr<VR_Manager>& vrm)
 		cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
 		//cameraPosition = glm::vec3(currentViewMatrix[3][0], currentViewMatrix[3][1], currentViewMatrix[3][2]);
 
-		glm::vec4 m_vFarPlaneDimensions = vrm->GetFarPlaneDimensions(nEye);
-		raymarchData.tanFovYOver2 = m_vFarPlaneDimensions.w;
 	} 
 	else 
 	{
@@ -1366,10 +1364,6 @@ void Graphics::RenderScene(vr::Hmd_Eye nEye, std::unique_ptr<VR_Manager>& vrm)
 		currentEyeMatrix = glm::mat4(1.0f);
 		cameraFront = m_vec3DevCamFront;
 		//cameraPosition = m_vec3DevCamPos;
-
-		double fovYRadians = m_fFov * (PI / 180.0f);
-		//raymarchData.tanFovYOver2 = atan2(fovYRadians, 1.0f);		
-		raymarchData.tanFovYOver2 = tan(fovYRadians / 2.0f);		
 	}
 
 	
@@ -1380,9 +1374,6 @@ void Graphics::RenderScene(vr::Hmd_Eye nEye, std::unique_ptr<VR_Manager>& vrm)
 	//	input.push_back(cameraPosition);
 	////********* continue here - need to grab some audio and visual parameters and add to output vector *************//
 	//}
-
-	//update stuff for raymarching shader
-	raymarchData.aspect = static_cast<float>(m_nRenderWidth) / static_cast<float>(m_nRenderHeight);
 
 	//update variables for studio
 	//studio.update(currentViewMatrix, cameraPosition, machineLearning);
@@ -1427,7 +1418,7 @@ void Graphics::RenderScene(vr::Hmd_Eye nEye, std::unique_ptr<VR_Manager>& vrm)
 	}
 
 	//draw studio scene
-	studio.Draw(currentProjMatrix, m_mat4CurrentViewMatrix, currentEyeMatrix, raymarchData, mengerShaderProg, m_vec3TranslationVal);
+	studio.Draw(currentProjMatrix, m_mat4CurrentViewMatrix, currentEyeMatrix, mengerShaderProg, m_vec3TranslationVal);
 
 }
 

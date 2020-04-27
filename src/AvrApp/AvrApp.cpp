@@ -20,7 +20,9 @@ AvrApp::AvrApp(int argc, char** argv) :
 	m_bDevMode(false)  
 {
 
-	for( int i = 0; i < argc; i++ )
+	m_sFileName = argv[1];
+
+	for( int i = 2; i < argc; i++ )
 	{
 		if( !_stricmp(argv[i], "-gldebug"))
 		{
@@ -83,7 +85,7 @@ bool AvrApp::BInitialise()
 	//initialise OpenGL
 	m_pGraphics = std::make_unique<Graphics>(m_pExFlags);
 
-	if(!m_pGraphics->BInitGL())
+	if(!m_pGraphics->BInitGL(m_sFileName))
 	{
 		std::cout << "Error: OpenGL context not initialised!" << std::endl;
 		return false;

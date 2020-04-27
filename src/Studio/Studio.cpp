@@ -1,15 +1,7 @@
 #include "Studio.hpp"
 
-#include <cstdio>
-#include <cstdarg>
-#include <ctime>
-#include <assert.h>
-#include <math.h>
-#include <cmath>
 #include <iostream>
 #include <random>
-
-#include "stb_image.h"
 
 #ifdef __APPLE__ 
 #include "GLFW/glfw3.h"
@@ -18,9 +10,6 @@
 #include "glfw3.h"
 #define TRAINING_SET_SIZE trainingSet.size()
 #endif
-
-#include "SystemInfo.hpp"
-#include "ShaderManager.hpp"
 
 //*******************************************************************************************
 // Setup 
@@ -74,7 +63,7 @@ bool Studio::Setup(std::string csd, GLuint shaderProg)
 //*******************************************************************************************
 // Update 
 //*******************************************************************************************
-void Studio::Update(glm::mat4 viewMat, glm::vec3 camPos, MachineLearning& machineLearning, glm::vec3 controllerWorldPos_0, glm::vec3 controllerWorldPos_1, glm::quat controllerQuat_0, glm::quat controllerQuat_1, PBOInfo& pboInfo){
+void Studio::Update(glm::mat4 viewMat, MachineLearning& machineLearning, glm::vec3 controllerWorldPos_0, glm::vec3 controllerWorldPos_1, glm::quat controllerQuat_0, glm::quat controllerQuat_1, PBOInfo& pboInfo){
 
 	// For return values from shader
 	// vec4 for each fragment is returned in the order ABGR
@@ -111,9 +100,9 @@ void Studio::Update(glm::mat4 viewMat, glm::vec3 camPos, MachineLearning& machin
 //*********************************************************************************************
 // Draw 
 //*********************************************************************************************
-void Studio::Draw(glm::mat4 projMat, glm::mat4 viewMat, glm::mat4 eyeMat, RaymarchData& raymarchData, GLuint mengerProg, glm::vec3 translateVec)
+void Studio::Draw(glm::mat4 projMat, glm::mat4 viewMat, glm::mat4 eyeMat, GLuint shaderProg, glm::vec3 translateVec)
 {
-	m_pStTools->DrawStart(projMat, eyeMat, viewMat, mengerProg, translateVec);
+	m_pStTools->DrawStart(projMat, eyeMat, viewMat, shaderProg, translateVec);
 	
 	glUniform1f(m_gliSineControlValLoc, m_fSineControlVal);
 	glUniform1f(m_gliRmsOutLoc, *m_vReturnVals[0]);
@@ -160,7 +149,7 @@ void Studio::MLRegressionUpdate(MachineLearning& machineLearning, PBOInfo& pboIn
 		
 		// example randomised parameter
 		// oscil frequency (kcps) 
-		std::uniform_real_distribution<float> distFreq(50.0f, 1000.0f);
+		std::uniform_real_distribution<float> distFreq(50.0f, 200.0f);
 		std::default_random_engine genFreq(rd());
 		float valFreq = distFreq(genFreq);
 		*m_vSendVals[1] = (MYFLT)valFreq;
@@ -239,7 +228,7 @@ void Studio::MLRegressionUpdate(MachineLearning& machineLearning, PBOInfo& pboIn
 		
 		modelOut = staticRegression.run(modelIn);
 
-		if(modelOut[0] > 1000.0f) modelOut[0] = 1000.0f;
+		if(modelOut[0] > 200.0f) modelOut[0] = 200.0f;
 		if(modelOut[0] < 50.0f) modelOut[0] = 50.0f;
 		*m_vSendVals[1] = (MYFLT)modelOut[0];
 		
@@ -266,7 +255,7 @@ void Studio::MLRegressionUpdate(MachineLearning& machineLearning, PBOInfo& pboIn
 
 		modelOut = staticRegression.run(modelIn);
 		
-		if(modelOut[0] > 1000.0f) modelOut[0] = 1000.0f;
+		if(modelOut[0] > 200.0f) modelOut[0] = 200.0f;
 		if(modelOut[0] < 50.0f) modelOut[0] = 50.0f;
 		*m_vSendVals[1] = (MYFLT)modelOut[0];
 

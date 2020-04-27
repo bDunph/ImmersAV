@@ -26,7 +26,7 @@ instr 1 ; Example Instrument
 kSineControlVal chnget "sineControlVal"
 kRandomParam chnget "randomVal"
 
-aSig oscil .7 * kSineControlVal, 220 * kRandomParam; * kSineControlVal
+aSig oscil .7 * kSineControlVal, kRandomParam; * kSineControlVal
 
 gaOut = aSig
 

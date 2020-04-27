@@ -24,6 +24,8 @@ private:
 	//std::unique_ptr<CsoundSession> m_pAudio;
 	std::unique_ptr<ExecutionFlags> m_pExFlags;
 
+	std::string m_sFileName;
+
 	bool m_bDebugGL;
 	bool m_bVSyncBlank;
 	bool m_bOpenGLFinishHack;
