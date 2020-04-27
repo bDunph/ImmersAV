@@ -7,16 +7,13 @@
 #include <string>
 #include <vector>
 
-#include <GL/glew.h>
-#include <glm/gtc/quaternion.hpp>
-
 #ifdef __APPLE__
 #include "rapidmix.h"
 #elif _WIN32
 #include "RapidLib/regression.h"
 #endif
 
-#include "CsoundSession.hpp"
+#include "StudioTools.hpp"
 
 class Studio {
 
@@ -48,15 +45,6 @@ public:
 		bool bLoadModel;
 	};
 
-	struct SoundSourceData
-	{
-		glm::vec4 position;
-		glm::vec4 posCamSpace;
-		float distCamSpace;
-		float azimuth;
-		float elevation;
-	};
-	
 	struct AudioParameter 
 	{
 		float distributionLow;
@@ -65,61 +53,32 @@ public:
 		float value;
 	};
 
-	bool setup(std::string csd, GLuint shaderProg);
-	void update(glm::mat4 viewMat, glm::vec3 camPos, MachineLearning& machineLearning, glm::vec3 controllerWorldPos_0, glm::vec3 controllerWorldPos_1, glm::quat controllerQuat_0, glm::quat controllerQuat_1, PBOInfo& pboInfo, glm::vec3 translateVec);
-	void draw(glm::mat4 projMat, glm::mat4 viewMat, glm::mat4 eyeMat, RaymarchData& raymarchData, GLuint mengerProg);
-	CsoundSession* PCsoundSetup(std::string _csdName);
-	bool BSoundSourceSetup(CsoundSession* _session, int numSources);
-	void SoundSourceUpdate(std::vector<SoundSourceData>& soundSources, glm::mat4 _viewMat);
-	void RaymarchQuadSetup(GLuint _shaderProg);
-	void DrawStart(glm::mat4 _projMat, glm::mat4 _eyeMat, glm::mat4 _viewMat, GLuint _shaderProg);
-	void DrawEnd();
-	bool BCsoundSend(CsoundSession* _session, std::vector<const char*>& sendName, std::vector<MYFLT*>& sendVal);
+	bool Setup(std::string csd, GLuint shaderProg);
+	void Update(glm::mat4 viewMat, glm::vec3 camPos, MachineLearning& machineLearning, glm::vec3 controllerWorldPos_0, glm::vec3 controllerWorldPos_1, glm::quat controllerQuat_0, glm::quat controllerQuat_1, PBOInfo& pboInfo);
+	void Draw(glm::mat4 projMat, glm::mat4 viewMat, glm::mat4 eyeMat, RaymarchData& raymarchData, GLuint mengerProg, glm::vec3 translateVec);
 	bool BCsoundReturn(CsoundSession* _session, std::vector<const char*>& returnName, std::vector<MYFLT*>& returnVal);
 	void MLRegressionSetup();
 	void MLRegressionUpdate(MachineLearning& machineLearning, PBOInfo& pboInfo, std::vector<AudioParameter>& params);
-	void exit();
+	void Exit();
 
 private:
 
+	StudioTools* m_pStTools;
+
 	glm::vec4 cameraPos;
 	
-	//matrices 
-	glm::mat4 modelMatrix;
-	glm::vec3 m_vec3Translation;
-
-	//Csound
-	CsoundSession *session;
-	MYFLT* azimuthVals[NUM_SOUND_SOURCES];
-	MYFLT* elevationVals[NUM_SOUND_SOURCES];
-	MYFLT* distanceVals[NUM_SOUND_SOURCES];
 	MYFLT* m_pRmsOut;
 	MYFLT* m_cspSineControlVal;
 	MYFLT* m_cspRandVal;
 
-	//raymarching quad
-	unsigned int m_uiNumSceneVerts;
-	unsigned int m_uiNumSceneIndices;
-	unsigned int m_uiNumSceneTexCoords;
-
-	GLuint m_uiglSceneVAO;
-	GLuint m_uiglSceneVBO;
-	GLuint m_uiglIndexBuffer;
-	
-	GLint m_gliMVEPMatrixLocation;
-	GLint m_gliInverseMVEPLocation;
 	GLint m_gliSineControlValLoc;
 	GLint m_gliRmsOutLoc;
-	glm::mat4 modelViewEyeProjectionMat;
-	glm::mat4 inverseMVEPMat;
 	
 	//control variables
-	float sineControlVal;
+	float m_fSineControlVal;
 
 	bool m_bFirstLoop; 
 
-	std::vector<SoundSourceData> m_vSoundSources;
-	std::vector<const char*> m_vSendNames;
 	std::vector<MYFLT*> m_vSendVals;
 	std::vector<const char*> m_vReturnNames;
 	std::vector<MYFLT*> m_vReturnVals;
@@ -152,7 +111,5 @@ private:
 
 	std::vector<double> inputData;
 	std::vector<double> outputData;	
-
-
 };
 #endif

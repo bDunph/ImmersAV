@@ -229,6 +229,7 @@ private:
 	Studio::PBOInfo m_structPboInfo;	
 
 	glm::vec4 m_vec4TranslationVal;
+	glm::vec3 m_vec3TranslationVal;
 	float m_fMaxDist;
 	glm::vec3 m_vec3InitCamPos;
 };

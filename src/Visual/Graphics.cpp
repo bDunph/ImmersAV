@@ -181,7 +181,7 @@ bool Graphics::BInitGL(bool fullscreen)
 	}
 
 	std::string csdFileName = "example.csd";
-	if(!studio.setup(csdFileName, mengerShaderProg)) 
+	if(!studio.Setup(csdFileName, mengerShaderProg)) 
 	{
 		std::cout << "studio setup failed: Graphics BInitGL" << std::endl;
 		return false;
@@ -483,6 +483,7 @@ bool Graphics::BSetupStereoRenderTargets(std::unique_ptr<VR_Manager>& vrm)
 	}
 
 	m_vec4TranslationVal = glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
+	m_vec3TranslationVal = glm::vec3(0.0f, 0.0f, 0.0f);
 
 	//delete[] dummyTex;
 
@@ -967,9 +968,9 @@ void Graphics::UpdateSceneData(std::unique_ptr<VR_Manager>& vrm)
 	//m_structPboInfo.pboPtr = m_pDataSize;
 
 	//glm::vec3 vec3TranslationVal = glm::vec3(m_vec4TranslationVal.x / m_vec4TranslationVal.w, m_vec4TranslationVal.y / m_vec4TranslationVal.w, m_vec4TranslationVal.z / m_vec4TranslationVal.w);
-	glm::vec3 vec3TranslationVal = glm::vec3(m_vec4TranslationVal.x, m_vec4TranslationVal.y, m_vec4TranslationVal.z);
+	m_vec3TranslationVal = glm::vec3(m_vec4TranslationVal.x, m_vec4TranslationVal.y, m_vec4TranslationVal.z);
 	//update variables for studio
-	studio.update(m_mat4CurrentViewMatrix, cameraPosition, machineLearning, m_vec3ControllerWorldPos[0], m_vec3ControllerWorldPos[1], m_quatController[0], m_quatController[1], m_structPboInfo, vec3TranslationVal);
+	studio.Update(m_mat4CurrentViewMatrix, cameraPosition, machineLearning, m_vec3ControllerWorldPos[0], m_vec3ControllerWorldPos[1], m_quatController[0], m_quatController[1], m_structPboInfo);
 
 	//delete[] m_pDataSize;
 	delete[] m_structPboInfo.pboPtr;
@@ -1426,7 +1427,7 @@ void Graphics::RenderScene(vr::Hmd_Eye nEye, std::unique_ptr<VR_Manager>& vrm)
 	}
 
 	//draw studio scene
-	studio.draw(currentProjMatrix, m_mat4CurrentViewMatrix, currentEyeMatrix, raymarchData, mengerShaderProg);
+	studio.Draw(currentProjMatrix, m_mat4CurrentViewMatrix, currentEyeMatrix, raymarchData, mengerShaderProg, m_vec3TranslationVal);
 
 }
 
@@ -1561,7 +1562,7 @@ void Graphics::CleanUpGL(std::unique_ptr<VR_Manager>& vrm){
 
 		glfwTerminate();
 
-		studio.exit();
+		studio.Exit();
 		//delete[] m_structPboInfo.pboPtr;
 		//delete[] m_pDataSize;
 

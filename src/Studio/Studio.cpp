@@ -22,52 +22,47 @@
 #include "SystemInfo.hpp"
 #include "ShaderManager.hpp"
 
-#define PI 3.14159265359
-
-#ifndef _countof
-#define _countof(x) (sizeof(x)/sizeof((x)[0]))
-#endif
-
 //*******************************************************************************************
 // Setup 
 //*******************************************************************************************
-bool Studio::setup(std::string csd, GLuint shaderProg)
+bool Studio::Setup(std::string csd, GLuint shaderProg)
 {
 	// bool to indicate first loop through update and draw functions to 
 	// set initial paramaters. For reading from pboInfo in update
 	m_bFirstLoop = true;
 
+	m_pStTools = new StudioTools();
+
 	//audio setup
-	CsoundSession* csSession = PCsoundSetup(csd);
+	CsoundSession* csSession = m_pStTools->PCsoundSetup(csd);
 	
-	if(!BSoundSourceSetup(csSession, NUM_SOUND_SOURCES))
+	if(!m_pStTools->BSoundSourceSetup(csSession, NUM_SOUND_SOURCES))
 	{
 		std::cout << "Studio::setup sound sources not set up" << std::endl;
 		return false;
 	}
 
 	//setup sends to csound
-	m_vSendNames.push_back("sineControlVal");
+	std::vector<const char*> sendNames;
+	sendNames.push_back("sineControlVal");
 	m_vSendVals.push_back(m_cspSineControlVal);	
-	m_vSendNames.push_back("randomVal");
+	sendNames.push_back("randomVal");
 	m_vSendVals.push_back(m_cspRandVal);
-	BCsoundSend(csSession, m_vSendNames, m_vSendVals);
+	m_pStTools->BCsoundSend(csSession, sendNames, m_vSendVals);
 
 	//setup returns from csound 
-	m_vReturnNames.push_back("rmsOut");
+	std::vector<const char*> returnNames;
+	returnNames.push_back("rmsOut");
 	m_vReturnVals.push_back(m_pRmsOut);
-	BCsoundReturn(csSession, m_vReturnNames, m_vReturnVals);	
+	m_pStTools->BCsoundReturn(csSession, returnNames, m_vReturnVals);	
 	
 	//setup quad to use for raymarching
-	RaymarchQuadSetup(shaderProg);
+	m_pStTools->RaymarchQuadSetup(shaderProg);
 	
 	//shader uniforms
 	m_gliSineControlValLoc = glGetUniformLocation(shaderProg, "sineControlVal");
 	m_gliRmsOutLoc = glGetUniformLocation(shaderProg, "rmsOut");
 	
-	//identity matrix
-	modelMatrix = glm::mat4(1.0f);
-
 	//machine learning setup
 	MLRegressionSetup();
 
@@ -79,7 +74,7 @@ bool Studio::setup(std::string csd, GLuint shaderProg)
 //*******************************************************************************************
 // Update 
 //*******************************************************************************************
-void Studio::update(glm::mat4 viewMat, glm::vec3 camPos, MachineLearning& machineLearning, glm::vec3 controllerWorldPos_0, glm::vec3 controllerWorldPos_1, glm::quat controllerQuat_0, glm::quat controllerQuat_1, PBOInfo& pboInfo, glm::vec3 translateVec){
+void Studio::Update(glm::mat4 viewMat, glm::vec3 camPos, MachineLearning& machineLearning, glm::vec3 controllerWorldPos_0, glm::vec3 controllerWorldPos_1, glm::quat controllerQuat_0, glm::quat controllerQuat_1, PBOInfo& pboInfo){
 
 	// For return values from shader
 	// vec4 for each fragment is returned in the order ABGR
@@ -87,21 +82,19 @@ void Studio::update(glm::mat4 viewMat, glm::vec3 camPos, MachineLearning& machin
 	//if(!m_bFirstLoop)
 	//std::cout << (double)pboInfo.pboPtr[0] << std::endl;
 
-	m_vec3Translation = translateVec;
-	
-	glm::vec4 viewerPosCameraSpace = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
-
 	// example sound source at origin
-	SoundSourceData soundSource1;
+	StudioTools::SoundSourceData soundSource1;
+	glm::vec4 viewerPosCameraSpace = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
 	soundSource1.position = viewerPosCameraSpace;
-	m_vSoundSources.push_back(soundSource1);
+	std::vector<StudioTools::SoundSourceData> soundSources;
+	soundSources.push_back(soundSource1);
 
-	SoundSourceUpdate(m_vSoundSources, viewMat);
+	m_pStTools->SoundSourceUpdate(soundSources, viewMat);
 
 	//example control signal - sine function
 	//sent to shader and csound
-	sineControlVal = sin(glfwGetTime() * 0.33f);
-	*m_vSendVals[0] = (MYFLT)sineControlVal;
+	m_fSineControlVal = sin(glfwGetTime() * 0.33f);
+	*m_vSendVals[0] = (MYFLT)m_fSineControlVal;
 
 	//run machine learning
 	//MLParameterData paramData;
@@ -118,14 +111,14 @@ void Studio::update(glm::mat4 viewMat, glm::vec3 camPos, MachineLearning& machin
 //*********************************************************************************************
 // Draw 
 //*********************************************************************************************
-void Studio::draw(glm::mat4 projMat, glm::mat4 viewMat, glm::mat4 eyeMat, RaymarchData& raymarchData, GLuint mengerProg)
+void Studio::Draw(glm::mat4 projMat, glm::mat4 viewMat, glm::mat4 eyeMat, RaymarchData& raymarchData, GLuint mengerProg, glm::vec3 translateVec)
 {
-	DrawStart(projMat, eyeMat, viewMat, mengerProg);
+	m_pStTools->DrawStart(projMat, eyeMat, viewMat, mengerProg, translateVec);
 	
-	glUniform1f(m_gliSineControlValLoc, sineControlVal);
+	glUniform1f(m_gliSineControlValLoc, m_fSineControlVal);
 	glUniform1f(m_gliRmsOutLoc, *m_vReturnVals[0]);
 
-	DrawEnd();
+	m_pStTools->DrawEnd();
 
 	// update first loop switch
 	m_bFirstLoop = false;
@@ -134,216 +127,9 @@ void Studio::draw(glm::mat4 projMat, glm::mat4 viewMat, glm::mat4 eyeMat, Raymar
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 //*********************************************************************************************
+// Machine Learning 
 //*********************************************************************************************
-//*********************************************************************************************
-CsoundSession* Studio::PCsoundSetup(std::string _csdName)
-{
-	std::string csdName = "";
-	if(!_csdName.empty()) csdName = _csdName;
-	session = new CsoundSession(csdName);
-
-#ifdef _WIN32
-	session->SetOption("-b -32"); 
-	session->SetOption("-B 2048");
-#endif
-	session->StartThread();
-	session->PlayScore();
-
-	return session;
-}
-
-bool Studio::BSoundSourceSetup(CsoundSession* _session, int numSources)
-{
-
-	for(int i = 0; i < NUM_SOUND_SOURCES; i++)
-	{
-		std::string val1 = "azimuth" + std::to_string(i);
-		const char* azimuth = val1.c_str();	
-		if(session->GetChannelPtr(azimuthVals[i], azimuth, CSOUND_INPUT_CHANNEL | CSOUND_CONTROL_CHANNEL) != 0)
-		{
-			std::cout << "GetChannelPtr could not get the azimuth" << i << " input" << std::endl;
-			return false;
-		}
-
-		std::string val2 = "elevation" + std::to_string(i);
-		const char* elevation = val2.c_str();
-		if(session->GetChannelPtr(elevationVals[i], elevation, CSOUND_INPUT_CHANNEL | CSOUND_CONTROL_CHANNEL) != 0)
-		{
-			std::cout << "GetChannelPtr could not get the elevation" << i << " input" << std::endl;
-			return false;
-		}	
-
-		std::string val3 = "distance" + std::to_string(i);
-		const char* distance = val3.c_str();
-		if(session->GetChannelPtr(distanceVals[i], distance, CSOUND_INPUT_CHANNEL | CSOUND_CONTROL_CHANNEL) != 0)
-		{
-			std::cout << "GetChannelPtr could not get the distance" << i << " input" << std::endl;
-			return false;
-		}
-	}
-
-	return true;
-}
-
-void Studio::SoundSourceUpdate(std::vector<SoundSourceData>& soundSources, glm::mat4 _viewMat)
-{
-	for(int i = 0; i < soundSources.size(); i++)
-	{
-		// camera space positions
-		soundSources[i].posCamSpace = _viewMat * modelMatrix * soundSources[i].position;
-
-		// distance value
-		soundSources[i].distCamSpace = sqrt(pow(soundSources[i].posCamSpace.x, 2) + pow(soundSources[i].posCamSpace.y, 2) + pow(soundSources[i].posCamSpace.z, 2));
-
-		//azimuth in camera space
-		float valX = soundSources[i].posCamSpace.x - soundSources[i].position.x;
-		float valZ = soundSources[i].posCamSpace.z - soundSources[i].position.z;
-
-		soundSources[i].azimuth = atan2(valX, valZ);
-		soundSources[i].azimuth *= (180.0f/PI); 	
-
-		//elevation in camera space
-		float oppSide = soundSources[i].posCamSpace.y - soundSources[i].position.y;
-		float sinVal = oppSide / soundSources[i].distCamSpace;
-		soundSources[i].elevation = asin(sinVal);
-		soundSources[i].elevation *= (180.0f/PI);		
-
-		//send values to Csound pointers
-		*azimuthVals[i] = (MYFLT)soundSources[i].azimuth;
-		*elevationVals[i] = (MYFLT)soundSources[i].elevation;
-		*distanceVals[i] = (MYFLT)soundSources[i].distCamSpace;
-	}
-	
-	soundSources.clear();
-
-}
-
-void Studio::RaymarchQuadSetup(GLuint _shaderProg)
-{
-	float sceneVerts[] = {
-		-1.0f, 1.0f, 0.0f,
-		-1.0f, -1.0f, 0.0f,
-		1.0f, -1.0f, 0.0f,
-		1.0f, 1.0f, 0.0f
-	};
-	m_uiNumSceneVerts = _countof(sceneVerts);
-
-	unsigned int sceneIndices[] = {
-		0, 1, 2,
-		2, 3, 0
-	};
-	m_uiNumSceneIndices = _countof(sceneIndices);
-
-	float groundRayTexCoords [] = {
-		0.0f, 0.0f,
-		1.0f, 0.0f,
-		1.0f, 1.0f,
-		0.0f, 1.0f,
-	};
-	m_uiNumSceneTexCoords = _countof(groundRayTexCoords);	
-
-	glGenVertexArrays(1, &m_uiglSceneVAO);
-
-	glBindVertexArray(m_uiglSceneVAO);
-
-	GLuint m_uiglSceneVBO;
-	glGenBuffers(1, &m_uiglSceneVBO);
-	glBindBuffer(GL_ARRAY_BUFFER, m_uiglSceneVBO);
-	glBufferData(GL_ARRAY_BUFFER, m_uiNumSceneVerts * sizeof(float), sceneVerts, GL_STATIC_DRAW);
-
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
-
-	GLuint m_uiglGroundTexCoords;
-	glGenBuffers(1, &m_uiglGroundTexCoords);
-	glBindBuffer(GL_ARRAY_BUFFER, m_uiglGroundTexCoords);
-	glBufferData(GL_ARRAY_BUFFER, m_uiNumSceneTexCoords * sizeof(float), groundRayTexCoords, GL_STATIC_DRAW);
-
-	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, NULL); 
-
-	glGenBuffers(1, &m_uiglIndexBuffer);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_uiglIndexBuffer);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_uiNumSceneIndices * sizeof(unsigned int), sceneIndices, GL_STATIC_DRAW);
-	
-	
-	glBindVertexArray(0);
-	glDisableVertexAttribArray(0);
-
-	m_gliMVEPMatrixLocation = glGetUniformLocation(_shaderProg, "MVEPMat");
-	m_gliInverseMVEPLocation = glGetUniformLocation(_shaderProg, "InvMVEP");
-}
-
-void Studio::DrawStart(glm::mat4 _projMat, glm::mat4 _eyeMat, glm::mat4 _viewMat, GLuint _shaderProg)
-{
-	modelMatrix = glm::translate(modelMatrix, m_vec3Translation);
-
-	//matrices for raymarch shaders
-	modelViewEyeProjectionMat = _projMat * _eyeMat * _viewMat * modelMatrix;
-	inverseMVEPMat = glm::inverse(modelViewEyeProjectionMat);
-
-	glBindVertexArray(m_uiglSceneVAO);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_uiglIndexBuffer);
-	glUseProgram(_shaderProg);
-
-	glUniformMatrix4fv(m_gliMVEPMatrixLocation, 1, GL_FALSE, &modelViewEyeProjectionMat[0][0]);
-	glUniformMatrix4fv(m_gliInverseMVEPLocation, 1, GL_FALSE, &inverseMVEPMat[0][0]);
-}
-
-void Studio::DrawEnd()
-{
-	glDrawElements(GL_TRIANGLES, m_uiNumSceneIndices * sizeof(unsigned int), GL_UNSIGNED_INT, (void*)0);
-
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-	glBindVertexArray(0);
-}
-
-bool Studio::BCsoundSend(CsoundSession* _session, std::vector<const char*>& sendName, std::vector<MYFLT*>& sendVal)
-{
-	for(int i = 0; i < sendName.size(); i++)
-	{
-		const char* chName = sendName[i];
-		std::cout << chName << std::endl;
-		if(_session->GetChannelPtr(sendVal[i], chName, CSOUND_INPUT_CHANNEL | CSOUND_CONTROL_CHANNEL) != 0)
-		{
-			std::cout << "GetChannelPtr could not get the send value at position " << sendName[i] << std::endl;
-			return false;
-		}
-	}
-	
-	return true;
-}
-
-bool Studio::BCsoundReturn(CsoundSession* _session, std::vector<const char*>& returnName, std::vector<MYFLT*>& returnVal)
-{
-	for(int i = 0; i < returnName.size(); i++)
-	{
-		const char* retName = returnName[i];
-		if(_session->GetChannelPtr(returnVal[i], retName, CSOUND_OUTPUT_CHANNEL | CSOUND_CONTROL_CHANNEL) != 0)
-		{
-			std::cout << "Csound return value not available at position " << returnName[i] << std::endl;
-			return false;
-		}
-	}
-	
-	return true;
-}
-
 void Studio::MLRegressionSetup()
 {
 	m_bPrevSaveState = false;
@@ -361,9 +147,6 @@ void Studio::MLRegressionSetup()
 
 void Studio::MLRegressionUpdate(MachineLearning& machineLearning, PBOInfo& pboInfo, std::vector<AudioParameter>& params)
 {
-//*********************************************************************************************
-// Machine Learning 
-//*********************************************************************************************
 
 	bool currentRandomState = m_bPrevRandomState;
 
@@ -552,10 +335,18 @@ void Studio::MLRegressionUpdate(MachineLearning& machineLearning, PBOInfo& pboIn
 #endif
 
 }
+//*********************************************************************************************
 
-void Studio::exit(){
-	//stop csound
-	session->StopPerformance();
+
+//*********************************************************************************************
+// Clean up
+//*********************************************************************************************
+void Studio::Exit(){
+
+	//delete StudioTools pointer
+	m_pStTools->Exit();
+	delete m_pStTools;
+
 	//close GL context and any other GL resources
 	glfwTerminate();
 }
