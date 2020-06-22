@@ -33,17 +33,26 @@ bool Studio::Setup(std::string csd, GLuint shaderProg)
 
 	//setup sends to csound
 	std::vector<const char*> sendNames;
+
 	sendNames.push_back("sineControlVal");
 	m_vSendVals.push_back(m_cspSineControlVal);	
+
 	sendNames.push_back("randomVal");
 	m_vSendVals.push_back(m_cspRandVal);
+
 	m_pStTools->BCsoundSend(csSession, sendNames, m_vSendVals);
 
 	//setup returns from csound 
 	std::vector<const char*> returnNames;
+
 	returnNames.push_back("rmsOut");
 	m_vReturnVals.push_back(m_pRmsOut);
+
+	returnNames.push_back("freqOut");
+	m_vReturnVals.push_back(m_pFreqOut);
+
 	m_pStTools->BCsoundReturn(csSession, returnNames, m_vReturnVals);	
+	
 	
 	//setup quad to use for raymarching
 	m_pStTools->RaymarchQuadSetup(shaderProg);
@@ -51,6 +60,7 @@ bool Studio::Setup(std::string csd, GLuint shaderProg)
 	//shader uniforms
 	m_gliSineControlValLoc = glGetUniformLocation(shaderProg, "sineControlVal");
 	m_gliRmsOutLoc = glGetUniformLocation(shaderProg, "rmsOut");
+	m_gliFreqOutLoc = glGetUniformLocation(shaderProg, "freqOut");
 	
 	//machine learning setup
 	MLRegressionSetup();
@@ -106,6 +116,7 @@ void Studio::Draw(glm::mat4 projMat, glm::mat4 viewMat, glm::mat4 eyeMat, GLuint
 	
 	glUniform1f(m_gliSineControlValLoc, m_fSineControlVal);
 	glUniform1f(m_gliRmsOutLoc, *m_vReturnVals[0]);
+	glUniform1f(m_gliFreqOutLoc, *m_vReturnVals[1]);
 
 	m_pStTools->DrawEnd();
 
@@ -172,13 +183,13 @@ void Studio::MLRegressionUpdate(MachineLearning& machineLearning, PBOInfo& pboIn
 		//example shader values provide input to neural network
 		for(int i = 0; i < pboInfo.pboSize; i+=pboInfo.pboSize * 0.01)
 		{
-			inputData.push_back((double)pboInfo.pboPtr[i]); //13
+			inputData.push_back((double)pboInfo.pboPtr[i]);
 		}
 
 		//neural network outputs to audio parameter
 		for(int i = 0; i < params.size(); i++)
 		{
-			outputData.push_back((double)*m_vSendVals[params[i].sendVecPosition]); //0
+			outputData.push_back((double)*m_vSendVals[params[i].sendVecPosition]);
 		}
 
 #ifdef __APPLE__

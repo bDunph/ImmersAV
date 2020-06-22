@@ -126,7 +126,7 @@ bool Graphics::BInitGL(std::string avFileName, bool fullscreen)
 		m_nCompanionWindowHeight = windowHeight;
 	}
 
-	m_pGLContext = glfwCreateWindow(windowWidth, windowHeight, "AVR", NULL, NULL);	
+	m_pGLContext = glfwCreateWindow(windowWidth, windowHeight, "AvVr", NULL, NULL);	
 
 	if(!m_pGLContext)
 	{

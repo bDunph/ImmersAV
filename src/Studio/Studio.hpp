@@ -61,11 +61,13 @@ private:
 	glm::vec4 cameraPos;
 	
 	MYFLT* m_pRmsOut;
+	MYFLT* m_pFreqOut;
 	MYFLT* m_cspSineControlVal;
 	MYFLT* m_cspRandVal;
 
 	GLint m_gliSineControlValLoc;
 	GLint m_gliRmsOutLoc;
+	GLint m_gliFreqOutLoc;
 	
 	//control variables
 	float m_fSineControlVal;
