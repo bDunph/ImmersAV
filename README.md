@@ -19,6 +19,7 @@ Dependencies:
 - Glew
 - CMake3
 - RapidLib
+- libsndfile
 
 Setup:
 
@@ -26,12 +27,15 @@ Windows:
 
 1. Create ImmersAV/bin/ directory.
 2. Create ImmersAV/lib/ directory.
-3. Download: 
-  CMake - https://cmake.org/download/.
-  OpenVR - https://github.com/ValveSoftware/openvr.
-  Csound 6 - https://csound.com/download.html.
-  glm - https://github.com/g-truc/glm/tags.
-  glfw3 - https://www.glfw.org/download.html.
-  glew - http://glew.sourceforge.net/.
+3. Download:
+    - CMake:        https://cmake.org/download/
+    - OpenVR:       https://github.com/ValveSoftware/openvr
+    - Csound 6:     https://csound.com/download.html
+    - glm:          https://github.com/g-truc/glm/tags
+    - glfw3:        https://www.glfw.org/download.html
+    - glew:         http://glew.sourceforge.net/
+    - libsndfile:   http://www.mega-nerd.com/libsndfile/#Download
+4.     
+
   
 
