@@ -129,6 +129,70 @@ ImmersAV is an open source toolkit for immersive audiovisual composition using i
     - Without VR (for development):
         - ./avr audioReactive_example -dev
     
+## Example Walkthroughs
+This section describes the construction and execution of the examples. All of the examples are found in *ImmersiveAV/examples/*.
+
+### Audio Reactive
+This example demonstrates audio reactive mapping. The frequency is mapped from the audio engine to the visual structure.
+
+***Link to video of example on YouTube***
+
+The file *audioReactive_example.csd* generates the audio tone. Below is the code for the *Example Instrument*.
+
+```
+**************************************************
+instr 1 ; Example Instrument
+**************************************************
+
+kFreq   linseg  400, 2.0, 500, 2.0, 450, 4.0, 950, 5.0, 200
+
+        chnset  kFreq, "freqOut"
+
+aSig    oscil   0.7, kFreq
+gaOut = aSig
+
+endin
+```
+Here `chnset` is used to send the value `kFreq` to the `Studio()` class using the channel `"freqOut"`. The channel `"freqOut"` is declared in `Studio::Setup()`.
+
+```
+//setup returns from Csound
+std::vector<const char*> returnNames;
+returnNames.push_back("freqOut");
+
+m_returnVals.push_back(m_pFreqOut);
+
+m_pStTools->BCsoundReturn(csSession, returnNames, m_vReturnVals);
+```
+Here the string `"freqOut"` is pushed back into the vector `returnNames`. The Csound pointer `m_pFreqOut` points to the value returned from Csound. This is pushed back onto a member vector `returnVals`. These vectors are then used as arguments to the function `BCsoundReturn()` which sets up the channel. 
+
+The frequency value is then sent to the frag shader using `glUniform1f()` which is called in `Studio::Draw()`.
+
+```
+m_pStTools->DrawStart(projMat, eyeMat, viewMat, shaderProg, translateVec);
+glUniform1f(m_gliFreqOutLoc, *m_vReturnVals[0]);
+m_pStTools->DrawEnd();
+```
+The value is sent to the shader by dereferencing the specific element in the vector `m_vReturnVals`. For the purposes of this walkthrough it is element 0 but in real use it depends in which order you push back elements in `Studio::Setup()`. The location of the uniform is given by the handle `m_gliFreqOutLoc`. This is declared in `Studio::Setup()`.
+
+```
+//shader uniforms
+m_gliFreqOutLoc = glGetUniformLocation(shaderProg, "freqOut");
+```
+
+In the frag shader, the uniform `freqOut` is declared at the top. The value is then used to manupulate the size of the sphere in the distance estimator function.
+
+```
+float DE(vec3 p)
+{
+    float rad = 1.0 * (1.0 / (freqOut * 0.01));
+    float sphereDist = sphereSDF(p, rad);
+    return sphereDist;
+}
+```
+
+Here there is an inverse relationship between the value of `freqOut` and the radius of the sphere `rad`. Higher frequency values make the sphere smaller, lower frequency values make the sphere larger.
+
 
   
 
