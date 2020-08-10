@@ -1,4 +1,4 @@
-#ImmersAV 
+# ImmersAV 
 by Bryan Dunphy
 
 ImmersAV is an open source toolkit for immersive audiovisual composition using interactive machine learning techniques.
