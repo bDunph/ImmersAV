@@ -57,26 +57,26 @@ Build and run using the Visual Studio command line:
     - cd build/
     - nmake
 3. Move the following files to ImmersAV/build/src/:
-    From ImmersAV/bin/:
+    - From ImmersAV/bin/:
         - csound64.dll
         - openvr_api.dll
         - glew32.dll
         - libsndfile-1.dll
-    From ImmersAV/src/Studio/:
+    - From ImmersAV/src/Studio/:
         - *_example.csd
         - *_example.vert
         - *_example.frag
         - hrtf-48000-left.dat
         - hrtf-48000-right.dat
-    From ImmersAV/src/VR/:
+    - From ImmersAV/src/VR/:
         - avr_iml_actions.json
         - avr_iml_default_bindings.json
 4. Navigate (cd) to ImmersAV/build/src/.
 5. Type the following command to run the application with one of the examples:
-    With VR rendering:
-    - avr audioReactive_example
-    Without VR rendering (for development):
-    - avr audioReactive_example -dev
+    - With VR rendering:
+        - avr audioReactive_example
+    - Without VR rendering (for development):
+        - avr audioReactive_example -dev
 
 MacOS:
 
@@ -100,9 +100,9 @@ Setup:
     - libopenvr_api.dylib
     - libRAPID-MIX_API.dylib
 6. Move the following to ImmersAV/include/:
-    From openvr/:
+    - From openvr/:
         - headers/*
-    From RAPID-MIX_API/src:
+    - From RAPID-MIX_API/src:
         - rapidmix.h
         - machineLearning/*
         - signalProcessing/*
@@ -122,10 +122,10 @@ Build and Run using the terminal:
     - hrtf-48000-right.dat
 4. Navigate (cd) to ImmersAV/build/src/.
 5. To run an example project type the following into the terminal:
-    With VR rendering:
-    - ./avr audioReactive_example
-    Without VR (for development):
-    - ./avr audioReactive_example -dev
+    - With VR rendering:
+        - ./avr audioReactive_example
+    - Without VR (for development):
+        - ./avr audioReactive_example -dev
     
 
   
