@@ -3,7 +3,7 @@ by Bryan Dunphy
 
 ImmersAV is an open source toolkit for immersive audiovisual composition using interactive machine learning techniques.
 
-Aims:
+## Aims:
 - Provide well defined, independent areas for generating audio and visual material.
 - Provide a class that can be used to generate, send and receive data from: 
     - machine learning algorithms
@@ -11,7 +11,7 @@ Aims:
     - audio and visual processing engines
 - Allow for direct rendering on a VR headset.
 
-Dependencies:
+## Dependencies:
 - OpenVR
 - Csound6
 - OpenGL4
@@ -22,9 +22,9 @@ Dependencies:
 - RapidLib
 - libsndfile
 
-Windows:
+## Windows:
 
-Setup:
+### Setup:
 
 1. Create ImmersAV/bin/ directory.
 2. Create ImmersAV/lib/ directory.
@@ -51,7 +51,7 @@ Setup:
     - libsndfile-1.lib
 7. Move header files from OpenVR to include/.
 
-Build and run using the Visual Studio command line:
+### Build and run using the Visual Studio command line:
 
 1. Run the newCmakeBuild.bat script.
 2. Use the following commands to build the project:
@@ -79,9 +79,9 @@ Build and run using the Visual Studio command line:
     - Without VR rendering (for development):
         - avr audioReactive_example -dev
 
-MacOS:
+## MacOS:
 
-Setup:
+### Setup:
 
 1. Create ImmersAV/include/ directory.
 2. Download (64 bit):
@@ -108,7 +108,7 @@ Setup:
         - machineLearning/*
         - signalProcessing/*
         
-Build and Run using the terminal:
+### Build and Run using the terminal:
 
 1. Type the following commands into the terminal:
     - mkdir build/
