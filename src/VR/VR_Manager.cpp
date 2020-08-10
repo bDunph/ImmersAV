@@ -74,7 +74,7 @@ bool VR_Manager::BInit(){
 
 //*********** removing pathtools from osx build *************//
 #ifdef __APPLE__
-	std::string manifestPath = "/Users/bryandunphy/Projects/5CellAVR/src/VR/avr_iml_actions.json";
+	std::string manifestPath = "../../src/VR/avr_iml_actions.json";
 	vr::VRInput()->SetActionManifestPath(manifestPath.c_str()); 
 #elif _WIN32
 	vr::VRInput()->SetActionManifestPath( Path_MakeAbsolute( "avr_iml_actions.json", Path_StripFilename( Path_GetExecutablePath() ) ).c_str() );
