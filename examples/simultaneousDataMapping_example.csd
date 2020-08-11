@@ -29,9 +29,6 @@ aSig oscil .7, 400.0 * (1 / kSineControlVal)
 
 gaOut = aSig
 
-kRms	rms	gaOut
-	chnset	kRms,	"rmsOut"
-
 endin
 
 ;**************************************************************************************
