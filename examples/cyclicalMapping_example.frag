@@ -8,7 +8,7 @@
 
 uniform mat4 MVEPMat;
 uniform float sineControlVal;
-uniform float rmsOut;
+uniform float centOut;
 
 in vec4 nearPos;
 in vec4 farPos;
@@ -29,7 +29,7 @@ float sphereSDF(vec3 p, float radius)
 float DE(vec3 p)
 {
 	//float rad = 1.0 * abs(sineControlVal);
-	float rad = 1.0 * abs(rmsOut);
+	float rad = 1.0 * abs(centOut * 0.001);
 
 	float sphereDist = sphereSDF(p, rad);
 

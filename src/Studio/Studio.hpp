@@ -60,19 +60,24 @@ private:
 
 	glm::vec4 cameraPos;
 	
-	MYFLT* m_pRmsOut;
+	MYFLT* m_pCentOut;
 	MYFLT* m_pFreqOut;
 	MYFLT* m_cspSineControlVal;
 	MYFLT* m_cspRandVal;
 
 	GLint m_gliSineControlValLoc;
-	GLint m_gliRmsOutLoc;
+	GLint m_gliCentOutLoc;
 	GLint m_gliFreqOutLoc;
 	
 	//control variables
-	float m_fSineControlVal;
-
 	bool m_bFirstLoop; 
+	float m_fSineControlVal;
+	float m_fSpecCentroid;
+	float m_fDeltaTime;
+	float m_fLastFrame;
+	float m_fCurrentFrame;
+	float m_fTargetVal;
+	float m_fCurrentVal;
 
 	std::vector<MYFLT*> m_vSendVals;
 	std::vector<const char*> m_vReturnNames;

@@ -19,6 +19,9 @@ bool Studio::Setup(std::string csd, GLuint shaderProg)
 	// bool to indicate first loop through update and draw functions to 
 	// set initial paramaters. For reading from pboInfo in update
 	m_bFirstLoop = true;
+	m_fDeltaTime = 0.0f;
+	m_fTargetVal = 0.0f;
+	m_fCurrentVal = 0.0f;
 
 	m_pStTools = new StudioTools();
 
@@ -45,8 +48,8 @@ bool Studio::Setup(std::string csd, GLuint shaderProg)
 	//setup returns from csound 
 	std::vector<const char*> returnNames;
 
-	returnNames.push_back("rmsOut");
-	m_vReturnVals.push_back(m_pRmsOut);
+	returnNames.push_back("centOut");
+	m_vReturnVals.push_back(m_pCentOut);
 
 	returnNames.push_back("freqOut");
 	m_vReturnVals.push_back(m_pFreqOut);
@@ -59,7 +62,7 @@ bool Studio::Setup(std::string csd, GLuint shaderProg)
 	
 	//shader uniforms
 	m_gliSineControlValLoc = glGetUniformLocation(shaderProg, "sineControlVal");
-	m_gliRmsOutLoc = glGetUniformLocation(shaderProg, "rmsOut");
+	m_gliCentOutLoc = glGetUniformLocation(shaderProg, "centOut");
 	m_gliFreqOutLoc = glGetUniformLocation(shaderProg, "freqOut");
 	
 	//machine learning setup
@@ -80,6 +83,24 @@ void Studio::Update(glm::mat4 viewMat, MachineLearning& machineLearning, glm::ve
 	// you have to wait until the 2nd frame to read from the buffer 
 	//if(!m_bFirstLoop)
 	//std::cout << (double)pboInfo.pboPtr[0] << std::endl;
+
+	// spectral centroid data processing
+	m_fCurrentFrame = glfwGetTime();
+	m_fDeltaTime = m_fCurrentFrame - m_fLastFrame;	
+	m_fDeltaTime *= 1000.0f;
+	if(*m_vReturnVals[0] > 0) m_fTargetVal = *m_vReturnVals[0];	
+	if(m_fTargetVal > m_fCurrentVal)
+	{
+		m_fCurrentVal += m_fDeltaTime;
+	} else if(m_fTargetVal <= m_fCurrentVal)
+	{
+		m_fCurrentVal -= m_fDeltaTime;
+	} else if(m_fTargetVal == m_fCurrentVal)
+	{
+		m_fCurrentVal = m_fTargetVal;
+	}
+	m_fSpecCentroid = m_fCurrentVal;
+	//std::cout << m_fSpecCentroid << std::endl;
 
 	// example sound source at origin
 	StudioTools::SoundSourceData soundSource1;
@@ -115,13 +136,15 @@ void Studio::Draw(glm::mat4 projMat, glm::mat4 viewMat, glm::mat4 eyeMat, GLuint
 	m_pStTools->DrawStart(projMat, eyeMat, viewMat, shaderProg, translateVec);
 	
 	glUniform1f(m_gliSineControlValLoc, m_fSineControlVal);
-	glUniform1f(m_gliRmsOutLoc, *m_vReturnVals[0]);
+	glUniform1f(m_gliCentOutLoc, m_fSpecCentroid);
 	glUniform1f(m_gliFreqOutLoc, *m_vReturnVals[1]);
 
 	m_pStTools->DrawEnd();
 
 	// update first loop switch
 	m_bFirstLoop = false;
+	// set end of frame timestamp
+	m_fLastFrame = m_fCurrentFrame;
 }
 //*********************************************************************************************
 
@@ -181,7 +204,7 @@ void Studio::MLRegressionUpdate(MachineLearning& machineLearning, PBOInfo& pboIn
 	if(machineLearning.bRecord)
 	{
 		//example shader values provide input to neural network
-		for(int i = 0; i < pboInfo.pboSize; i+=pboInfo.pboSize * 0.01)
+		for(int i = 0; i < pboInfo.pboSize; i+=pboInfo.pboSize * 0.001)
 		{
 			inputData.push_back((double)pboInfo.pboPtr[i]);
 		}
@@ -235,7 +258,7 @@ void Studio::MLRegressionUpdate(MachineLearning& machineLearning, PBOInfo& pboIn
 		std::vector<double> modelOut;
 		std::vector<double> modelIn;
 
-		for(int i = 0; i < pboInfo.pboSize; i+=pboInfo.pboSize * 0.01)
+		for(int i = 0; i < pboInfo.pboSize; i+=pboInfo.pboSize * 0.001)
 		{
 			modelIn.push_back((double)pboInfo.pboPtr[i]); 
 		}
@@ -269,7 +292,7 @@ void Studio::MLRegressionUpdate(MachineLearning& machineLearning, PBOInfo& pboIn
 		std::vector<double> modelOut;
 		std::vector<double> modelIn;
 
-		for(int i = 0; i < pboInfo.pboSize; i+=pboInfo.pboSize * 0.01)
+		for(int i = 0; i < pboInfo.pboSize; i+=pboInfo.pboSize * 0.001)
 		{
 			modelIn.push_back((double)pboInfo.pboPtr[i]); 
 		}
