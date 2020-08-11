@@ -170,10 +170,10 @@ The frequency value is then sent to the frag shader using `glUniform1f()` which 
 
 ```
 m_pStTools->DrawStart(projMat, eyeMat, viewMat, shaderProg, translateVec);
-glUniform1f(m_gliFreqOutLoc, *m_vReturnVals[0]);
+glUniform1f(m_gliFreqOutLoc, *m_vReturnVals[1]);
 m_pStTools->DrawEnd();
 ```
-The value is sent to the shader by dereferencing the specific element in the vector `m_vReturnVals`. For the purposes of this walkthrough it is element 0 but in real use it depends in which order you push back elements in `Studio::Setup()`. The location of the uniform is given by the handle `m_gliFreqOutLoc`. This is declared in `Studio::Setup()`.
+The value is sent to the shader by dereferencing the specific element in the vector `m_vReturnVals`. For the purposes of this walkthrough it is element 1 but in real use it depends in which order you push back elements in `Studio::Setup()`. The location of the uniform is given by the handle `m_gliFreqOutLoc`. This is declared in `Studio::Setup()`.
 
 ```
 //shader uniforms
@@ -193,6 +193,121 @@ float DE(vec3 p)
 
 Here there is an inverse relationship between the value of `freqOut` and the radius of the sphere `rad`. Higher frequency values make the sphere smaller, lower frequency values make the sphere larger.
 
+## Simultaneous Data Mapping
+This example utilises the `Studio()` class to generate a stream of data. This data is then sent to the audio engine and fragment shader to simultaneously affect the audio and visuals.
 
+***Link to video of example on YouTube***
+
+The data signal is initially generated in `Studio::Update()`.
+
+```
+//example control signal - sine function
+//sent to shader and csound
+m_fSineControlVal = sin(glfwGetTime() * 0.33f);
+*m_vSendVals[0] = (MYFLT)m_fSineControlVal;
+```
+
+The sine control value is generated using `sin()`. Then it is cast to type `MYFLT` and assigned to element 0 of the vector `m_vSendVals`. This element was assigned to the sine control signal in `Studio::Setup()`.
+
+```
+//setup sends to csound
+std::vector<const char*> sendNames;
+sendNames.push_back("sineControlVal");
+m_vSendVals.push_back(m_cspSineControlVal);
+m_pStTools->BCsoundSend(csSession, sendNames, m_vSendVals);
+```
+
+Here element 0 of `sendNames` is assigned to `"sineControlVal"`. The next line then assignes the Csound pointer `m_cspSineControlVal` to element 0 of `m_vSendVals`. The elements in these two vectors need to be aligned or else the values will get paired with incorrectly names channels when they are received by Csound. Both vectors are then used as arguments for the function `BCsoundSend()`. This sets up the send channel with the instance of Csound. The file *simultaneousDataMapping.csd* receives the data stream through the channel named `"sineControlVal"`.
+
+```
+********************************************************
+instr 1 ; Example Instrument
+********************************************************
+kSineControlVal     chnget      "sineControlVal"
+
+aSig        oscil   0.7, 400.0 * (1 / kSineControlVal)
+gaOut       aSig
+
+endin
+```
+
+Here the opcode `chnget` is used to assigne the control data to `kSineControlVal`. This is then used to alter the frequency value. The sine data is also sent from `Studio::Draw()` to the frag shader.
+
+```
+m_pStTools->DrawStart(projMat, eyeMat, viewMat, shaderProg, translateVec);
+glUniform1f(m_gliSineControlValLoc, m_fSineControlVal);
+m_pStTools->DrawEnd();
+```
+
+Here the float value is sent as a uniform using the `m_gliSineControlValLoc` handle that was set up in `Studio::Setup()`.
+
+```
+//shader uniforms
+m_gliSineControlValLoc = glGetUniformLocation(shaderProg, "sineControlVal");
+```
   
+The name of the shader is specified as `"sineControlVal"` within the shader.
 
+```
+uniform float sineControlVal;
+
+float DE(vec3 p)
+{
+    p.y *= 1.0 * sineControlVal;
+    float rad = 2.0;
+    float sphereDist = sphereSDF(p, rad);
+    return sphereDist;
+}
+```
+
+Here `sineControlVal` is used to increase and decrease `p.y` which is the height of the sphere. The point `p` is then send to `sphereSDF()` which estimates the distance to the spere.
+
+## Cyclical Mapping Example
+This example demonstrates a method of mapping data in a cyclical way between the audio and visuals using a neural network based regression algorithm.
+
+***link to video of example on YouTube***
+
+The frequency of the audio signal is set up to be randomised. This allows for a quick and easy way to match the audio to a particular visual state. The random parameter is defined in `Studio::Update()` using the `MLAudioParameter` struct.
+
+```
+//run machine learning
+MLAudioParameter paramData;
+paramData.distributionLow = 50.0f;
+paramData.distributionHigh = 200.0f;
+paramData.sendVecPosition = 1;
+std::vector<MLAudioParameter> paramVec;
+paramVec.push_back(paramData);
+MLRegressionUpdate(machineLearning, pboInfo, paramVec);
+```
+
+The value will always be between `50.0f` and `200.0f`. It is assigned to element number 1 in the vector `m_vSendVals`. This is declared in `Studio::Setup()` where the channel is named `"randomVal"`. This allows Csound to receive the random value on this channel. The object `paramData` is then pushed back onto the vector `paramVec` and passed to `Studio::MLRegressionUpdate()`. When the space bar is pressed, this random value is calculated and sent to Csound.
+
+```
+for(int i = 0; i < params.size(); i++)
+{
+    std::uniform_real_distribution<float> distribution(params[i].distributionLow, params[i].distributionHigh);
+    std::default_random_engine generator(rd());
+    float val = distribution(generator);
+    *m_vSendVals[params[i].sendVecPosition] = (MYFLT)val;
+}
+```
+
+This `for` loop iterates through the vector `std::vector<MLAudioParameter> params`. For each parameter it calculates the `float val` within the given range. It then casts the value to `MYFLT` and assigns it to the relevant position in the vector `m_vSendVals`. This assigns the value to the previously declared channel which is received in the file `cyclicalMapping_example.csd`.
+
+```
+******************************************************
+instr 1 ; Example Instrument
+******************************************************
+kSineControlVal chnget  "sineControlVal"
+kRandomParam    chnget  "randomVal"
+
+aSig    oscil   0.7 * kSineControlVal, kRandomParam
+gaOut = aSig
+
+kRms    rms     gaOut
+        chnset  kRms, "rmsOut"
+
+endin
+```
+
+Here the value recieved on the `"randomVal"` channel is stored in `kRandomParam`. This is then used as the frequency value for `oscil`. Here you can see the value received on the `"sineControlVal"` channel is used to make the volume of the tone increase and decrease. 
