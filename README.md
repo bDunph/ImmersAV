@@ -1,7 +1,7 @@
 # ImmersAV 
 by Bryan Dunphy
 
-ImmersAV is an open source toolkit for immersive audiovisual composition using interactive machine learning techniques.
+ImmersAV is an open source toolkit for immersive audiovisual composition. It was built around a focused approach to composition based on generative audio, raymarching and interactive machine learning techniques.
 
 ## Aims:
 - Provide well defined, independent areas for generating audio and visual material.
