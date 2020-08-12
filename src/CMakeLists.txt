@@ -31,10 +31,10 @@ if(APPLE)
 		message(FATAL_ERROR "OpenVR not found")
 	endif()
 
-	find_library(RAPIDMIX RAPID-MIX_API)
-	if(NOT RAPIDMIX)
-		message(FATAL_ERROR "Rapid-Mix not found")
-	endif()
+	#find_library(RAPIDMIX RAPID-MIX_API)
+	#if(NOT RAPIDMIX)
+	#	message(FATAL_ERROR "Rapid-Mix not found")
+	#endif()
 
 elseif(WIN32)
 
@@ -107,14 +107,14 @@ include_directories(
 
 		"/usr/local/include/"
 		"/Library/Frameworks/CsoundLib64.framework/Headers/"
-		"/Users/bryandunphy/SoftwareAPIs/RAPID-MIX_API/dependencies/RapidLib/src"
-		"/Users/bryandunphy/SoftwareAPIs/RAPID-MIX_API/dependencies/xmm/src"
-		"/Users/bryandunphy/SoftwareAPIs/RAPID-MIX_API/dependencies/GVF"
-		"/Users/bryandunphy/SoftwareAPIs/RAPID-MIX_API/dependencies/third_party/json"
-		"/Users/bryandunphy/SoftwareAPIs/RAPID-MIX_API/dependencies/Maximilian"
-		"/Users/bryandunphy/SoftwareAPIs/RAPID-MIX_API/dependencies/Maximilian/libs"
-		"/Users/bryandunphy/SoftwareAPIs/RAPID-MIX_API/dependencies/pipo/sdk/src"
-		"/Users/bryandunphy/SoftwareAPIs/RAPID-MIX_API/dependencies/pipo/sdk/src/host"
+		#"/Users/bryandunphy/SoftwareAPIs/RAPID-MIX_API/dependencies/RapidLib/src"
+		#"/Users/bryandunphy/SoftwareAPIs/RAPID-MIX_API/dependencies/xmm/src"
+		#"/Users/bryandunphy/SoftwareAPIs/RAPID-MIX_API/dependencies/GVF"
+		#"/Users/bryandunphy/SoftwareAPIs/RAPID-MIX_API/dependencies/third_party/json"
+		#"/Users/bryandunphy/SoftwareAPIs/RAPID-MIX_API/dependencies/Maximilian"
+		#"/Users/bryandunphy/SoftwareAPIs/RAPID-MIX_API/dependencies/Maximilian/libs"
+		#"/Users/bryandunphy/SoftwareAPIs/RAPID-MIX_API/dependencies/pipo/sdk/src"
+		#"/Users/bryandunphy/SoftwareAPIs/RAPID-MIX_API/dependencies/pipo/sdk/src/host"
 		"${PROJECT_BINARY_DIR}"
 		"${PROJECT_SOURCE_DIR}"
 		"${PROJECT_SOURCE_DIR}/../include"
@@ -132,18 +132,21 @@ add_subdirectory(Studio)
 add_subdirectory(Visual)
 add_subdirectory(VR)
 add_subdirectory(AvrApp)
-if(WIN32)
-add_subdirectory(ValveTools)
 add_subdirectory(RapidLib)
 add_subdirectory(JSON)
 add_subdirectory(LibSVM)
+if(WIN32)
+add_subdirectory(ValveTools)
+#add_subdirectory(RapidLib)
+#add_subdirectory(JSON)
+#add_subdirectory(LibSVM)
 endif()
 #add_subdirectory(Audio)
 #add_subdirectory(Algorithms)
 
 if(APPLE)
 	add_executable(avr main.cpp CsoundSession.cpp CsoundSession.hpp lodepng.cpp lodepng.h)
-	target_link_libraries(avr AvrApp VR ${OPENVR} Visual Studio ${RAPIDMIX} GLEW::GLEW glfw OpenGL::GL ${CSOUND_API} ${CSOUND_PERF_THREAD})
+	target_link_libraries(avr AvrApp VR ${OPENVR} Visual Studio RapidLib JSON LibSVM GLEW::GLEW glfw OpenGL::GL ${CSOUND_API} ${CSOUND_PERF_THREAD})
 elseif(WIN32)
 	add_executable(avr main.cpp CsoundSession.cpp CsoundSession.hpp csPerfThread.cpp csPerfThread.hpp lodepng.cpp lodepng.h)
 	target_link_libraries(avr AvrApp VR OpenVR_target ValveTools Visual Studio RapidLib JSON LibSVM Glew_target ${GLFW_WIN} ${OPENGL_gl_LIBRARY} Csound_target Libsndfile_target)

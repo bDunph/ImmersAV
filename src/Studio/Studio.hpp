@@ -8,7 +8,8 @@
 #include <vector>
 
 #ifdef __APPLE__
-#include "rapidmix.h"
+//#include "rapidmix.h"
+#include "RapidLib/regression.h"
 #elif _WIN32
 #include "RapidLib/regression.h"
 #endif
@@ -100,8 +101,12 @@ private:
 
 	//machine learning 
 #ifdef __APPLE__
-	rapidmix::staticRegression staticRegression;
-	rapidmix::trainingData trainingData;
+	//rapidmix::staticRegression staticRegression;
+	//rapidmix::trainingData trainingData;
+	regression staticRegression;
+	trainingExample trainingData;
+	std::vector<trainingExample> trainingSet;
+	bool m_bPrevRunHaltState;
 #elif _WIN32
 	regression staticRegression;
 	trainingExample trainingData;

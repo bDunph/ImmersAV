@@ -23,25 +23,24 @@ nchnls = 2
 ;**************************************************************************************
 instr 1 ; Example Instrument
 ;**************************************************************************************
-kSineControlVal chnget "sineControlVal"
 kRandomParam chnget "randomVal"
 
 aSig oscil .7, kRandomParam 
 
 gaOut = aSig
 
-;kRms	rms	gaOut
-;	chnset	kRms,	"rmsOut"
-
 iFftSize = 1024
 iOverlap = iFftSize / 4 
 iWinSize = iFftSize 
-iWinType = 0
+iWinType = 1
 
 fSig	pvsanal	aSig, iFftSize, iOverlap, iWinSize, iWinType
-kCent	pvscent	fSig
+;kCent	pvscent	fSig
 
-	chnset	kCent, "centOut"
+kThresh = 0.1
+kFreq, kAmp	pvspitch fSig, kThresh
+
+	chnset	kFreq, "centOut"
 
 endin
 

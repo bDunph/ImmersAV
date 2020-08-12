@@ -5,7 +5,8 @@
 
 #ifdef __APPLE__ 
 #include "GLFW/glfw3.h"
-#define TRAINING_SET_SIZE trainingData.trainingSet.size()
+//#define TRAINING_SET_SIZE trainingData.trainingSet.size()
+#define TRAINING_SET_SIZE trainingSet.size()
 #elif _WIN32 
 #include "glfw3.h"
 #define TRAINING_SET_SIZE trainingSet.size()
@@ -89,6 +90,7 @@ void Studio::Update(glm::mat4 viewMat, MachineLearning& machineLearning, glm::ve
 	m_fDeltaTime = m_fCurrentFrame - m_fLastFrame;	
 	m_fDeltaTime *= 1000.0f;
 	if(*m_vReturnVals[0] > 0) m_fTargetVal = *m_vReturnVals[0];	
+	//std::cout << m_fTargetVal << std::endl;
 	if(m_fTargetVal > m_fCurrentVal)
 	{
 		m_fCurrentVal += m_fDeltaTime;
@@ -99,7 +101,9 @@ void Studio::Update(glm::mat4 viewMat, MachineLearning& machineLearning, glm::ve
 	{
 		m_fCurrentVal = m_fTargetVal;
 	}
+	if(m_fCurrentVal < 0.0f) m_fCurrentVal = 0.0f;
 	m_fSpecCentroid = m_fCurrentVal;
+	
 	//std::cout << m_fSpecCentroid << std::endl;
 
 	// example sound source at origin
@@ -204,7 +208,7 @@ void Studio::MLRegressionUpdate(MachineLearning& machineLearning, PBOInfo& pboIn
 	if(machineLearning.bRecord)
 	{
 		//example shader values provide input to neural network
-		for(int i = 0; i < pboInfo.pboSize; i+=pboInfo.pboSize * 0.001)
+		for(int i = 0; i < pboInfo.pboSize; i+=pboInfo.pboSize * 0.01)
 		{
 			inputData.push_back((double)pboInfo.pboPtr[i]);
 		}
@@ -216,7 +220,11 @@ void Studio::MLRegressionUpdate(MachineLearning& machineLearning, PBOInfo& pboIn
 		}
 
 #ifdef __APPLE__
-		trainingData.recordSingleElement(inputData, outputData);	
+		//trainingData.recordSingleElement(inputData, outputData);	
+		trainingData.input = inputData;
+		trainingData.output = outputData;
+		trainingSet.push_back(trainingData);
+
 #elif _WIN32
 		trainingData.input = inputData;
 		trainingData.output = outputData;
@@ -235,7 +243,8 @@ void Studio::MLRegressionUpdate(MachineLearning& machineLearning, PBOInfo& pboIn
 	{
 
 #ifdef __APPLE__
-		staticRegression.train(trainingData);
+		//staticRegression.train(trainingData);
+		staticRegression.train(trainingSet);
 #elif _WIN32
 		staticRegression.train(trainingSet);
 #endif
@@ -258,7 +267,7 @@ void Studio::MLRegressionUpdate(MachineLearning& machineLearning, PBOInfo& pboIn
 		std::vector<double> modelOut;
 		std::vector<double> modelIn;
 
-		for(int i = 0; i < pboInfo.pboSize; i+=pboInfo.pboSize * 0.001)
+		for(int i = 0; i < pboInfo.pboSize; i+=pboInfo.pboSize * 0.01)
 		{
 			modelIn.push_back((double)pboInfo.pboPtr[i]); 
 		}
@@ -292,7 +301,7 @@ void Studio::MLRegressionUpdate(MachineLearning& machineLearning, PBOInfo& pboIn
 		std::vector<double> modelOut;
 		std::vector<double> modelIn;
 
-		for(int i = 0; i < pboInfo.pboSize; i+=pboInfo.pboSize * 0.001)
+		for(int i = 0; i < pboInfo.pboSize; i+=pboInfo.pboSize * 0.01)
 		{
 			modelIn.push_back((double)pboInfo.pboPtr[i]); 
 		}
@@ -341,7 +350,8 @@ void Studio::MLRegressionUpdate(MachineLearning& machineLearning, PBOInfo& pboIn
 #ifdef __APPLE__
 	if(machineLearning.bSaveTrainingData!= currentSaveState && machineLearning.bSaveTrainingData == true)
 	{
-		trainingData.writeJSON(mySavedModel);	
+		staticRegression.writeJSON(mySavedModel);	
+		//trainingData.writeJSON(mySavedModel);	
 		std::cout << "Saving Training Data" << std::endl;
 	}
 	m_bPrevSaveState = machineLearning.bSaveTrainingData;
@@ -359,8 +369,12 @@ void Studio::MLRegressionUpdate(MachineLearning& machineLearning, PBOInfo& pboIn
 #ifdef __APPLE__
 	if(machineLearning.bLoadTrainingData != currentLoadState && machineLearning.bLoadTrainingData == true)
 	{
-		trainingData.readJSON(mySavedModel);
-		staticRegression.train(trainingData);
+		staticRegression.reset();
+		staticRegression.readJSON(mySavedModel);
+		m_bModelTrained = true;
+		//trainingData.readJSON(mySavedModel);
+		//staticRegression.train(trainingData);
+
 		std::cout << "Loading Data and Training Model" << std::endl;
 	}
 	m_bPrevLoadState = machineLearning.bLoadTrainingData;
