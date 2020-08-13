@@ -7,13 +7,7 @@
 #include <string>
 #include <vector>
 
-#ifdef __APPLE__
-//#include "rapidmix.h"
 #include "RapidLib/regression.h"
-#elif _WIN32
-#include "RapidLib/regression.h"
-#endif
-
 #include "StudioTools.hpp"
 
 class Studio {
@@ -33,11 +27,10 @@ public:
 		bool bRandomParams;
 		bool bTrainModel;
 		bool bRunModel;
-		bool bSaveTrainingData;
 		bool bHaltModel;
-		bool bLoadTrainingData;
 		bool bSaveModel;
 		bool bLoadModel;
+		bool bDevMode;
 	};
 
 	struct MLAudioParameter 
@@ -61,19 +54,19 @@ private:
 
 	glm::vec4 cameraPos;
 	
-	MYFLT* m_pCentOut;
+	MYFLT* m_pPitchOut;
 	MYFLT* m_pFreqOut;
 	MYFLT* m_cspSineControlVal;
 	MYFLT* m_cspRandVal;
 
 	GLint m_gliSineControlValLoc;
-	GLint m_gliCentOutLoc;
+	GLint m_gliPitchOutLoc;
 	GLint m_gliFreqOutLoc;
 	
 	//control variables
 	bool m_bFirstLoop; 
 	float m_fSineControlVal;
-	float m_fSpecCentroid;
+	float m_fPitch;
 	float m_fDeltaTime;
 	float m_fLastFrame;
 	float m_fCurrentFrame;
@@ -100,20 +93,9 @@ private:
 	bool m_bModelTrained;
 
 	//machine learning 
-#ifdef __APPLE__
-	//rapidmix::staticRegression staticRegression;
-	//rapidmix::trainingData trainingData;
 	regression staticRegression;
 	trainingExample trainingData;
 	std::vector<trainingExample> trainingSet;
-	bool m_bPrevRunHaltState;
-#elif _WIN32
-	regression staticRegression;
-	trainingExample trainingData;
-	std::vector<trainingExample> trainingSet;
-	bool m_bPrevRunHaltState;
-#endif
-
 	std::vector<double> inputData;
 	std::vector<double> outputData;	
 };

@@ -77,9 +77,10 @@ Graphics::Graphics(std::unique_ptr<ExecutionFlags>& flagPtr) :
 	machineLearning.bRecord = false;
 	machineLearning.bTrainModel = false;
 	machineLearning.bRunModel = false;
-	machineLearning.bSaveTrainingData = false;
+	machineLearning.bSaveModel = false;
 	machineLearning.bHaltModel = false;
-	machineLearning.bLoadTrainingData = false;
+	machineLearning.bLoadModel = false;
+	machineLearning.bDevMode = m_bDevMode;
 }
 
 //----------------------------------------------------------------------
@@ -848,16 +849,16 @@ void Graphics::DevProcessInput(GLFWwindow *window){
 
 	//save model
 	if(glfwGetKey(window, GLFW_KEY_K) == GLFW_PRESS){
-		machineLearning.bSaveTrainingData = true;
+		machineLearning.bSaveModel = true;
 	} else if(glfwGetKey(window, GLFW_KEY_K) == GLFW_RELEASE){
-		machineLearning.bSaveTrainingData = false;
+		machineLearning.bSaveModel = false;
 	}
 
 	//load model
 	if(glfwGetKey(window, GLFW_KEY_L) == GLFW_PRESS){
-		machineLearning.bLoadTrainingData = true;
+		machineLearning.bLoadModel = true;
 	} else if(glfwGetKey(window, GLFW_KEY_L) == GLFW_RELEASE){
-		machineLearning.bLoadTrainingData = false;
+		machineLearning.bLoadModel = false;
 	}
 }
 

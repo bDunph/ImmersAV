@@ -5,11 +5,8 @@
 
 #ifdef __APPLE__ 
 #include "GLFW/glfw3.h"
-//#define TRAINING_SET_SIZE trainingData.trainingSet.size()
-#define TRAINING_SET_SIZE trainingSet.size()
 #elif _WIN32 
 #include "glfw3.h"
-#define TRAINING_SET_SIZE trainingSet.size()
 #endif
 
 //*******************************************************************************************
@@ -49,8 +46,8 @@ bool Studio::Setup(std::string csd, GLuint shaderProg)
 	//setup returns from csound 
 	std::vector<const char*> returnNames;
 
-	returnNames.push_back("centOut");
-	m_vReturnVals.push_back(m_pCentOut);
+	returnNames.push_back("pitchOut");
+	m_vReturnVals.push_back(m_pPitchOut);
 
 	returnNames.push_back("freqOut");
 	m_vReturnVals.push_back(m_pFreqOut);
@@ -63,7 +60,7 @@ bool Studio::Setup(std::string csd, GLuint shaderProg)
 	
 	//shader uniforms
 	m_gliSineControlValLoc = glGetUniformLocation(shaderProg, "sineControlVal");
-	m_gliCentOutLoc = glGetUniformLocation(shaderProg, "centOut");
+	m_gliPitchOutLoc = glGetUniformLocation(shaderProg, "pitchOut");
 	m_gliFreqOutLoc = glGetUniformLocation(shaderProg, "freqOut");
 	
 	//machine learning setup
@@ -85,12 +82,11 @@ void Studio::Update(glm::mat4 viewMat, MachineLearning& machineLearning, glm::ve
 	//if(!m_bFirstLoop)
 	//std::cout << (double)pboInfo.pboPtr[0] << std::endl;
 
-	// spectral centroid data processing
+	// spectral pitch data processing
 	m_fCurrentFrame = glfwGetTime();
 	m_fDeltaTime = m_fCurrentFrame - m_fLastFrame;	
 	m_fDeltaTime *= 1000.0f;
 	if(*m_vReturnVals[0] > 0) m_fTargetVal = *m_vReturnVals[0];	
-	//std::cout << m_fTargetVal << std::endl;
 	if(m_fTargetVal > m_fCurrentVal)
 	{
 		m_fCurrentVal += m_fDeltaTime;
@@ -102,10 +98,8 @@ void Studio::Update(glm::mat4 viewMat, MachineLearning& machineLearning, glm::ve
 		m_fCurrentVal = m_fTargetVal;
 	}
 	if(m_fCurrentVal < 0.0f) m_fCurrentVal = 0.0f;
-	m_fSpecCentroid = m_fCurrentVal;
+	m_fPitch = m_fCurrentVal;
 	
-	//std::cout << m_fSpecCentroid << std::endl;
-
 	// example sound source at origin
 	StudioTools::SoundSourceData soundSource1;
 	glm::vec4 viewerPosCameraSpace = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
@@ -122,8 +116,8 @@ void Studio::Update(glm::mat4 viewMat, MachineLearning& machineLearning, glm::ve
 
 	//run machine learning
 	MLAudioParameter paramData;
-	paramData.distributionLow = 50.0f;
-	paramData.distributionHigh = 200.0f;
+	paramData.distributionLow = 400.0f;
+	paramData.distributionHigh = 1000.0f;
 	paramData.sendVecPosition = 1;
 	std::vector<MLAudioParameter> paramVec;
 	paramVec.push_back(paramData);
@@ -140,7 +134,7 @@ void Studio::Draw(glm::mat4 projMat, glm::mat4 viewMat, glm::mat4 eyeMat, GLuint
 	m_pStTools->DrawStart(projMat, eyeMat, viewMat, shaderProg, translateVec);
 	
 	glUniform1f(m_gliSineControlValLoc, m_fSineControlVal);
-	glUniform1f(m_gliCentOutLoc, m_fSpecCentroid);
+	glUniform1f(m_gliPitchOutLoc, m_fPitch);
 	glUniform1f(m_gliFreqOutLoc, *m_vReturnVals[1]);
 
 	m_pStTools->DrawEnd();
@@ -184,14 +178,6 @@ void Studio::MLRegressionUpdate(MachineLearning& machineLearning, PBOInfo& pboIn
 		std::random_device rd;
 
 		//random audio params
-		
-		// example randomised parameter
-		// oscil frequency (kcps) 
-		//std::uniform_real_distribution<float> distFreq(50.0f, 200.0f);
-		//std::default_random_engine genFreq(rd());
-		//float valFreq = distFreq(genFreq);
-		//*m_vSendVals[1] = (MYFLT)valFreq;
-
 		for(int i = 0; i < params.size(); i++)
 		{
 
@@ -219,17 +205,9 @@ void Studio::MLRegressionUpdate(MachineLearning& machineLearning, PBOInfo& pboIn
 			outputData.push_back((double)*m_vSendVals[params[i].sendVecPosition]);
 		}
 
-#ifdef __APPLE__
-		//trainingData.recordSingleElement(inputData, outputData);	
 		trainingData.input = inputData;
 		trainingData.output = outputData;
 		trainingSet.push_back(trainingData);
-
-#elif _WIN32
-		trainingData.input = inputData;
-		trainingData.output = outputData;
-		trainingSet.push_back(trainingData);
-#endif
 
 		std::cout << "Recording Data" << std::endl;
 		inputData.clear();
@@ -239,155 +217,119 @@ void Studio::MLRegressionUpdate(MachineLearning& machineLearning, PBOInfo& pboIn
 
 	// train model
 	bool currentTrainState = m_bPrevTrainState;
-	if(machineLearning.bTrainModel != currentTrainState && machineLearning.bTrainModel == true && TRAINING_SET_SIZE > 0)
+	if(machineLearning.bTrainModel != currentTrainState && machineLearning.bTrainModel == true && trainingSet.size() > 0)
 	{
 
-#ifdef __APPLE__
-		//staticRegression.train(trainingData);
 		staticRegression.train(trainingSet);
-#elif _WIN32
-		staticRegression.train(trainingSet);
-#endif
 		m_bModelTrained = true;
 		std::cout << "Model Trained" << std::endl;
 	}	
-	else if(machineLearning.bTrainModel != currentTrainState && machineLearning.bTrainModel == true && TRAINING_SET_SIZE == 0)
+	else if(machineLearning.bTrainModel != currentTrainState && machineLearning.bTrainModel == true && trainingSet.size() == 0)
 	{
 		std::cout << "Can't train model. No training data." << std::endl;
 	}
 
 	m_bPrevTrainState = machineLearning.bTrainModel;
 
-#ifdef __APPLE__
-
-	// run/stop model
-	bool currentHaltState = m_bPrevHaltState;
-	if(machineLearning.bRunModel && !machineLearning.bHaltModel && m_bModelTrained)
+	//run and halt model
+	if(machineLearning.bDevMode)
 	{
-		std::vector<double> modelOut;
-		std::vector<double> modelIn;
-
-		for(int i = 0; i < pboInfo.pboSize; i+=pboInfo.pboSize * 0.01)
+		bool currentHaltState = m_bPrevHaltState;
+		if(machineLearning.bRunModel && !machineLearning.bHaltModel && m_bModelTrained)
 		{
-			modelIn.push_back((double)pboInfo.pboPtr[i]); 
-		}
-		
-		modelOut = staticRegression.run(modelIn);
-		
-		//if(modelOut[0] > 200.0f) modelOut[0] = 200.0f;
-		//if(modelOut[0] < 50.0f) modelOut[0] = 50.0f;
-		//*m_vSendVals[1] = (MYFLT)modelOut[0];
+			std::vector<double> modelOut;
+			std::vector<double> modelIn;
 
-		for(int i = 0; i < modelOut.size(); i++)
-		{
-			if(modelOut[i] > params[i].distributionHigh) modelOut[i] = params[i].distributionHigh;
-			if(modelOut[i] < params[i].distributionLow) modelOut[i] = params[i].distributionLow;
-			*m_vSendVals[params[i].sendVecPosition] = (MYFLT)modelOut[i];
-		}
-		
-		std::cout << "Model Running" << std::endl;
-		modelIn.clear();
-		modelOut.clear();
-	} 
-	else if(!machineLearning.bRunModel && machineLearning.bHaltModel != currentHaltState)
-	{
-
-		std::cout << "Model Stopped" << std::endl;
-	}
-	m_bPrevHaltState = machineLearning.bHaltModel;
-#elif _WIN32
-	if(machineLearning.bRunModel && m_bModelTrained)
-	{
-		std::vector<double> modelOut;
-		std::vector<double> modelIn;
-
-		for(int i = 0; i < pboInfo.pboSize; i+=pboInfo.pboSize * 0.01)
-		{
-			modelIn.push_back((double)pboInfo.pboPtr[i]); 
-		}
-
-		modelOut = staticRegression.run(modelIn);
-		
-		//if(modelOut[0] > 200.0f) modelOut[0] = 200.0f;
-		//if(modelOut[0] < 50.0f) modelOut[0] = 50.0f;
-		//*m_vSendVals[1] = (MYFLT)modelOut[0];
-
-		for(int i = 0; i < modelOut.size(); i++)
-		{
-			if(modelOut[i] > params[i].distributionHigh) modelOut[i] = params[i].distributionHigh;;
-			if(modelOut[i] < params[i].distributionLow) modelOut[i] = params[i].distributionLow;
-			*m_vSendVals[params[i].sendVecPosition] = (MYFLT)modelOut[i];
-		}
-
-		bool prevRunMsgState = m_bCurrentRunMsgState;
-		if(m_bRunMsg != prevRunMsgState && m_bRunMsg == true)
-		{
+			for(int i = 0; i < pboInfo.pboSize; i+=pboInfo.pboSize * 0.01)
+			{
+				modelIn.push_back((double)pboInfo.pboPtr[i]); 
+			}
+			
+			modelOut = staticRegression.run(modelIn);
+			
+			for(int i = 0; i < modelOut.size(); i++)
+			{
+				if(modelOut[i] > params[i].distributionHigh) modelOut[i] = params[i].distributionHigh;
+				if(modelOut[i] < params[i].distributionLow) modelOut[i] = params[i].distributionLow;
+				*m_vSendVals[params[i].sendVecPosition] = (MYFLT)modelOut[i];
+			}
+			
 			std::cout << "Model Running" << std::endl;
-			m_bRunMsg = !m_bRunMsg;
-		}
-		m_bCurrentRunMsgState = m_bRunMsg;
-
-		modelIn.clear();
-		modelOut.clear();
-		m_bMsg = true;
-	} 
-	else if(!machineLearning.bRunModel)
-	{
-		bool prevMsgState = m_bCurrentMsgState;
-		if(m_bMsg != prevMsgState && m_bMsg == true)
+			modelIn.clear();
+			modelOut.clear();
+		} 
+		else if(!machineLearning.bRunModel && machineLearning.bHaltModel != currentHaltState)
 		{
+
 			std::cout << "Model Stopped" << std::endl;
-			m_bMsg = !m_bMsg;
 		}
-		m_bCurrentMsgState = m_bMsg;
-		m_bRunMsg = true;
+		m_bPrevHaltState = machineLearning.bHaltModel;
+	} else 
+	{
+		if(machineLearning.bRunModel && m_bModelTrained)
+		{
+			std::vector<double> modelOut;
+			std::vector<double> modelIn;
+
+			for(int i = 0; i < pboInfo.pboSize; i+=pboInfo.pboSize * 0.01)
+			{
+				modelIn.push_back((double)pboInfo.pboPtr[i]); 
+			}
+
+			modelOut = staticRegression.run(modelIn);
+			
+			for(int i = 0; i < modelOut.size(); i++)
+			{
+				if(modelOut[i] > params[i].distributionHigh) modelOut[i] = params[i].distributionHigh;;
+				if(modelOut[i] < params[i].distributionLow) modelOut[i] = params[i].distributionLow;
+				*m_vSendVals[params[i].sendVecPosition] = (MYFLT)modelOut[i];
+			}
+
+			bool prevRunMsgState = m_bCurrentRunMsgState;
+			if(m_bRunMsg != prevRunMsgState && m_bRunMsg == true)
+			{
+				std::cout << "Model Running" << std::endl;
+				m_bRunMsg = !m_bRunMsg;
+			}
+			m_bCurrentRunMsgState = m_bRunMsg;
+
+			modelIn.clear();
+			modelOut.clear();
+			m_bMsg = true;
+		} 
+		else if(!machineLearning.bRunModel)
+		{
+			bool prevMsgState = m_bCurrentMsgState;
+			if(m_bMsg != prevMsgState && m_bMsg == true)
+			{
+				std::cout << "Model Stopped" << std::endl;
+				m_bMsg = !m_bMsg;
+			}
+			m_bCurrentMsgState = m_bMsg;
+			m_bRunMsg = true;
+		}
 	}
-#endif
 		
 	// save model
 	std::string mySavedModel = "mySavedModel.json";
 	bool currentSaveState = m_bPrevSaveState;
-#ifdef __APPLE__
-	if(machineLearning.bSaveTrainingData!= currentSaveState && machineLearning.bSaveTrainingData == true)
-	{
-		staticRegression.writeJSON(mySavedModel);	
-		//trainingData.writeJSON(mySavedModel);	
-		std::cout << "Saving Training Data" << std::endl;
-	}
-	m_bPrevSaveState = machineLearning.bSaveTrainingData;
-#elif _WIN32
 	if(machineLearning.bSaveModel!= currentSaveState && machineLearning.bSaveModel == true)
 	{
 		staticRegression.writeJSON(mySavedModel);
 		std::cout << "Saving Training Data" << std::endl;
 	}
 	m_bPrevSaveState = machineLearning.bSaveModel;
-#endif
 
 	// load model
 	bool currentLoadState = m_bPrevLoadState;
-#ifdef __APPLE__
-	if(machineLearning.bLoadTrainingData != currentLoadState && machineLearning.bLoadTrainingData == true)
-	{
-		staticRegression.reset();
-		staticRegression.readJSON(mySavedModel);
-		m_bModelTrained = true;
-		//trainingData.readJSON(mySavedModel);
-		//staticRegression.train(trainingData);
-
-		std::cout << "Loading Data and Training Model" << std::endl;
-	}
-	m_bPrevLoadState = machineLearning.bLoadTrainingData;
-#elif _WIN32
 	if(machineLearning.bLoadModel != currentLoadState && machineLearning.bLoadModel == true)
 	{
+		staticRegression.reset();
 		staticRegression.readJSON(mySavedModel);	
 		m_bModelTrained = true;
 		std::cout << "Loading Data and Training Model" << std::endl;
 	}
 	m_bPrevLoadState = machineLearning.bLoadModel;
-#endif
-
 }
 //*********************************************************************************************
 

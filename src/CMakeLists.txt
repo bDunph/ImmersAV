@@ -31,11 +31,6 @@ if(APPLE)
 		message(FATAL_ERROR "OpenVR not found")
 	endif()
 
-	#find_library(RAPIDMIX RAPID-MIX_API)
-	#if(NOT RAPIDMIX)
-	#	message(FATAL_ERROR "Rapid-Mix not found")
-	#endif()
-
 elseif(WIN32)
 
 	find_library(GLEW_WIN glew32 "${PROJECT_SOURCE_DIR}/../lib")
@@ -99,22 +94,12 @@ include_directories(
 		"${PROJECT_SOURCE_DIR}/VR"
 		"${PROJECT_SOURCE_DIR}/AvrApp"
 		"${PROJECT_SOURCE_DIR}/ValveTools"
-		#"${PROJECT_SOURCE_DIR}/Algorithms"
-		#"${PROJECT_SOURCE_DIR}/Audio"
 	)
 elseif(APPLE)
 include_directories(
 
 		"/usr/local/include/"
 		"/Library/Frameworks/CsoundLib64.framework/Headers/"
-		#"/Users/bryandunphy/SoftwareAPIs/RAPID-MIX_API/dependencies/RapidLib/src"
-		#"/Users/bryandunphy/SoftwareAPIs/RAPID-MIX_API/dependencies/xmm/src"
-		#"/Users/bryandunphy/SoftwareAPIs/RAPID-MIX_API/dependencies/GVF"
-		#"/Users/bryandunphy/SoftwareAPIs/RAPID-MIX_API/dependencies/third_party/json"
-		#"/Users/bryandunphy/SoftwareAPIs/RAPID-MIX_API/dependencies/Maximilian"
-		#"/Users/bryandunphy/SoftwareAPIs/RAPID-MIX_API/dependencies/Maximilian/libs"
-		#"/Users/bryandunphy/SoftwareAPIs/RAPID-MIX_API/dependencies/pipo/sdk/src"
-		#"/Users/bryandunphy/SoftwareAPIs/RAPID-MIX_API/dependencies/pipo/sdk/src/host"
 		"${PROJECT_BINARY_DIR}"
 		"${PROJECT_SOURCE_DIR}"
 		"${PROJECT_SOURCE_DIR}/../include"
@@ -122,8 +107,6 @@ include_directories(
 		"${PROJECT_SOURCE_DIR}/Visual"
 		"${PROJECT_SOURCE_DIR}/VR"
 		"${PROJECT_SOURCE_DIR}/AvrApp"
-		#"${PROJECT_SOURCE_DIR}/Algorithms"
-		#"${PROJECT_SOURCE_DIR}/Audio"
 	)
 
 endif()
@@ -137,12 +120,7 @@ add_subdirectory(JSON)
 add_subdirectory(LibSVM)
 if(WIN32)
 add_subdirectory(ValveTools)
-#add_subdirectory(RapidLib)
-#add_subdirectory(JSON)
-#add_subdirectory(LibSVM)
 endif()
-#add_subdirectory(Audio)
-#add_subdirectory(Algorithms)
 
 if(APPLE)
 	add_executable(avr main.cpp CsoundSession.cpp CsoundSession.hpp lodepng.cpp lodepng.h)
