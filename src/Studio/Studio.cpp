@@ -193,13 +193,13 @@ void Studio::MLRegressionUpdate(MachineLearning& machineLearning, PBOInfo& pboIn
 	// record training examples
 	if(machineLearning.bRecord)
 	{
-		//example shader values provide input to neural network
+		//shader values provide input to neural network
 		for(int i = 0; i < pboInfo.pboSize; i+=pboInfo.pboSize * 0.01)
 		{
 			inputData.push_back((double)pboInfo.pboPtr[i]);
 		}
 
-		//neural network outputs to audio parameter
+		//neural network outputs to audio engine 
 		for(int i = 0; i < params.size(); i++)
 		{
 			outputData.push_back((double)*m_vSendVals[params[i].sendVecPosition]);

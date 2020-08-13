@@ -263,11 +263,11 @@ float DE(vec3 p)
 Here `sineControlVal` is used to increase and decrease `p.y` which is the height of the sphere. The point `p` is then send to `sphereSDF()` which estimates the distance to the spere.
 
 ## Cyclical Mapping Example
-This example demonstrates a method of mapping data in a cyclical way between the audio and visuals using a neural network based regression algorithm.
+This example demonstrates a method of mapping data in a cyclical way between the audio and visuals using a neural network based regression algorithm. Pixel data from the fragment shader is used as input into the neural network. Ocsillator frequency values are then output and sent to the audio engine. An FFT analysis is used to determine the pitch of the resulting audio signal. This pitch value is sent to the shader to inversely affect the size of the sphere. The pixel data changes accordingly and is sent back to the neural network beginning the cycle again.
 
 ***link to video of example on YouTube***
 
-The frequency of the audio signal is set up to be randomised. This allows for a quick and easy way to match the audio to a particular visual state. The random parameter is defined in `Studio::Update()` using the `MLAudioParameter` struct.
+The frequency of the audio signal is set up to be randomised. The random parameter is defined in `Studio::Update()` using the `MLAudioParameter` struct.
 
 ```
 //run machine learning
@@ -361,5 +361,48 @@ float DE(vec3 p)
 }
 ```
 
-The value `pitchOut` is inversely related to the radius of the sphere which means the higher the pitch value the smaller the sphere. Conversely, the lower the pitch value, the larger the sphere. The change in size caused by the pitch analysis means that the pixel information also changes.  
+The value `pitchOut` is inversely related to the radius of the sphere which means the higher the pitch value the smaller the sphere. Conversely, the lower the pitch value, the larger the sphere. The fragment shader sends pixel colour data back to `Studio()` asynchronously using a pixel buffer object (PBO). 
+
+```
+layout(location = 0) out vec4 fragColor; 
+layout(location = 1) out vec4 dataOut;
+
+// Output to screen
+fragColor = vec4(colour,1.0);
+
+// Output to PBO
+dataOut = fragColor;
+```   
+
+There are two outputs of type `vec4` specified in the fragment shader. The vector `fragColor` at `location = 0` is the usual output of the fragment colour to the screen. The other output, `dataOut`, writes the data to a PBO. In this example, the colour vector of the fragment is passed to it. The data in the PBO is then read back into memory on the CPU and is accessible from `Studio::Update()` through the struct `PBOInfo`. This struct is then passed to `MLRegressionUpdate()` where the data can be used as input to the neural network.
+
+```
+if(machineLearning.bRecord)
+{
+	//shader values provide input to neural network
+	for(int i = 0; i < pboInfo.pboSize; i+=pboInfo.pboSize * 0.01)
+	{
+		inputData.push_back((double)pboInfo.pboPtr[i]);
+	}
+
+	//neural network outputs to audio engine 
+	for(int i = 0; i < params.size(); i++)
+	{
+		outputData.push_back((double)*m_vSendVals[params[i].sendVecPosition]);
+	}
+
+	trainingData.input = inputData;
+	trainingData.output = outputData;
+	trainingSet.push_back(trainingData);
+
+	std::cout << "Recording Data" << std::endl;
+	inputData.clear();
+	outputData.clear();
+}
+machineLearning.bRecord = false;
+```
+
+When a desired sound and visual pairing is found, they can then be recorded (`R` in `dev` mode) to create a training example. This process can be repeated as many times as needed to create a *training set*. When the record button is pressed, a `for loop` steps through the buffer in `pboInfo.pboSize * 0.01` increments. This is to ensure the number of input values is reduced to cut down on training time. The values are pushed back onto the vector `inputData`. The format of the shader data is `unsigned char`. Therefore each value will be between 0 and 255. In a real world situation these values should be normalised before they are used as training data. The next `for loop` iterates through the `params` vector and retrieves the `sendVecPosition` of each one. Here there is only one parameter. This is then used as an index to the `m_vSendVals` vector. The value at this position in the vector is pushed back into the `outputData` vector. The input and output vectors are then added to the `trainingData` struct and pushed back into the `trainingSet` vector. Once the training set is complete, the neural network is trained (`T` in `dev` mode). Once training is complete, the model can be activated by pressing the run button (`G` in `dev` mode) or deactivated by pressing the halt button (`H` in `dev` mode). The model can then be saved (`K` in `dev` mode) and loaded (`L` in `dev` mode) for easy future access. When not in `dev` mode the controls can be assigned to the controller buttons through the desktop interface.
+
+
 
