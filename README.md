@@ -129,6 +129,91 @@ ImmersAV is an open source toolkit for immersive audiovisual composition. It was
     - Without VR (for development):
         - ./avr audioReactive_example -dev
     
+## Audio Thread and CSD Setup
+
+The Csound API is used to communicate between the main application and the Csound instance. The `StudioTools()` class contains functions that create the Csound instance and set up the sound sources used in the scene.   
+
+```
+m_pStTools = new StudioTools();
+
+//audio setup
+CsoundSession* csSession = m_pStTools->PCsoundSetup(csd);
+	
+if(!m_pStTools->BSoundSourceSetup(csSession, NUM_SOUND_SOURCES))
+{
+	std::cout << "Studio::setup sound sources not set up" << std::endl;
+	return false;
+}
+```
+
+The pointer `m_pStTools` is used to access functions from the `StudioTools()` class. The function `PCsoundSetup()` initialises the Csound instance and creates a new thread for it to run on. This function returns a pointer to Csound, `csSession`. The function `BSoundSourcesSetup()` passes the `csSession` pointer and the number of required sound sources to be placed in the virtual scene. These sound sources can then be placed and moved around in the `Studio::Update()` function.
+
+```
+// example sound source at origin
+StudioTools::SoundSourceData soundSource1;
+glm::vec4 sourcePosWorldSpace = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
+soundSource1.position = sourcePosWorldSpace;
+std::vector<StudioTools::SoundSourceData> soundSources;
+soundSources.push_back(soundSource1);
+
+m_pStTools->SoundSourceUpdate(soundSources, viewMat);
+```
+
+The struct `StudioTools::SoundSourceData` contains all the data needed to place the sound source in the space. The world space coordinates of the sound source are assigned to `soundSource1.position`. Here it is simply placed at the origin. The sound source is then added to a vector, `soundSources`, that contains all the sound sources. Here there is only one. The sound source can be moved and rotated through the space by updating `soundSource1.position`. The function `SoundSourceUpdate()` sends the position, elevation and azimuth values to the `csd` file. 
+
+```
+;**************************************************************************************
+instr 2 ; Hrtf Instrument
+;**************************************************************************************
+kPortTime linseg 0.0, 0.001, 0.05 
+
+iNumAudioSources init 1
+
+kAzimuths[] 	init 	iNumAudioSources
+kElevations[] 	init	iNumAudioSources
+kDistances[]	init	iNumAudioSources
+
+kCount = 0
+
+channelLoop:
+
+	S_azimuth sprintfk "azimuth%d", kCount
+	kAzimuths[kCount] 	chnget S_azimuth
+
+	S_elevation sprintfk "elevation%d", kCount 
+	kElevations[kCount] 	chnget S_elevation 
+
+	S_distance sprintfk "distance%d", kCount
+	kDistances[kCount]	chnget S_distance 
+
+	loop_lt	kCount, 1, iNumAudioSources, channelLoop
+	
+aInstSigs[]	init	iNumAudioSources
+aInstSigs[0] = gaOut
+
+aLeftSigs[]	init	iNumAudioSources
+aRightSigs[]	init	iNumAudioSources
+kDistVals[]	init	iNumAudioSources
+
+kDistVals[0] portk kDistances[0], kPortTime	;to filter out audio artifacts due to the distance changing too quickly
+	
+aLeftSigs[0], aRightSigs[0]  hrtfmove2	aInstSigs[0], kAzimuths[0], kElevations[0], "hrtf-48000-left.dat", "hrtf-48000-right.dat", 4, 9.0, 48000
+aLeftSigs[0] = aLeftSigs[0] / (kDistVals[0] + 0.00001)
+aRightSigs[0] = aRightSigs[0] / (kDistVals[0] + 0.00001)
+
+aL init 0
+aR init 0
+
+aL = aLeftSigs[0]
+aR = aRightSigs[0]
+
+outs	aL,	aR
+endin
+
+``` 
+
+*******HEREEEEEEEEEE***************
+
 ## Example Walkthroughs
 This section describes the construction and execution of the examples. All of the examples are found in *ImmersiveAV/examples/*.
 

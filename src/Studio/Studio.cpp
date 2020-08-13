@@ -102,8 +102,8 @@ void Studio::Update(glm::mat4 viewMat, MachineLearning& machineLearning, glm::ve
 	
 	// example sound source at origin
 	StudioTools::SoundSourceData soundSource1;
-	glm::vec4 viewerPosCameraSpace = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
-	soundSource1.position = viewerPosCameraSpace;
+	glm::vec4 sourcePosWorldSpace = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
+	soundSource1.position = sourcePosWorldSpace;
 	std::vector<StudioTools::SoundSourceData> soundSources;
 	soundSources.push_back(soundSource1);
 
