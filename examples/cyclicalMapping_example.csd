@@ -37,9 +37,9 @@ iWinType = 1
 fSig	pvsanal	aSig, iFftSize, iOverlap, iWinSize, iWinType
 
 kThresh = 0.1
-kFreq, kAmp	pvspitch fSig, kThresh
+kPitch, kAmp	pvspitch fSig, kThresh
 
-	chnset	kFreq, "pitchOut"
+	chnset	kPitch, "pitchOut"
 
 endin
 

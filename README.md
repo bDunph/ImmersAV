@@ -272,15 +272,15 @@ The frequency of the audio signal is set up to be randomised. This allows for a 
 ```
 //run machine learning
 MLAudioParameter paramData;
-paramData.distributionLow = 50.0f;
-paramData.distributionHigh = 200.0f;
+paramData.distributionLow = 400.0f;
+paramData.distributionHigh = 1000.0f;
 paramData.sendVecPosition = 1;
 std::vector<MLAudioParameter> paramVec;
 paramVec.push_back(paramData);
 MLRegressionUpdate(machineLearning, pboInfo, paramVec);
 ```
 
-The value will always be between `50.0f` and `200.0f`. It is assigned to element number 1 in the vector `m_vSendVals`. This is declared in `Studio::Setup()` where the channel is named `"randomVal"`. This allows Csound to receive the random value on this channel. The object `paramData` is then pushed back onto the vector `paramVec` and passed to `Studio::MLRegressionUpdate()`. When the space bar is pressed, this random value is calculated and sent to Csound.
+The value will always be between `400.0f` and `1000.0f`. It is assigned to element number 1 in the vector `m_vSendVals`. This is declared in `Studio::Setup()` where the channel is named `"randomVal"`. This allows Csound to receive the random value on this channel. The object `paramData` is then pushed back onto the vector `paramVec` and passed to `Studio::MLRegressionUpdate()`. When the randomise button is pressed (space bar in dev mode), this random value is calculated and sent to Csound.
 
 ```
 for(int i = 0; i < params.size(); i++)
@@ -295,19 +295,71 @@ for(int i = 0; i < params.size(); i++)
 This `for` loop iterates through the vector `std::vector<MLAudioParameter> params`. For each parameter it calculates the `float val` within the given range. It then casts the value to `MYFLT` and assigns it to the relevant position in the vector `m_vSendVals`. This assigns the value to the previously declared channel which is received in the file `cyclicalMapping_example.csd`.
 
 ```
-******************************************************
+;**************************************************************************************
 instr 1 ; Example Instrument
-******************************************************
-kSineControlVal chnget  "sineControlVal"
-kRandomParam    chnget  "randomVal"
+;**************************************************************************************
+kRandomParam chnget "randomVal"
 
-aSig    oscil   0.7 * kSineControlVal, kRandomParam
+aSig oscil .7, kRandomParam 
+
 gaOut = aSig
 
-kRms    rms     gaOut
-        chnset  kRms, "rmsOut"
+iFftSize = 1024
+iOverlap = iFftSize / 4 
+iWinSize = iFftSize 
+iWinType = 1
+
+fSig	pvsanal	aSig, iFftSize, iOverlap, iWinSize, iWinType
+
+kThresh = 0.1
+kPitch, kAmp	pvspitch fSig, kThresh
+
+	chnset	kPitch, "pitchOut"
 
 endin
 ```
 
-Here the value recieved on the `"randomVal"` channel is stored in `kRandomParam`. This is then used as the frequency value for `oscil`. Here you can see the value received on the `"sineControlVal"` channel is used to make the volume of the tone increase and decrease. 
+Here the value recieved on the `"randomVal"` channel is stored in `kRandomParam`. This is then used as the frequency value for `oscil`. The signal `aSig` is sent to the output. It is also passed to `pvsanal` where an FFT analysis converts the time domain signal to the frequency domain. This signal, `fSig` is then passed to `pvspitch` which calculates its pitch and amplitude. The pitch value, `kPitch` is then sent back to `Studio()` on the channel `"pitchOut"`, which was defined in `Studio::Setup()`. This data stream is then processed in `Studio::Update()`.
+
+```
+// spectral pitch data processing
+m_fCurrentFrame = glfwGetTime();
+m_fDeltaTime = m_fCurrentFrame - m_fLastFrame;	
+m_fDeltaTime *= 1000.0f;
+if(*m_vReturnVals[0] > 0) m_fTargetVal = *m_vReturnVals[0];	
+if(m_fTargetVal > m_fCurrentVal)
+{
+	m_fCurrentVal += m_fDeltaTime;
+} else if(m_fTargetVal <= m_fCurrentVal)
+{
+	m_fCurrentVal -= m_fDeltaTime;
+} else if(m_fTargetVal == m_fCurrentVal)
+{
+	m_fCurrentVal = m_fTargetVal;
+}
+if(m_fCurrentVal < 0.0f) m_fCurrentVal = 0.0f;
+m_fPitch = m_fCurrentVal;
+```
+
+Here element 0 of `m_vReturnVals[]` is dereferenced and assigned to the `float m_fTargetVal`. The values in the data stream can vary quickly. To create smooth visual movement, it is necessary to move gradually from one value to the next rather than instantly jump between values. The `m_fTargetVal` value is compared to the value represented by `m_fCurrentVal`. If it is larger, `m_fCurrentVal` is increased gradually by `m_fDeltaTime` increments each frame. These increments are calculated by taking the timestamp of the current frame and subtracting it from the timestamp of the next frame. This gives a constant value from frame to frame. If `m_fTargetVal` is less than `m_fCurrentVal`, it is decreased by `m_fDeltaTime` increments each frame. If the two values are equal, then the value of `m_fTargetVal` is assigned to `m_fCurrentVal`. Finally, `m_fCurrentVal` is checked to make sure it is greater than zero before being assigned to `m_fPitch`. This `float` is passed to the shader through the uniform `"pitchOut"`.
+
+```
+ m_pStTools->DrawStart(projMat, eyeMat, viewMat, shaderProg, translateVec);
+glUniform1f(m_gliPitchOutLoc, m_fPitch);
+m_pStTools->DrawEnd();
+```
+
+In a similar way to the audio reactive example above, the uniform value is used to affect the size of the sphere.
+
+```
+float DE(vec3 p)
+{
+	p.y -= 1.0;
+	float rad = 1.0 * (1.0 / (pitchOut * 0.01));
+	float sphereDist = sphereSDF(p, rad);
+	return sphereDist;
+}
+```
+
+The value `pitchOut` is inversely related to the radius of the sphere which means the higher the pitch value the smaller the sphere. Conversely, the lower the pitch value, the larger the sphere. The change in size caused by the pitch analysis means that the pixel information also changes.  
+
