@@ -297,7 +297,7 @@ The graphics are rendered using OpenGL and GLSL shaders. The shaders are set up 
 ### Shader Setup
 Just as all the audio is generated in the `csd` file, the shaders are set up to encourage the generation of all the visual material in the fragment shader. In `Studio::Setup()` the OpenGL code necessary to set up a raymarching quad is called using:
 
-``
+```
 //setup quad to use for raymarching
 m_pStTools->RaymarchQuadSetup(shaderProg);
 ```
