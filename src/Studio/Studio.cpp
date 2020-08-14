@@ -54,7 +54,6 @@ bool Studio::Setup(std::string csd, GLuint shaderProg)
 
 	m_pStTools->BCsoundReturn(csSession, returnNames, m_vReturnVals);	
 	
-	
 	//setup quad to use for raymarching
 	m_pStTools->RaymarchQuadSetup(shaderProg);
 	

@@ -129,9 +129,23 @@ ImmersAV is an open source toolkit for immersive audiovisual composition. It was
     - Without VR (for development):
         - ./avr audioReactive_example -dev
     
-## Audio Thread and CSD Setup
+## Workflow Overview
+The ImmersAV toolkit is intended to provide three main contexts for creating and mapping material.
 
-The Csound API is used to communicate between the main application and the Csound instance. The `StudioTools()` class contains functions that create the Csound instance and set up the sound sources used in the scene.   
+	- Csound `csd` file.
+	- GLSL fragment shader.
+	- `Studio()` class.
+
+All the audio is generated in the `csd` file. All the visuals (with the exception of default virtual controllers) are generated in the fragment shader. The `Studio()` conceptually sits between the audio and visual areas. Any data passes through here and is mapped to the audio and visuals. Data can also be generated here.
+
+## Controller Sensor Data 
+When in VR, the controller position and orientation can be accessed through `Studio::Update()`. The vectors `glm::vec3 controllerWorldPos_0` and `glm::vec3 controllerWorldPos_1` contain the `x`, `y` and `z` cartesian coordinates of the controller. The quaternions `glm::quat controllerQuat_0` and `glm::quat controllerQuat_1` contain the orientations of the controllers.
+
+## Audio Engine
+
+### Audio Thread and CSD Setup
+
+The Csound API is used to communicate between the main application and the Csound instance. For an introduction to the Csound API see http://floss.booktype.pro/csound/a-the-csound-api/. Here, the Csound API is wrapped in the `StudioTools()` class, which contains functions that create the Csound instance and set up the sound sources used in the scene.   
 
 ```
 m_pStTools = new StudioTools();
@@ -146,7 +160,11 @@ if(!m_pStTools->BSoundSourceSetup(csSession, NUM_SOUND_SOURCES))
 }
 ```
 
-The pointer `m_pStTools` is used to access functions from the `StudioTools()` class. The function `PCsoundSetup()` initialises the Csound instance and creates a new thread for it to run on. This function returns a pointer to Csound, `csSession`. The function `BSoundSourcesSetup()` passes the `csSession` pointer and the number of required sound sources to be placed in the virtual scene. These sound sources can then be placed and moved around in the `Studio::Update()` function.
+The pointer `m_pStTools` is used to access functions from the `StudioTools()` class. The function `PCsoundSetup()` initialises the Csound instance and creates a new thread for it to run on. This function returns a pointer to Csound, `csSession`. 
+
+### Virtual Sound Source Placement 
+
+The function `BSoundSourcesSetup()` passes the `csSession` pointer and the number of required sound sources to be placed in the virtual scene. These sound sources can then be placed and moved around in the `Studio::Update()` function.
 
 ```
 // example sound source at origin
@@ -163,7 +181,7 @@ The struct `StudioTools::SoundSourceData` contains all the data needed to place 
 
 ```
 ;**************************************************************************************
-instr 2 ; Hrtf Instrument
+instr 2 ; HRTF Instrument
 ;**************************************************************************************
 kPortTime linseg 0.0, 0.001, 0.05 
 
@@ -212,7 +230,217 @@ endin
 
 ``` 
 
-*******HEREEEEEEEEEE***************
+The `HRTF Instrument` receives position, elevation and azimuth data from `Studio::Update()` every frame. The number of audio sources is initialised at the start of the instrument and assigned to the variable `iNumAudioSources`. This number is used to determine the size of the arrays `kAzimuths[]`, `kElevations[]` and `kDistances[]`. These arrays are then populated in `channelLoop` using `chnget` to retrieve the data from named channels. The audio signals are then stored in the array `aInstSigs[]`. Here there is just one signal `gaOut`. Arrays for the left and right audio channels and distance values are then initialised. The distance values need to be smoothed out using `portk` as rapidly changing values will introduce discontinuities into the audio signal. The opcode `hrtfmove2` is used to apply HRTF filters to the audio source. It receives the audio signal, azimuth and elevation values as input and uses the data files `"hrtf-48000-left.dat"` and `"hrtf-48000-right.dat"` to generate dynamic 3D binaural audio signals. The sample rate is specified as 48kHz so the overall Csound sample rate, `sr`, has to match this. The left and right signals are then divided by the distance values contained in `kDistVals[]`. The stereo signal is then output to the main output channel. This instrument needs to run continuously. This is achieved in the score section like so:
+
+```
+<CsScore>
+
+f0	86400 ;keep csound running for a day
+
+i1 1 -1 
+
+i2 1 -1
+
+e
+</CsScore>
+
+``` 
+Here an `f0` statement is used to keep Csound running. Then the `i` statements specify a note length of -1 which means the instrument is always on.
+
+### Sends and Returns
+Data can be sent to and returned from Csound using the functions `StudioTools::BCsoundSend()` and `StudioTools::BCsoundReturn()`. 
+
+```
+//setup sends to csound
+std::vector<const char*> sendNames;
+
+sendNames.push_back("sineControlVal");
+m_vSendVals.push_back(m_cspSineControlVal);	
+
+sendNames.push_back("randomVal");
+m_vSendVals.push_back(m_cspRandVal);
+
+m_pStTools->BCsoundSend(csSession, sendNames, m_vSendVals);
+
+//setup returns from csound 
+std::vector<const char*> returnNames;
+
+returnNames.push_back("pitchOut");
+m_vReturnVals.push_back(m_pPitchOut);
+
+returnNames.push_back("freqOut");
+m_vReturnVals.push_back(m_pFreqOut);
+
+m_pStTools->BCsoundReturn(csSession, returnNames, m_vReturnVals);	
+```
+
+A vector of type `const char*` is used to store the channel names. For send channels this vector is `sendNames` and for return channels the vector is called `returnNames`. These names must match the string arguments given to `chnget` and `chnset` in the `csd` file. The data values are stored in seperate member vectors named `m_vSendVals` and `m_vReturnVals` respectively. These are declared in *Studio.hpp*. Csound pointers of type `MYFLT*` are sent to Csound. The values can be assigned to specific elements in the send vector within `Studio::Update()`.
+
+```
+//example control signal - sine function
+//sent to shader and csound
+m_fSineControlVal = sin(glfwGetTime() * 0.33f);
+*m_vSendVals[0] = (MYFLT)m_fSineControlVal;
+```  
+
+For example, the `float m_fSineControlVal` is cast to `MYFLT` and assigned to element 0 of `m_vSendVals`. This aligns with the setup code above in that the Csound pointer `m_cspSineControlVal` is the first value to be added to the vector. It follows then that the value intended for `m_cspRandVal` is referenced using `*m_vSendVals[1]`. The return values are accessed by referencing the specific element of the `m_vReturnVals` vector. 
+
+```
+if(*m_vReturnVals[0] > 0) m_fTargetVal = *m_vReturnVals[0];	
+``` 
+
+For example, element 0 is dereferenced here and assigned to the `float m_fTargetVal`. Once the channel names and data vectors are set up above, they are passed along with the `csSession` pointer to `StudioTools::BCsoundSend()` and `StudioTools::BCsoundReturn()`.
+
+##Graphics Renderer
+The graphics are rendered using OpenGL and GLSL shaders. The shaders are set up specifically to allow for raymarching combined with raster graphics. This is to account for the rendering of virtual controllers within VR and to ensure they interact as expected with the raymarched graphics.
+
+###Shader Setup
+Just as all the audio is generated in the `csd` file, the shaders are set up to encourage the generation of all the visual material in the fragment shader. In `Studio::Setup()` the OpenGL code necessary to set up a raymarching quad is called using:
+
+``
+//setup quad to use for raymarching
+m_pStTools->RaymarchQuadSetup(shaderProg);
+```
+
+This sets up the quad vertices to be accessed in the vertex shader. The standard set up of the vertex shader is as follows:
+
+```
+#version 410 
+
+layout(location = 0) in vec3 position;
+ 
+uniform mat4 InvMVEP;
+
+out vec4 nearPos;
+out vec4 farPos;
+
+void main() 
+{
+	//********* code from https://encreative.blogspot.com/2019/05/computing-ray-origin-and-direction-from.html *******//
+
+	gl_Position = vec4(position, 1.0);
+
+	//get 2D projection of this vertex in normalised device coordinates
+	vec2 ndcPos = gl_Position.xy / gl_Position.w;
+	
+	//compute rays start and end points in the unit cube defined by ndc's
+	nearPos = InvMVEP * vec4(ndcPos, -1.0, 1.0);
+	farPos = InvMVEP * vec4(ndcPos, 1.0, 1.0);
+}
+```
+
+Here the vertex position is converted to normalised device coordinates in order to use the unit cube to calculate the beginning and end positions of the ray. These are then projected back into world space using the inverse model view eye projection matrix. The use of the term 'eye' here is due to the extra matrix used in OpenVR to calculate the offset angle between the eyes in the head mounted display (HMD). The near and far positions of the ray are then output to the fragment shader where the direction of the ray can be calculated. The vertex shader as it appears here does not need to be modified and can be re-used from project to project because the majority of the visual material is generated in the fragment shader. The default components of the fragment shader are as follows:
+
+```
+#version 410  
+uniform mat4 MVEPMat;
+
+in vec4 nearPos;
+in vec4 farPos;
+
+layout(location = 0) out vec4 fragColour; 
+layout(location = 1) out vec4 dataOut;
+
+void main()
+{
+	//************* ray setup code from 
+	//https://encreative.blogspot.com/2019/05/computing-ray-origin-and-direction-from.html*/
+	
+	//set up the ray
+	vec3 rayOrigin = nearPos.xyz / nearPos.w;
+	vec3 rayEnd = farPos.xyz / farPos.w;
+	vec3 rayDir = rayEnd - rayOrigin;
+	rayDir = normalize(rayDir);	
+	
+	// raymarch the point
+	float dist = march(rayOrigin, rayDir);
+	vec3 pos = rayOrigin + dist * rayDir;
+
+	// calculate colour and lighting here
+	vec3 colour;
+
+	// gamma correction
+	colour = pow(colour, vec3(1.0/2.2));
+	
+	// Output to screen
+	fragColour = vec4(colour,1.0);
+
+	// Output to PBO
+	dataOut = fragColour;
+
+//-----------------------------------------------------------------------------
+// To calculate depth for use with rasterized material e.g. VR controllers
+//-----------------------------------------------------------------------------
+// code adapted from Michael Hvidtfeldt Christensen and James Susinno's blogs
+// http://jimbo00000.github.io/opengl/portable/programming/vr/perspective/matrixmath/2016/02/15/raymarching-and-rasterization.html
+// http://blog.hvidtfeldts.net/index.php/2014/01/combining-ray-tracing-and-polygons/
+
+	vec4 pClipSpace =  MVEPMat * vec4(pos, 1.0);
+	vec3 pNdc = vec3(pClipSpace.x / pClipSpace.w, pClipSpace.y / pClipSpace.w, pClipSpace.z / pClipSpace.w);
+	float ndcDepth = pNdc.z;
+	
+	float d = ((gl_DepthRange.diff * ndcDepth) + gl_DepthRange.near + gl_DepthRange.far) / 2.0; 
+	gl_FragDepth = d;
+}
+``` 
+
+The model view eye projection matrix is passed in as a uniform through the `StudioTools::RaymarchQuadSetup()` function. The vectors `nearPos` and `farPos` are passed in from the vertex shader. There are two output specified. The output at `location = 0`, `fragColour`, sends the colour of the fragment to the default framebuffer which is then drawn to the screen. The output at `location = 1`, `dataOut`, writes the data contained in it to a pixel buffer object which is then read back asynchronously to the CPU. This allows data to be sent from the fragment shader to be `Studio::Update()` where it can be manipulated further. In `main()` the direction and the origin of the ray are calculated before being used in a `march()` function. This function is not shown here as there are many ways to do this. The 'hit' position is then calculated and used to determine the colour of the material. Gamma correction is applied before the colour vector is sent to the output. Although `fragColour` is also sent to `dataOut`, this does not need to be the case as any value can be output here. Finally, at the bottom of the shader, `pos` is transformed to clip space and then to normalised device coordinates. The `z` component is then used to calculate the depth `d` which is finally assigned to `gl_FragDepth`. For a discussion on how these calculations are derived see Michael Hvidtfeldt Christensen and James Sussino's blogs linked above the code section. This bloack of code allows rasterised graphics to interact with raymarched graphics and is useful when rendering the default controllers in VR. Once the shaders are initialised, graphics are drawn to the screen in `Studio::Draw()`.
+
+```
+m_pStTools->DrawStart(projMat, eyeMat, viewMat, shaderProg, translateVec);
+	
+glUniform1f(m_gliSineControlValLoc, m_fSineControlVal);
+glUniform1f(m_gliPitchOutLoc, m_fPitch);
+glUniform1f(m_gliFreqOutLoc, *m_vReturnVals[1]);
+
+m_pStTools->DrawEnd();
+``` 
+
+The function `DrawStart()` is accessed through the `m_pStTools` pointer. The projection matrix, eye matrix, view matrix, shader program handle and camera translation vector are passed to the function.Data can be passed to the shader here using `glUniform1f` or any of its variations. The uniform location handles are declared in `Studio::Setup()`. Finally, `DrawEnd()` is called which concludes the draw loop. 
+
+##Mapping Overview
+As mentioned above, data can be mapped throughout the toolkit. Here is a brief overview of the functions used to map data.
+
+From `Studio()` to Csound:
+	- `StudioTools::BCsoundSend()` to `chnget`.
+From Csound to `Studio()`:
+	- `chnset` to `StudioTools::BCsoundReturn()`.
+From `Studio()` to fragment shader:
+	- `glUniform1f` (and related OpenGL calls https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glUniform.xhtml) to `uniform ...`.
+From the fragment shader to `Studio()`:
+	- `out vec4 dataOut' to `PBOInfo& pboInfo.pboPtr`. 
+
+##Machine Learning Walkthrough
+The RapidLib machine learning library is an integral part of the toolkit. Access to a neural network regression algorithm is provided through the functions `Studio::MLRegressionSetup()` and `Studio::MLRegressionUpdate()`. These functions will eventually be moved to `StudioTools()` in order to keep `Studio()` as minimal as possible. `Studio::MLRegressionSetup()` is called in `Studio::Setup()` and simply initialises various `bool`s and variables that are used in `Studio::MLRegressionUpdate()`. `Studio::MLRegressionUpdate()` is called in `Studio::Update()` and is passed the `machineLearning` struct which provides access to the machine learning controls. It is also passed the `pboInfo` struct which provides access to data returned from the fragment shader. Finally, it is passed `std::vector<MLAudioParameter> paramVec` which provdes access to discrete parameters that are to be processed by the neural network. `Studio::MLRegressionUpdate()` is divided into several blocks of functionality.
+
+	- Randomisation of parameters.
+	- Recording of training examples.
+	- Neural network training.
+	- Running and halting of trained regression model.
+	- Save trained model.
+	- Load saved model.
+
+The interactive machine learning (IML) workflow is as follows:
+
+	- Choose the input and output parameters for the neural network. 
+	- Create input/output examples to train the neural network. The approach here is to randomise the parameters. There are many other approaches possible.
+	- Record the training examples to create a training set.
+	- Train the neural network.
+	- Run the model.
+	- Save the model.
+	- Load a previously saved model next time.
+
+Keyboard controls for `dev` mode:
+
+	- Randomise parameters -> space bar.
+	- Record training examples -> r.
+	- Train neural network -> t.
+	- Run trained model -> g.
+	- Halt model -> h.
+	- Save model -> k.
+	- Load model -> l.
+
+When using a VR system the controls can be mapped to the controller buttons using the SteamVR runtime interface. The machine learning functionality is discussed further below as it relates specifically to the 'Cyclical Mapping Example'.
 
 ## Example Walkthroughs
 This section describes the construction and execution of the examples. All of the examples are found in *ImmersiveAV/examples/*.
@@ -449,17 +677,17 @@ float DE(vec3 p)
 The value `pitchOut` is inversely related to the radius of the sphere which means the higher the pitch value the smaller the sphere. Conversely, the lower the pitch value, the larger the sphere. The fragment shader sends pixel colour data back to `Studio()` asynchronously using a pixel buffer object (PBO). 
 
 ```
-layout(location = 0) out vec4 fragColor; 
+layout(location = 0) out vec4 fragColour; 
 layout(location = 1) out vec4 dataOut;
 
 // Output to screen
-fragColor = vec4(colour,1.0);
+fragColour = vec4(colour,1.0);
 
 // Output to PBO
-dataOut = fragColor;
+dataOut = fragColour;
 ```   
 
-There are two outputs of type `vec4` specified in the fragment shader. The vector `fragColor` at `location = 0` is the usual output of the fragment colour to the screen. The other output, `dataOut`, writes the data to a PBO. In this example, the colour vector of the fragment is passed to it. The data in the PBO is then read back into memory on the CPU and is accessible from `Studio::Update()` through the struct `PBOInfo`. This struct is then passed to `MLRegressionUpdate()` where the data can be used as input to the neural network.
+There are two outputs of type `vec4` specified in the fragment shader. The vector `fragColour` at `location = 0` is the usual output of the fragment colour to the screen. The other output, `dataOut`, writes the data to a PBO. In this example, the colour vector of the fragment is passed to it. The data in the PBO is then read back into memory on the CPU and is accessible from `Studio::Update()` through the struct `PBOInfo`. This struct is then passed to `MLRegressionUpdate()` where the data can be used as input to the neural network.
 
 ```
 if(machineLearning.bRecord)
