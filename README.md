@@ -291,10 +291,10 @@ if(*m_vReturnVals[0] > 0) m_fTargetVal = *m_vReturnVals[0];
 
 For example, element 0 is dereferenced here and assigned to the `float m_fTargetVal`. Once the channel names and data vectors are set up above, they are passed along with the `csSession` pointer to `StudioTools::BCsoundSend()` and `StudioTools::BCsoundReturn()`.
 
-##Graphics Renderer
+## Graphics Renderer
 The graphics are rendered using OpenGL and GLSL shaders. The shaders are set up specifically to allow for raymarching combined with raster graphics. This is to account for the rendering of virtual controllers within VR and to ensure they interact as expected with the raymarched graphics.
 
-###Shader Setup
+### Shader Setup
 Just as all the audio is generated in the `csd` file, the shaders are set up to encourage the generation of all the visual material in the fragment shader. In `Studio::Setup()` the OpenGL code necessary to set up a raymarching quad is called using:
 
 ``
@@ -398,7 +398,7 @@ m_pStTools->DrawEnd();
 
 The function `DrawStart()` is accessed through the `m_pStTools` pointer. The projection matrix, eye matrix, view matrix, shader program handle and camera translation vector are passed to the function.Data can be passed to the shader here using `glUniform1f` or any of its variations. The uniform location handles are declared in `Studio::Setup()`. Finally, `DrawEnd()` is called which concludes the draw loop. 
 
-##Mapping Overview
+## Mapping Overview
 As mentioned above, data can be mapped throughout the toolkit. Here is a brief overview of the functions used to map data.
 
 From `Studio()` to Csound:
@@ -410,7 +410,7 @@ From `Studio()` to fragment shader:
 From the fragment shader to `Studio()`:
 	- `out vec4 dataOut' to `PBOInfo& pboInfo.pboPtr`. 
 
-##Machine Learning Walkthrough
+## Machine Learning Walkthrough
 The RapidLib machine learning library is an integral part of the toolkit. Access to a neural network regression algorithm is provided through the functions `Studio::MLRegressionSetup()` and `Studio::MLRegressionUpdate()`. These functions will eventually be moved to `StudioTools()` in order to keep `Studio()` as minimal as possible. `Studio::MLRegressionSetup()` is called in `Studio::Setup()` and simply initialises various `bool`s and variables that are used in `Studio::MLRegressionUpdate()`. `Studio::MLRegressionUpdate()` is called in `Studio::Update()` and is passed the `machineLearning` struct which provides access to the machine learning controls. It is also passed the `pboInfo` struct which provides access to data returned from the fragment shader. Finally, it is passed `std::vector<MLAudioParameter> paramVec` which provdes access to discrete parameters that are to be processed by the neural network. `Studio::MLRegressionUpdate()` is divided into several blocks of functionality.
 
 	- Randomisation of parameters.
