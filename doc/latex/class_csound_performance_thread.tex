@@ -1,0 +1,167 @@
+\hypertarget{class_csound_performance_thread}{}\doxysection{Csound\+Performance\+Thread Class Reference}
+\label{class_csound_performance_thread}\index{CsoundPerformanceThread@{CsoundPerformanceThread}}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+int \mbox{\hyperlink{class_csound_performance_thread_a2e1bf77d0cbd354c4d598b9dff326b6e}{is\+Running}} ()
+\item 
+void $\ast$ \mbox{\hyperlink{class_csound_performance_thread_a0b4f2a934866602498726b1c6450d2a3}{Get\+Process\+Callback}} ()
+\item 
+void \mbox{\hyperlink{class_csound_performance_thread_a013b781e8effd05674f3249921ca9d83}{Set\+Process\+Callback}} (void($\ast$Callback)(void $\ast$), void $\ast$cbdata)
+\item 
+C\+S\+O\+U\+ND $\ast$ \mbox{\hyperlink{class_csound_performance_thread_ae784c3e43114264fc369b44b5df093db}{Get\+Csound}} ()
+\item 
+int \mbox{\hyperlink{class_csound_performance_thread_a3a83619047b1f57871d40c4bf59be466}{Get\+Status}} ()
+\item 
+void \mbox{\hyperlink{class_csound_performance_thread_a6ac71c35fd18e9b16f094f613379b725}{Play}} ()
+\item 
+void \mbox{\hyperlink{class_csound_performance_thread_a04dbdeccc156c64d0cf84af038d4e9cb}{Pause}} ()
+\item 
+void \mbox{\hyperlink{class_csound_performance_thread_a2c9f362154cd0483e923e3076a082264}{Toggle\+Pause}} ()
+\item 
+void \mbox{\hyperlink{class_csound_performance_thread_a934fb76c73af13cbfe675db7199c0b93}{Stop}} ()
+\item 
+void \mbox{\hyperlink{class_csound_performance_thread_abff640852d8d3ce583a9a36032074218}{Record}} (std\+::string filename, int samplebits=16, int numbufs=4)
+\item 
+void \mbox{\hyperlink{class_csound_performance_thread_a56e91ff1930757016abcc52f1ffb327d}{Stop\+Record}} ()
+\item 
+void \mbox{\hyperlink{class_csound_performance_thread_ad72ee701c7a3ca5c56da2698165177eb}{Score\+Event}} (int absp2mode, char opcod, int pcnt, const M\+Y\+F\+LT $\ast$p)
+\item 
+void \mbox{\hyperlink{class_csound_performance_thread_aec6a1674d00da9dd0147d56688f1219f}{Input\+Message}} (const char $\ast$s)
+\item 
+void \mbox{\hyperlink{class_csound_performance_thread_aef57bde3c3a1d259629aeee8d7db520e}{Set\+Score\+Offset\+Seconds}} (double time\+Val)
+\item 
+int \mbox{\hyperlink{class_csound_performance_thread_a3bb4effdd69cdab5916599bfee3e87cb}{Join}} ()
+\item 
+void \mbox{\hyperlink{class_csound_performance_thread_ab4002830117cf7e4111453da033565c3}{Flush\+Message\+Queue}} ()
+\item 
+\mbox{\hyperlink{class_csound_performance_thread_a9d9c8ba5a14a8beed06b5e0a34e005a0}{Csound\+Performance\+Thread}} (Csound $\ast$)
+\item 
+\mbox{\Hypertarget{class_csound_performance_thread_ab5247c7c02c7b865761761535bb7b73e}\label{class_csound_performance_thread_ab5247c7c02c7b865761761535bb7b73e}} 
+{\bfseries Csound\+Performance\+Thread} (C\+S\+O\+U\+ND $\ast$)
+\end{DoxyCompactItemize}
+\doxysubsection*{Friends}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{class_csound_performance_thread_aa73c363607f5330460345bb076f569d2}\label{class_csound_performance_thread_aa73c363607f5330460345bb076f569d2}} 
+class {\bfseries Csound\+Performance\+Thread\+Message}
+\item 
+\mbox{\Hypertarget{class_csound_performance_thread_a36bf3918d1c483416e657e4b7b0c4fc3}\label{class_csound_performance_thread_a36bf3918d1c483416e657e4b7b0c4fc3}} 
+class {\bfseries Cs\+Perf\+Thread\+\_\+\+Perform\+Score}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{class_csound_performance_thread_a9d9c8ba5a14a8beed06b5e0a34e005a0}\label{class_csound_performance_thread_a9d9c8ba5a14a8beed06b5e0a34e005a0}} 
+\index{CsoundPerformanceThread@{CsoundPerformanceThread}!CsoundPerformanceThread@{CsoundPerformanceThread}}
+\index{CsoundPerformanceThread@{CsoundPerformanceThread}!CsoundPerformanceThread@{CsoundPerformanceThread}}
+\doxysubsubsection{\texorpdfstring{CsoundPerformanceThread()}{CsoundPerformanceThread()}}
+{\footnotesize\ttfamily Csound\+Performance\+Thread\+::\+Csound\+Performance\+Thread (\begin{DoxyParamCaption}\item[{Csound $\ast$}]{csound }\end{DoxyParamCaption})}
+
+\mbox{\hyperlink{class_csound_performance_thread_a9d9c8ba5a14a8beed06b5e0a34e005a0}{Csound\+Performance\+Thread(\+Csound $\ast$)}} \mbox{\hyperlink{class_csound_performance_thread}{Csound\+Performance\+Thread(\+C\+S\+O\+U\+N\+D $\ast$)}}
+
+Performs a score in a separate thread until the end of score is reached, the playback (which is paused by default) is stopped by calling \mbox{\hyperlink{class_csound_performance_thread_a934fb76c73af13cbfe675db7199c0b93}{Csound\+Performance\+Thread\+::\+Stop()}}, or an error occurs. The constructor takes a Csound instance pointer as argument; it assumes that csound\+Compile() was called successfully before creating the performance thread. Once the playback is stopped for one of the above mentioned reasons, the performance thread calls csound\+Cleanup() and returns. 
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{class_csound_performance_thread_ab4002830117cf7e4111453da033565c3}\label{class_csound_performance_thread_ab4002830117cf7e4111453da033565c3}} 
+\index{CsoundPerformanceThread@{CsoundPerformanceThread}!FlushMessageQueue@{FlushMessageQueue}}
+\index{FlushMessageQueue@{FlushMessageQueue}!CsoundPerformanceThread@{CsoundPerformanceThread}}
+\doxysubsubsection{\texorpdfstring{FlushMessageQueue()}{FlushMessageQueue()}}
+{\footnotesize\ttfamily void Csound\+Performance\+Thread\+::\+Flush\+Message\+Queue (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Waits until all pending messages (pause, send score event, etc.) are actually received by the performance thread. \mbox{\Hypertarget{class_csound_performance_thread_ae784c3e43114264fc369b44b5df093db}\label{class_csound_performance_thread_ae784c3e43114264fc369b44b5df093db}} 
+\index{CsoundPerformanceThread@{CsoundPerformanceThread}!GetCsound@{GetCsound}}
+\index{GetCsound@{GetCsound}!CsoundPerformanceThread@{CsoundPerformanceThread}}
+\doxysubsubsection{\texorpdfstring{GetCsound()}{GetCsound()}}
+{\footnotesize\ttfamily C\+S\+O\+U\+ND$\ast$ Csound\+Performance\+Thread\+::\+Get\+Csound (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Returns the Csound instance pointer. \mbox{\Hypertarget{class_csound_performance_thread_a0b4f2a934866602498726b1c6450d2a3}\label{class_csound_performance_thread_a0b4f2a934866602498726b1c6450d2a3}} 
+\index{CsoundPerformanceThread@{CsoundPerformanceThread}!GetProcessCallback@{GetProcessCallback}}
+\index{GetProcessCallback@{GetProcessCallback}!CsoundPerformanceThread@{CsoundPerformanceThread}}
+\doxysubsubsection{\texorpdfstring{GetProcessCallback()}{GetProcessCallback()}}
+{\footnotesize\ttfamily void$\ast$ Csound\+Performance\+Thread\+::\+Get\+Process\+Callback (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Returns the process callback as a void pointer \mbox{\Hypertarget{class_csound_performance_thread_a3a83619047b1f57871d40c4bf59be466}\label{class_csound_performance_thread_a3a83619047b1f57871d40c4bf59be466}} 
+\index{CsoundPerformanceThread@{CsoundPerformanceThread}!GetStatus@{GetStatus}}
+\index{GetStatus@{GetStatus}!CsoundPerformanceThread@{CsoundPerformanceThread}}
+\doxysubsubsection{\texorpdfstring{GetStatus()}{GetStatus()}}
+{\footnotesize\ttfamily int Csound\+Performance\+Thread\+::\+Get\+Status (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Returns the current status, zero if still playing, positive if the end of score was reached or performance was stopped, and negative if an error occured. \mbox{\Hypertarget{class_csound_performance_thread_aec6a1674d00da9dd0147d56688f1219f}\label{class_csound_performance_thread_aec6a1674d00da9dd0147d56688f1219f}} 
+\index{CsoundPerformanceThread@{CsoundPerformanceThread}!InputMessage@{InputMessage}}
+\index{InputMessage@{InputMessage}!CsoundPerformanceThread@{CsoundPerformanceThread}}
+\doxysubsubsection{\texorpdfstring{InputMessage()}{InputMessage()}}
+{\footnotesize\ttfamily void Csound\+Performance\+Thread\+::\+Input\+Message (\begin{DoxyParamCaption}\item[{const char $\ast$}]{s }\end{DoxyParamCaption})}
+
+Sends a score event as a string, similarly to line events (-\/L). \mbox{\Hypertarget{class_csound_performance_thread_a2e1bf77d0cbd354c4d598b9dff326b6e}\label{class_csound_performance_thread_a2e1bf77d0cbd354c4d598b9dff326b6e}} 
+\index{CsoundPerformanceThread@{CsoundPerformanceThread}!isRunning@{isRunning}}
+\index{isRunning@{isRunning}!CsoundPerformanceThread@{CsoundPerformanceThread}}
+\doxysubsubsection{\texorpdfstring{isRunning()}{isRunning()}}
+{\footnotesize\ttfamily int Csound\+Performance\+Thread\+::is\+Running (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Returns 1 if the performance thread is running, 0 otherwise \mbox{\Hypertarget{class_csound_performance_thread_a3bb4effdd69cdab5916599bfee3e87cb}\label{class_csound_performance_thread_a3bb4effdd69cdab5916599bfee3e87cb}} 
+\index{CsoundPerformanceThread@{CsoundPerformanceThread}!Join@{Join}}
+\index{Join@{Join}!CsoundPerformanceThread@{CsoundPerformanceThread}}
+\doxysubsubsection{\texorpdfstring{Join()}{Join()}}
+{\footnotesize\ttfamily int Csound\+Performance\+Thread\+::\+Join (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Waits until the performance is finished or fails, and returns a positive value if the end of score was reached or \mbox{\hyperlink{class_csound_performance_thread_a934fb76c73af13cbfe675db7199c0b93}{Stop()}} was called, and a negative value if an error occured. Also releases any resources associated with the performance thread object. \mbox{\Hypertarget{class_csound_performance_thread_a04dbdeccc156c64d0cf84af038d4e9cb}\label{class_csound_performance_thread_a04dbdeccc156c64d0cf84af038d4e9cb}} 
+\index{CsoundPerformanceThread@{CsoundPerformanceThread}!Pause@{Pause}}
+\index{Pause@{Pause}!CsoundPerformanceThread@{CsoundPerformanceThread}}
+\doxysubsubsection{\texorpdfstring{Pause()}{Pause()}}
+{\footnotesize\ttfamily void Csound\+Performance\+Thread\+::\+Pause (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Pauses performance (can be continued by calling \mbox{\hyperlink{class_csound_performance_thread_a6ac71c35fd18e9b16f094f613379b725}{Play()}}). \mbox{\Hypertarget{class_csound_performance_thread_a6ac71c35fd18e9b16f094f613379b725}\label{class_csound_performance_thread_a6ac71c35fd18e9b16f094f613379b725}} 
+\index{CsoundPerformanceThread@{CsoundPerformanceThread}!Play@{Play}}
+\index{Play@{Play}!CsoundPerformanceThread@{CsoundPerformanceThread}}
+\doxysubsubsection{\texorpdfstring{Play()}{Play()}}
+{\footnotesize\ttfamily void Csound\+Performance\+Thread\+::\+Play (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Continues performance if it was paused. \mbox{\Hypertarget{class_csound_performance_thread_abff640852d8d3ce583a9a36032074218}\label{class_csound_performance_thread_abff640852d8d3ce583a9a36032074218}} 
+\index{CsoundPerformanceThread@{CsoundPerformanceThread}!Record@{Record}}
+\index{Record@{Record}!CsoundPerformanceThread@{CsoundPerformanceThread}}
+\doxysubsubsection{\texorpdfstring{Record()}{Record()}}
+{\footnotesize\ttfamily void Csound\+Performance\+Thread\+::\+Record (\begin{DoxyParamCaption}\item[{std\+::string}]{filename,  }\item[{int}]{samplebits = {\ttfamily 16},  }\item[{int}]{numbufs = {\ttfamily 4} }\end{DoxyParamCaption})}
+
+Starts recording the output from Csound. The sample rate and number of channels are taken directly from the running Csound instance. \mbox{\Hypertarget{class_csound_performance_thread_ad72ee701c7a3ca5c56da2698165177eb}\label{class_csound_performance_thread_ad72ee701c7a3ca5c56da2698165177eb}} 
+\index{CsoundPerformanceThread@{CsoundPerformanceThread}!ScoreEvent@{ScoreEvent}}
+\index{ScoreEvent@{ScoreEvent}!CsoundPerformanceThread@{CsoundPerformanceThread}}
+\doxysubsubsection{\texorpdfstring{ScoreEvent()}{ScoreEvent()}}
+{\footnotesize\ttfamily void Csound\+Performance\+Thread\+::\+Score\+Event (\begin{DoxyParamCaption}\item[{int}]{absp2mode,  }\item[{char}]{opcod,  }\item[{int}]{pcnt,  }\item[{const M\+Y\+F\+LT $\ast$}]{p }\end{DoxyParamCaption})}
+
+Sends a score event of type \textquotesingle{}opcod\textquotesingle{} (e.\+g. \textquotesingle{}i\textquotesingle{} for a note event), with \textquotesingle{}pcnt\textquotesingle{} p-\/fields in array \textquotesingle{}p\textquotesingle{} (p\mbox{[}0\mbox{]} is p1). If absp2mode is non-\/zero, the start time of the event is measured from the beginning of performance, instead of the default of relative to the current time. \mbox{\Hypertarget{class_csound_performance_thread_a013b781e8effd05674f3249921ca9d83}\label{class_csound_performance_thread_a013b781e8effd05674f3249921ca9d83}} 
+\index{CsoundPerformanceThread@{CsoundPerformanceThread}!SetProcessCallback@{SetProcessCallback}}
+\index{SetProcessCallback@{SetProcessCallback}!CsoundPerformanceThread@{CsoundPerformanceThread}}
+\doxysubsubsection{\texorpdfstring{SetProcessCallback()}{SetProcessCallback()}}
+{\footnotesize\ttfamily void Csound\+Performance\+Thread\+::\+Set\+Process\+Callback (\begin{DoxyParamCaption}\item[{void($\ast$)(void $\ast$)}]{Callback,  }\item[{void $\ast$}]{cbdata }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Sets the process callback. \mbox{\Hypertarget{class_csound_performance_thread_aef57bde3c3a1d259629aeee8d7db520e}\label{class_csound_performance_thread_aef57bde3c3a1d259629aeee8d7db520e}} 
+\index{CsoundPerformanceThread@{CsoundPerformanceThread}!SetScoreOffsetSeconds@{SetScoreOffsetSeconds}}
+\index{SetScoreOffsetSeconds@{SetScoreOffsetSeconds}!CsoundPerformanceThread@{CsoundPerformanceThread}}
+\doxysubsubsection{\texorpdfstring{SetScoreOffsetSeconds()}{SetScoreOffsetSeconds()}}
+{\footnotesize\ttfamily void Csound\+Performance\+Thread\+::\+Set\+Score\+Offset\+Seconds (\begin{DoxyParamCaption}\item[{double}]{time\+Val }\end{DoxyParamCaption})}
+
+Sets the playback time pointer to the specified value (in seconds). \mbox{\Hypertarget{class_csound_performance_thread_a934fb76c73af13cbfe675db7199c0b93}\label{class_csound_performance_thread_a934fb76c73af13cbfe675db7199c0b93}} 
+\index{CsoundPerformanceThread@{CsoundPerformanceThread}!Stop@{Stop}}
+\index{Stop@{Stop}!CsoundPerformanceThread@{CsoundPerformanceThread}}
+\doxysubsubsection{\texorpdfstring{Stop()}{Stop()}}
+{\footnotesize\ttfamily void Csound\+Performance\+Thread\+::\+Stop (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Stops performance (cannot be continued). \mbox{\Hypertarget{class_csound_performance_thread_a56e91ff1930757016abcc52f1ffb327d}\label{class_csound_performance_thread_a56e91ff1930757016abcc52f1ffb327d}} 
+\index{CsoundPerformanceThread@{CsoundPerformanceThread}!StopRecord@{StopRecord}}
+\index{StopRecord@{StopRecord}!CsoundPerformanceThread@{CsoundPerformanceThread}}
+\doxysubsubsection{\texorpdfstring{StopRecord()}{StopRecord()}}
+{\footnotesize\ttfamily void Csound\+Performance\+Thread\+::\+Stop\+Record (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Stops recording and closes audio file. \mbox{\Hypertarget{class_csound_performance_thread_a2c9f362154cd0483e923e3076a082264}\label{class_csound_performance_thread_a2c9f362154cd0483e923e3076a082264}} 
+\index{CsoundPerformanceThread@{CsoundPerformanceThread}!TogglePause@{TogglePause}}
+\index{TogglePause@{TogglePause}!CsoundPerformanceThread@{CsoundPerformanceThread}}
+\doxysubsubsection{\texorpdfstring{TogglePause()}{TogglePause()}}
+{\footnotesize\ttfamily void Csound\+Performance\+Thread\+::\+Toggle\+Pause (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Pauses performance unless it is already paused, in which case it is continued. 
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+cs\+Perf\+Thread.\+hpp\item 
+cs\+Perf\+Thread.\+cpp\end{DoxyCompactItemize}

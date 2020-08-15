@@ -1,0 +1,58 @@
+\hypertarget{class_csound_performance_thread_message}{}\doxysection{Csound\+Performance\+Thread\+Message Class Reference}
+\label{class_csound_performance_thread_message}\index{CsoundPerformanceThreadMessage@{CsoundPerformanceThreadMessage}}
+Inheritance diagram for Csound\+Performance\+Thread\+Message\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=10.000000cm]{class_csound_performance_thread_message}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{class_csound_performance_thread_message_a5949ed82b10f3812b7b267bda3c8b5cc}\label{class_csound_performance_thread_message_a5949ed82b10f3812b7b267bda3c8b5cc}} 
+virtual int {\bfseries run} ()=0
+\item 
+\mbox{\Hypertarget{class_csound_performance_thread_message_ade7ccc58b2e3148301d45f533d2b2138}\label{class_csound_performance_thread_message_ade7ccc58b2e3148301d45f533d2b2138}} 
+{\bfseries Csound\+Performance\+Thread\+Message} (\mbox{\hyperlink{class_csound_performance_thread}{Csound\+Performance\+Thread}} $\ast$pt)
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{class_csound_performance_thread_message_afacc5e55c44ff77184310ef84e12d52a}\label{class_csound_performance_thread_message_afacc5e55c44ff77184310ef84e12d52a}} 
+\mbox{\hyperlink{class_csound_performance_thread_message}{Csound\+Performance\+Thread\+Message}} $\ast$ {\bfseries nxt}
+\end{DoxyCompactItemize}
+\doxysubsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{class_csound_performance_thread_message_a510f49fa7e2fc17fc40f14c991e80e63}\label{class_csound_performance_thread_message_a510f49fa7e2fc17fc40f14c991e80e63}} 
+void {\bfseries Set\+Paused} (int state)
+\item 
+\mbox{\Hypertarget{class_csound_performance_thread_message_a2f725b5bae1ed689260416d77660146f}\label{class_csound_performance_thread_message_a2f725b5bae1ed689260416d77660146f}} 
+int {\bfseries Get\+Paused} ()
+\item 
+\mbox{\Hypertarget{class_csound_performance_thread_message_a619ce487a69c6437fcb5c96872028942}\label{class_csound_performance_thread_message_a619ce487a69c6437fcb5c96872028942}} 
+\mbox{\hyperlink{structrecord_data__t}{record\+Data\+\_\+t}} $\ast$ {\bfseries get\+Record\+Data} ()
+\item 
+\mbox{\Hypertarget{class_csound_performance_thread_message_a1da0b19ebbf4db6456e49e76e67c3bb2}\label{class_csound_performance_thread_message_a1da0b19ebbf4db6456e49e76e67c3bb2}} 
+void {\bfseries lock\+Record} ()
+\item 
+\mbox{\Hypertarget{class_csound_performance_thread_message_a2696d4a26c7c362de260444bbfe50f95}\label{class_csound_performance_thread_message_a2696d4a26c7c362de260444bbfe50f95}} 
+void {\bfseries unlock\+Record} ()
+\item 
+\mbox{\Hypertarget{class_csound_performance_thread_message_aa16106827c51002508ebce788a38d12c}\label{class_csound_performance_thread_message_aa16106827c51002508ebce788a38d12c}} 
+void {\bfseries Queue\+Message} (\mbox{\hyperlink{class_csound_performance_thread_message}{Csound\+Performance\+Thread\+Message}} $\ast$msg)
+\end{DoxyCompactItemize}
+\doxysubsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{class_csound_performance_thread_message_afefd94c56f6cc8b5acd406baf5ecb6ff}\label{class_csound_performance_thread_message_afefd94c56f6cc8b5acd406baf5ecb6ff}} 
+\mbox{\hyperlink{class_csound_performance_thread}{Csound\+Performance\+Thread}} $\ast$ {\bfseries pt\+\_\+}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Base class for event messages. 
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+cs\+Perf\+Thread.\+cpp\end{DoxyCompactItemize}

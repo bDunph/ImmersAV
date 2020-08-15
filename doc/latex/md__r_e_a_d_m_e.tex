@@ -1,0 +1,806 @@
+by Bryan Dunphy
+
+Immers\+AV is an open source toolkit for immersive audiovisual composition. It was built around a focused approach to composition based on generative audio, raymarching and interactive machine learning techniques.\hypertarget{md__r_e_a_d_m_e_autotoc_md1}{}\doxysection{Aims\+:}\label{md__r_e_a_d_m_e_autotoc_md1}
+
+\begin{DoxyItemize}
+\item Provide well defined, independent areas for generating audio and visual material.
+\item Provide a class that can be used to generate, send and receive data from\+:
+\begin{DoxyItemize}
+\item machine learning algorithms
+\item VR hardware sensors
+\item audio and visual processing engines
+\end{DoxyItemize}
+\item Allow for direct rendering on a VR headset.
+\end{DoxyItemize}\hypertarget{md__r_e_a_d_m_e_autotoc_md2}{}\doxysection{Dependencies\+:}\label{md__r_e_a_d_m_e_autotoc_md2}
+
+\begin{DoxyItemize}
+\item Open\+VR
+\item Csound6
+\item Open\+G\+L4
+\item glm
+\item glfw3
+\item Glew
+\item C\+Make3
+\item Rapid\+Lib
+\item libsndfile
+\end{DoxyItemize}\hypertarget{md__r_e_a_d_m_e_autotoc_md3}{}\doxysection{Windows\+:}\label{md__r_e_a_d_m_e_autotoc_md3}
+\hypertarget{md__r_e_a_d_m_e_autotoc_md4}{}\doxysubsection{Setup\+:}\label{md__r_e_a_d_m_e_autotoc_md4}
+
+\begin{DoxyEnumerate}
+\item Download (64 bit)\+:
+\begin{DoxyItemize}
+\item C\+Make\+: \href{https://cmake.org/download/}{\texttt{ https\+://cmake.\+org/download/}}
+\item Open\+VR\+: \href{https://github.com/ValveSoftware/openvr}{\texttt{ https\+://github.\+com/\+Valve\+Software/openvr}}
+\item Csound 6\+: \href{https://csound.com/download.html}{\texttt{ https\+://csound.\+com/download.\+html}}
+\item glm\+: \href{https://github.com/g-truc/glm/tags}{\texttt{ https\+://github.\+com/g-\/truc/glm/tags}}
+\item glfw3\+: \href{https://www.glfw.org/download.html}{\texttt{ https\+://www.\+glfw.\+org/download.\+html}}
+\item glew\+: \href{http://glew.sourceforge.net/}{\texttt{ http\+://glew.\+sourceforge.\+net/}}
+\item libsndfile\+: \href{http://www.mega-nerd.com/libsndfile/\#Download}{\texttt{ http\+://www.\+mega-\/nerd.\+com/libsndfile/\#\+Download}}
+\end{DoxyItemize}
+\item Install C\+Make and Csound according to their instructions.
+\item Create directories\+:
+\begin{DoxyItemize}
+\item Immers\+A\+V/bin/
+\item Immers\+A\+V/lib/
+\item Immers\+A\+V/include/
+\end{DoxyItemize}
+\item Move the following files to bin/\+:
+\begin{DoxyItemize}
+\item csound64.\+dll
+\item glew32.\+dll
+\item openvr\+\_\+api.\+dll
+\item libsndfile-\/1.\+dll
+\end{DoxyItemize}
+\item Move the following files to lib/\+:
+\begin{DoxyItemize}
+\item csound64.\+lib
+\item openvr\+\_\+api.\+lib
+\item glew32.\+lib
+\item glfw3.\+lib
+\item libsndfile-\/1.\+lib
+\end{DoxyItemize}
+\item Move header files from Open\+VR to include/.
+\end{DoxyEnumerate}\hypertarget{md__r_e_a_d_m_e_autotoc_md5}{}\doxysubsection{Build and run using the Visual Studio command line\+:}\label{md__r_e_a_d_m_e_autotoc_md5}
+
+\begin{DoxyEnumerate}
+\item Run the new\+Cmake\+Build.\+bat script.
+\item Use the following commands to build the project\+:
+\begin{DoxyItemize}
+\item cd build/
+\item nmake
+\end{DoxyItemize}
+\item Move the following files to Immers\+A\+V/build/src/\+:
+\begin{DoxyItemize}
+\item From Immers\+A\+V/bin/\+:
+\begin{DoxyItemize}
+\item csound64.\+dll
+\item openvr\+\_\+api.\+dll
+\item glew32.\+dll
+\item libsndfile-\/1.\+dll
+\end{DoxyItemize}
+\item From Immers\+A\+V/examples/\+:
+\begin{DoxyItemize}
+\item $\ast$\+\_\+example.csd
+\item $\ast$\+\_\+example.vert
+\item $\ast$\+\_\+example.frag
+\end{DoxyItemize}
+\item From Immers\+A\+V/data/\+:
+\begin{DoxyItemize}
+\item hrtf-\/48000-\/left.\+dat
+\item hrtf-\/48000-\/right.\+dat
+\item avr\+\_\+iml\+\_\+actions.\+json
+\item avr\+\_\+iml\+\_\+default\+\_\+bindings.\+json
+\end{DoxyItemize}
+\end{DoxyItemize}
+\item Navigate (cd) to Immers\+A\+V/build/src/.
+\item Type the following command to run the application with one of the examples\+:
+\begin{DoxyItemize}
+\item With VR rendering\+:
+\begin{DoxyItemize}
+\item avr audio\+Reactive\+\_\+example
+\end{DoxyItemize}
+\item Without VR rendering (for development)\+:
+\begin{DoxyItemize}
+\item avr audio\+Reactive\+\_\+example -\/dev
+\end{DoxyItemize}
+\end{DoxyItemize}
+\end{DoxyEnumerate}\hypertarget{md__r_e_a_d_m_e_autotoc_md6}{}\doxysection{Mac\+O\+S\+:}\label{md__r_e_a_d_m_e_autotoc_md6}
+\hypertarget{md__r_e_a_d_m_e_autotoc_md7}{}\doxysubsection{Setup\+:}\label{md__r_e_a_d_m_e_autotoc_md7}
+
+\begin{DoxyEnumerate}
+\item Download (64 bit)\+:
+\begin{DoxyItemize}
+\item C\+Make \href{https://cmake.org/download/}{\texttt{ https\+://cmake.\+org/download/}}
+\item Open\+VR\+: \href{https://github.com/ValveSoftware/openvr}{\texttt{ https\+://github.\+com/\+Valve\+Software/openvr}}
+\item Csound 6\+: \href{https://csound.com/download.html}{\texttt{ https\+://csound.\+com/download.\+html}}
+\item glm\+: \href{https://github.com/g-truc/glm/tags}{\texttt{ https\+://github.\+com/g-\/truc/glm/tags}}
+\item glfw3\+: \href{https://www.glfw.org/download.html}{\texttt{ https\+://www.\+glfw.\+org/download.\+html}}
+\item R\+A\+P\+I\+D-\/\+M\+IX\+: \href{https://www.doc.gold.ac.uk/eavi/rapidmixapi.com/index.php/getting-started/download-and-setup/}{\texttt{ https\+://www.\+doc.\+gold.\+ac.\+uk/eavi/rapidmixapi.\+com/index.\+php/getting-\/started/download-\/and-\/setup/}}
+\end{DoxyItemize}
+\item Install C\+Make and Csound according to their instructions.
+\item Move the following to /\+Library/\+Frameworks/\+:
+\begin{DoxyItemize}
+\item Csound\+Lib64.\+framework
+\item Open\+V\+R.\+framework
+\end{DoxyItemize}
+\item Move the following to /usr/local/lib/\+:
+\begin{DoxyItemize}
+\item libcsnd.\+6.\+0.\+dylib
+\item libcsnd6.\+6.\+0.\+dylib
+\item libopenvr\+\_\+api.\+dylib
+\item lib\+R\+A\+P\+I\+D-\/\+M\+I\+X\+\_\+\+A\+P\+I.\+dylib
+\end{DoxyItemize}
+\item Create Immers\+A\+V/include/ directory.
+\item Move the following to Immers\+A\+V/include/\+:
+\begin{DoxyItemize}
+\item From openvr/\+:
+\begin{DoxyItemize}
+\item headers/$\ast$
+\end{DoxyItemize}
+\item From R\+A\+P\+I\+D-\/\+M\+I\+X\+\_\+\+A\+P\+I/src\+:
+\begin{DoxyItemize}
+\item rapidmix.\+h
+\item machine\+Learning/$\ast$
+\item signal\+Processing/$\ast$
+\end{DoxyItemize}
+\end{DoxyItemize}
+\end{DoxyEnumerate}\hypertarget{md__r_e_a_d_m_e_autotoc_md8}{}\doxysubsection{Build and Run using the terminal\+:}\label{md__r_e_a_d_m_e_autotoc_md8}
+
+\begin{DoxyEnumerate}
+\item Type the following commands into the terminal\+:
+\begin{DoxyItemize}
+\item mkdir build/
+\item cd build
+\item cmake ..
+\end{DoxyItemize}
+\item When C\+Make has prepared the build files type \textquotesingle{}make\textquotesingle{}.
+\item Move the following files\+:
+\begin{DoxyItemize}
+\item From Immers\+A\+V/examples/\+:
+\begin{DoxyItemize}
+\item $\ast$\+\_\+example.csd
+\item $\ast$\+\_\+example.vert
+\item $\ast$\+\_\+example.frag
+\end{DoxyItemize}
+\item From Immers\+A\+V/data/\+:
+\begin{DoxyItemize}
+\item hrtf-\/48000-\/left.\+dat
+\item hrtf-\/48000-\/right.\+dat
+\end{DoxyItemize}
+\end{DoxyItemize}
+\item Navigate (cd) to Immers\+A\+V/build/src/.
+\item To run an example project type the following into the terminal\+:
+\begin{DoxyItemize}
+\item With VR rendering\+:
+\begin{DoxyItemize}
+\item ./avr audio\+Reactive\+\_\+example
+\end{DoxyItemize}
+\item Without VR (for development)\+:
+\begin{DoxyItemize}
+\item ./avr audio\+Reactive\+\_\+example -\/dev
+\end{DoxyItemize}
+\end{DoxyItemize}
+\end{DoxyEnumerate}\hypertarget{md__r_e_a_d_m_e_autotoc_md9}{}\doxysection{Workflow Overview}\label{md__r_e_a_d_m_e_autotoc_md9}
+The Immers\+AV toolkit is intended to provide three main contexts for creating and mapping material. \begin{DoxyVerb}- Csound `csd` file.
+- GLSL fragment shader.
+- `Studio()` class.
+\end{DoxyVerb}
+
+
+All the audio is generated in the {\ttfamily csd} file. All the visuals (with the exception of default virtual controllers) are generated in the fragment shader. The {\ttfamily Studio()} conceptually sits between the audio and visual areas. Any data passes through here and is mapped to the audio and visuals. Data can also be generated here.\hypertarget{md__r_e_a_d_m_e_autotoc_md10}{}\doxysection{Controller Sensor Data}\label{md__r_e_a_d_m_e_autotoc_md10}
+When in VR, the controller position and orientation can be accessed through {\ttfamily Studio\+::\+Update()}. The vectors {\ttfamily glm\+::vec3 controller\+World\+Pos\+\_\+0} and {\ttfamily glm\+::vec3 controller\+World\+Pos\+\_\+1} contain the {\ttfamily x}, {\ttfamily y} and {\ttfamily z} cartesian coordinates of the controller. The quaternions {\ttfamily glm\+::quat controller\+Quat\+\_\+0} and {\ttfamily glm\+::quat controller\+Quat\+\_\+1} contain the orientations of the controllers.\hypertarget{md__r_e_a_d_m_e_autotoc_md11}{}\doxysection{Audio Engine}\label{md__r_e_a_d_m_e_autotoc_md11}
+\hypertarget{md__r_e_a_d_m_e_autotoc_md12}{}\doxysubsection{Audio Thread and C\+S\+D Setup}\label{md__r_e_a_d_m_e_autotoc_md12}
+The Csound A\+PI is used to communicate between the main application and the Csound instance. For an introduction to the Csound A\+PI see \href{http://floss.booktype.pro/csound/a-the-csound-api/}{\texttt{ http\+://floss.\+booktype.\+pro/csound/a-\/the-\/csound-\/api/}}. Here, the Csound A\+PI is wrapped in the {\ttfamily Studio\+Tools()} class, which contains functions that create the Csound instance and set up the sound sources used in the scene. ~\newline
+
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{m\_pStTools = new StudioTools();}
+\DoxyCodeLine{}
+\DoxyCodeLine{//audio setup}
+\DoxyCodeLine{CsoundSession* csSession = m\_pStTools-\/>PCsoundSetup(csd);}
+\DoxyCodeLine{    }
+\DoxyCodeLine{if(!m\_pStTools-\/>BSoundSourceSetup(csSession, NUM\_SOUND\_SOURCES))}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{    std::cout << "{}Studio::setup sound sources not set up"{} << std::endl;}
+\DoxyCodeLine{    return false;}
+\DoxyCodeLine{\}}
+\end{DoxyCode}
+
+
+The pointer {\ttfamily m\+\_\+p\+St\+Tools} is used to access functions from the {\ttfamily Studio\+Tools()} class. The function {\ttfamily P\+Csound\+Setup()} initialises the Csound instance and creates a new thread for it to run on. This function returns a pointer to Csound, {\ttfamily cs\+Session}.\hypertarget{md__r_e_a_d_m_e_autotoc_md13}{}\doxysubsection{Virtual Sound Source Placement}\label{md__r_e_a_d_m_e_autotoc_md13}
+The function {\ttfamily B\+Sound\+Sources\+Setup()} passes the {\ttfamily cs\+Session} pointer and the number of required sound sources to be placed in the virtual scene. These sound sources can then be placed and moved around in the {\ttfamily Studio\+::\+Update()} function.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{// example sound source at origin}
+\DoxyCodeLine{StudioTools::SoundSourceData soundSource1;}
+\DoxyCodeLine{glm::vec4 sourcePosWorldSpace = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);}
+\DoxyCodeLine{soundSource1.position = sourcePosWorldSpace;}
+\DoxyCodeLine{std::vector<StudioTools::SoundSourceData> soundSources;}
+\DoxyCodeLine{soundSources.push\_back(soundSource1);}
+\DoxyCodeLine{}
+\DoxyCodeLine{m\_pStTools-\/>SoundSourceUpdate(soundSources, viewMat);}
+\end{DoxyCode}
+
+
+The struct {\ttfamily Studio\+Tools\+::\+Sound\+Source\+Data} contains all the data needed to place the sound source in the space. The world space coordinates of the sound source are assigned to {\ttfamily sound\+Source1.\+position}. Here it is simply placed at the origin. The sound source is then added to a vector, {\ttfamily sound\+Sources}, that contains all the sound sources. Here there is only one. The sound source can be moved and rotated through the space by updating {\ttfamily sound\+Source1.\+position}. The function {\ttfamily Sound\+Source\+Update()} sends the position, elevation and azimuth values to the {\ttfamily csd} file.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{;**************************************************************************************}
+\DoxyCodeLine{instr 2 ; HRTF Instrument}
+\DoxyCodeLine{;**************************************************************************************}
+\DoxyCodeLine{kPortTime linseg 0.0, 0.001, 0.05 }
+\DoxyCodeLine{}
+\DoxyCodeLine{iNumAudioSources init 1}
+\DoxyCodeLine{}
+\DoxyCodeLine{kAzimuths[]     init    iNumAudioSources}
+\DoxyCodeLine{kElevations[]   init    iNumAudioSources}
+\DoxyCodeLine{kDistances[]    init    iNumAudioSources}
+\DoxyCodeLine{}
+\DoxyCodeLine{kCount = 0}
+\DoxyCodeLine{}
+\DoxyCodeLine{channelLoop:}
+\DoxyCodeLine{}
+\DoxyCodeLine{    S\_azimuth sprintfk "{}azimuth\%d"{}, kCount}
+\DoxyCodeLine{    kAzimuths[kCount]   chnget S\_azimuth}
+\DoxyCodeLine{}
+\DoxyCodeLine{    S\_elevation sprintfk "{}elevation\%d"{}, kCount }
+\DoxyCodeLine{    kElevations[kCount]     chnget S\_elevation }
+\DoxyCodeLine{}
+\DoxyCodeLine{    S\_distance sprintfk "{}distance\%d"{}, kCount}
+\DoxyCodeLine{    kDistances[kCount]  chnget S\_distance }
+\DoxyCodeLine{}
+\DoxyCodeLine{    loop\_lt kCount, 1, iNumAudioSources, channelLoop}
+\DoxyCodeLine{    }
+\DoxyCodeLine{aInstSigs[] init    iNumAudioSources}
+\DoxyCodeLine{aInstSigs[0] = gaOut}
+\DoxyCodeLine{}
+\DoxyCodeLine{aLeftSigs[] init    iNumAudioSources}
+\DoxyCodeLine{aRightSigs[]    init    iNumAudioSources}
+\DoxyCodeLine{kDistVals[] init    iNumAudioSources}
+\DoxyCodeLine{}
+\DoxyCodeLine{kDistVals[0] portk kDistances[0], kPortTime ;to filter out audio artifacts due to the distance changing too quickly}
+\DoxyCodeLine{    }
+\DoxyCodeLine{aLeftSigs[0], aRightSigs[0]  hrtfmove2  aInstSigs[0], kAzimuths[0], kElevations[0], "{}hrtf-\/48000-\/left.dat"{}, "{}hrtf-\/48000-\/right.dat"{}, 4, 9.0, 48000}
+\DoxyCodeLine{aLeftSigs[0] = aLeftSigs[0] / (kDistVals[0] + 0.00001)}
+\DoxyCodeLine{aRightSigs[0] = aRightSigs[0] / (kDistVals[0] + 0.00001)}
+\DoxyCodeLine{}
+\DoxyCodeLine{aL init 0}
+\DoxyCodeLine{aR init 0}
+\DoxyCodeLine{}
+\DoxyCodeLine{aL = aLeftSigs[0]}
+\DoxyCodeLine{aR = aRightSigs[0]}
+\DoxyCodeLine{}
+\DoxyCodeLine{outs    aL, aR}
+\DoxyCodeLine{endin}
+\end{DoxyCode}
+
+
+The {\ttfamily H\+R\+TF Instrument} receives position, elevation and azimuth data from {\ttfamily Studio\+::\+Update()} every frame. The number of audio sources is initialised at the start of the instrument and assigned to the variable {\ttfamily i\+Num\+Audio\+Sources}. This number is used to determine the size of the arrays {\ttfamily k\+Azimuths\mbox{[}\mbox{]}}, {\ttfamily k\+Elevations\mbox{[}\mbox{]}} and {\ttfamily k\+Distances\mbox{[}\mbox{]}}. These arrays are then populated in {\ttfamily channel\+Loop} using {\ttfamily chnget} to retrieve the data from named channels. The audio signals are then stored in the array {\ttfamily a\+Inst\+Sigs\mbox{[}\mbox{]}}. Here there is just one signal {\ttfamily ga\+Out}. Arrays for the left and right audio channels and distance values are then initialised. The distance values need to be smoothed out using {\ttfamily portk} as rapidly changing values will introduce discontinuities into the audio signal. The opcode {\ttfamily hrtfmove2} is used to apply H\+R\+TF filters to the audio source. It receives the audio signal, azimuth and elevation values as input and uses the data files {\ttfamily \char`\"{}hrtf-\/48000-\/left.\+dat\char`\"{}} and {\ttfamily \char`\"{}hrtf-\/48000-\/right.\+dat\char`\"{}} to generate dynamic 3D binaural audio signals. The sample rate is specified as 48k\+Hz so the overall Csound sample rate, {\ttfamily sr}, has to match this. The left and right signals are then divided by the distance values contained in {\ttfamily k\+Dist\+Vals\mbox{[}\mbox{]}}. The stereo signal is then output to the main output channel. This instrument needs to run continuously. This is achieved in the score section like so\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{<CsScore>}
+\DoxyCodeLine{}
+\DoxyCodeLine{f0  86400 ;keep csound running for a day}
+\DoxyCodeLine{}
+\DoxyCodeLine{i1 1 -\/1 }
+\DoxyCodeLine{}
+\DoxyCodeLine{i2 1 -\/1}
+\DoxyCodeLine{}
+\DoxyCodeLine{e}
+\DoxyCodeLine{</CsScore>}
+\end{DoxyCode}
+
+
+Here an {\ttfamily f0} statement is used to keep Csound running. Then the {\ttfamily i} statements specify a note length of -\/1 which means the instrument is always on.\hypertarget{md__r_e_a_d_m_e_autotoc_md14}{}\doxysubsection{Sends and Returns}\label{md__r_e_a_d_m_e_autotoc_md14}
+Data can be sent to and returned from Csound using the functions {\ttfamily Studio\+Tools\+::\+B\+Csound\+Send()} and {\ttfamily Studio\+Tools\+::\+B\+Csound\+Return()}.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{//setup sends to csound}
+\DoxyCodeLine{std::vector<const char*> sendNames;}
+\DoxyCodeLine{}
+\DoxyCodeLine{sendNames.push\_back("{}sineControlVal"{});}
+\DoxyCodeLine{m\_vSendVals.push\_back(m\_cspSineControlVal); }
+\DoxyCodeLine{}
+\DoxyCodeLine{sendNames.push\_back("{}randomVal"{});}
+\DoxyCodeLine{m\_vSendVals.push\_back(m\_cspRandVal);}
+\DoxyCodeLine{}
+\DoxyCodeLine{m\_pStTools-\/>BCsoundSend(csSession, sendNames, m\_vSendVals);}
+\DoxyCodeLine{}
+\DoxyCodeLine{//setup returns from csound }
+\DoxyCodeLine{std::vector<const char*> returnNames;}
+\DoxyCodeLine{}
+\DoxyCodeLine{returnNames.push\_back("{}pitchOut"{});}
+\DoxyCodeLine{m\_vReturnVals.push\_back(m\_pPitchOut);}
+\DoxyCodeLine{}
+\DoxyCodeLine{returnNames.push\_back("{}freqOut"{});}
+\DoxyCodeLine{m\_vReturnVals.push\_back(m\_pFreqOut);}
+\DoxyCodeLine{}
+\DoxyCodeLine{m\_pStTools-\/>BCsoundReturn(csSession, returnNames, m\_vReturnVals);   }
+\end{DoxyCode}
+
+
+A vector of type {\ttfamily const char$\ast$} is used to store the channel names. For send channels this vector is {\ttfamily send\+Names} and for return channels the vector is called {\ttfamily return\+Names}. These names must match the string arguments given to {\ttfamily chnget} and {\ttfamily chnset} in the {\ttfamily csd} file. The data values are stored in seperate member vectors named {\ttfamily m\+\_\+v\+Send\+Vals} and {\ttfamily m\+\_\+v\+Return\+Vals} respectively. These are declared in {\itshape Studio.\+hpp}. Csound pointers of type {\ttfamily M\+Y\+F\+L\+T$\ast$} are sent to Csound. The values can be assigned to specific elements in the send vector within {\ttfamily Studio\+::\+Update()}.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{//example control signal -\/ sine function}
+\DoxyCodeLine{//sent to shader and csound}
+\DoxyCodeLine{m\_fSineControlVal = sin(glfwGetTime() * 0.33f);}
+\DoxyCodeLine{*m\_vSendVals[0] = (MYFLT)m\_fSineControlVal;}
+\end{DoxyCode}
+
+
+For example, the {\ttfamily float m\+\_\+f\+Sine\+Control\+Val} is cast to {\ttfamily M\+Y\+F\+LT} and assigned to element 0 of {\ttfamily m\+\_\+v\+Send\+Vals}. This aligns with the setup code above in that the Csound pointer {\ttfamily m\+\_\+csp\+Sine\+Control\+Val} is the first value to be added to the vector. It follows then that the value intended for {\ttfamily m\+\_\+csp\+Rand\+Val} is referenced using {\ttfamily $\ast$m\+\_\+v\+Send\+Vals\mbox{[}1\mbox{]}}. The return values are accessed by referencing the specific element of the {\ttfamily m\+\_\+v\+Return\+Vals} vector.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{if(*m\_vReturnVals[0] > 0) m\_fTargetVal = *m\_vReturnVals[0]; }
+\end{DoxyCode}
+
+
+For example, element 0 is dereferenced here and assigned to the {\ttfamily float m\+\_\+f\+Target\+Val}. Once the channel names and data vectors are set up above, they are passed along with the {\ttfamily cs\+Session} pointer to {\ttfamily Studio\+Tools\+::\+B\+Csound\+Send()} and {\ttfamily Studio\+Tools\+::\+B\+Csound\+Return()}.\hypertarget{md__r_e_a_d_m_e_autotoc_md15}{}\doxysection{Graphics Renderer}\label{md__r_e_a_d_m_e_autotoc_md15}
+The graphics are rendered using Open\+GL and G\+L\+SL shaders. The shaders are set up specifically to allow for raymarching combined with raster graphics. This is to account for the rendering of virtual controllers within VR and to ensure they interact as expected with the raymarched graphics.\hypertarget{md__r_e_a_d_m_e_autotoc_md16}{}\doxysubsection{Shader Setup}\label{md__r_e_a_d_m_e_autotoc_md16}
+Just as all the audio is generated in the {\ttfamily csd} file, the shaders are set up to encourage the generation of all the visual material in the fragment shader. In {\ttfamily Studio\+::\+Setup()} the Open\+GL code necessary to set up a raymarching quad is called using\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{//setup quad to use for raymarching}
+\DoxyCodeLine{m\_pStTools-\/>RaymarchQuadSetup(shaderProg);}
+\end{DoxyCode}
+
+
+This sets up the quad vertices to be accessed in the vertex shader. The standard set up of the vertex shader is as follows\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\#version 410 }
+\DoxyCodeLine{}
+\DoxyCodeLine{layout(location = 0) in vec3 position;}
+\DoxyCodeLine{ }
+\DoxyCodeLine{uniform mat4 InvMVEP;}
+\DoxyCodeLine{}
+\DoxyCodeLine{out vec4 nearPos;}
+\DoxyCodeLine{out vec4 farPos;}
+\DoxyCodeLine{}
+\DoxyCodeLine{void main() }
+\DoxyCodeLine{\{}
+\DoxyCodeLine{    //********* code from https://encreative.blogspot.com/2019/05/computing-\/ray-\/origin-\/and-\/direction-\/from.html *******//}
+\DoxyCodeLine{}
+\DoxyCodeLine{    gl\_Position = vec4(position, 1.0);}
+\DoxyCodeLine{}
+\DoxyCodeLine{    //get 2D projection of this vertex in normalised device coordinates}
+\DoxyCodeLine{    vec2 ndcPos = gl\_Position.xy / gl\_Position.w;}
+\DoxyCodeLine{    }
+\DoxyCodeLine{    //compute rays start and end points in the unit cube defined by ndc's}
+\DoxyCodeLine{    nearPos = InvMVEP * vec4(ndcPos, -\/1.0, 1.0);}
+\DoxyCodeLine{    farPos = InvMVEP * vec4(ndcPos, 1.0, 1.0);}
+\DoxyCodeLine{\}}
+\end{DoxyCode}
+
+
+Here the vertex position is converted to normalised device coordinates in order to use the unit cube to calculate the beginning and end positions of the ray. These are then projected back into world space using the inverse model view eye projection matrix. The use of the term \textquotesingle{}eye\textquotesingle{} here is due to the extra matrix used in Open\+VR to calculate the offset angle between the eyes in the head mounted display (H\+MD). The near and far positions of the ray are then output to the fragment shader where the direction of the ray can be calculated. The vertex shader as it appears here does not need to be modified and can be re-\/used from project to project because the majority of the visual material is generated in the fragment shader. The default components of the fragment shader are as follows\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\#version 410  }
+\DoxyCodeLine{uniform mat4 MVEPMat;}
+\DoxyCodeLine{}
+\DoxyCodeLine{in vec4 nearPos;}
+\DoxyCodeLine{in vec4 farPos;}
+\DoxyCodeLine{}
+\DoxyCodeLine{layout(location = 0) out vec4 fragColour; }
+\DoxyCodeLine{layout(location = 1) out vec4 dataOut;}
+\DoxyCodeLine{}
+\DoxyCodeLine{void main()}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{    //************* ray setup code from }
+\DoxyCodeLine{    //https://encreative.blogspot.com/2019/05/computing-\/ray-\/origin-\/and-\/direction-\/from.html*/}
+\DoxyCodeLine{    }
+\DoxyCodeLine{    //set up the ray}
+\DoxyCodeLine{    vec3 rayOrigin = nearPos.xyz / nearPos.w;}
+\DoxyCodeLine{    vec3 rayEnd = farPos.xyz / farPos.w;}
+\DoxyCodeLine{    vec3 rayDir = rayEnd -\/ rayOrigin;}
+\DoxyCodeLine{    rayDir = normalize(rayDir); }
+\DoxyCodeLine{    }
+\DoxyCodeLine{    // raymarch the point}
+\DoxyCodeLine{    float dist = march(rayOrigin, rayDir);}
+\DoxyCodeLine{    vec3 pos = rayOrigin + dist * rayDir;}
+\DoxyCodeLine{}
+\DoxyCodeLine{    // calculate colour and lighting here}
+\DoxyCodeLine{    vec3 colour;}
+\DoxyCodeLine{}
+\DoxyCodeLine{    // gamma correction}
+\DoxyCodeLine{    colour = pow(colour, vec3(1.0/2.2));}
+\DoxyCodeLine{    }
+\DoxyCodeLine{    // Output to screen}
+\DoxyCodeLine{    fragColour = vec4(colour,1.0);}
+\DoxyCodeLine{}
+\DoxyCodeLine{    // Output to PBO}
+\DoxyCodeLine{    dataOut = fragColour;}
+\DoxyCodeLine{}
+\DoxyCodeLine{//-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}
+\DoxyCodeLine{// To calculate depth for use with rasterized material e.g. VR controllers}
+\DoxyCodeLine{//-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/-\/}
+\DoxyCodeLine{// code adapted from Michael Hvidtfeldt Christensen and James Susinno's blogs}
+\DoxyCodeLine{// http://jimbo00000.github.io/opengl/portable/programming/vr/perspective/matrixmath/2016/02/15/raymarching-\/and-\/rasterization.html}
+\DoxyCodeLine{// http://blog.hvidtfeldts.net/index.php/2014/01/combining-\/ray-\/tracing-\/and-\/polygons/}
+\DoxyCodeLine{}
+\DoxyCodeLine{    vec4 pClipSpace =  MVEPMat * vec4(pos, 1.0);}
+\DoxyCodeLine{    vec3 pNdc = vec3(pClipSpace.x / pClipSpace.w, pClipSpace.y / pClipSpace.w, pClipSpace.z / pClipSpace.w);}
+\DoxyCodeLine{    float ndcDepth = pNdc.z;}
+\DoxyCodeLine{    }
+\DoxyCodeLine{    float d = ((gl\_DepthRange.diff * ndcDepth) + gl\_DepthRange.near + gl\_DepthRange.far) / 2.0; }
+\DoxyCodeLine{    gl\_FragDepth = d;}
+\DoxyCodeLine{\}}
+\end{DoxyCode}
+
+
+The model view eye projection matrix is passed in as a uniform through the {\ttfamily Studio\+Tools\+::\+Raymarch\+Quad\+Setup()} function. The vectors {\ttfamily near\+Pos} and {\ttfamily far\+Pos} are passed in from the vertex shader. There are two output specified. The output at {\ttfamily location = 0}, {\ttfamily frag\+Colour}, sends the colour of the fragment to the default framebuffer which is then drawn to the screen. The output at {\ttfamily location = 1}, {\ttfamily data\+Out}, writes the data contained in it to a pixel buffer object which is then read back asynchronously to the C\+PU. This allows data to be sent from the fragment shader to be {\ttfamily Studio\+::\+Update()} where it can be manipulated further. In {\ttfamily main()} the direction and the origin of the ray are calculated before being used in a {\ttfamily march()} function. This function is not shown here as there are many ways to do this. The \textquotesingle{}hit\textquotesingle{} position is then calculated and used to determine the colour of the material. Gamma correction is applied before the colour vector is sent to the output. Although {\ttfamily frag\+Colour} is also sent to {\ttfamily data\+Out}, this does not need to be the case as any value can be output here. Finally, at the bottom of the shader, {\ttfamily pos} is transformed to clip space and then to normalised device coordinates. The {\ttfamily z} component is then used to calculate the depth {\ttfamily d} which is finally assigned to {\ttfamily gl\+\_\+\+Frag\+Depth}. For a discussion on how these calculations are derived see Michael Hvidtfeldt Christensen and James Sussino\textquotesingle{}s blogs linked above the code section. This bloack of code allows rasterised graphics to interact with raymarched graphics and is useful when rendering the default controllers in VR. Once the shaders are initialised, graphics are drawn to the screen in {\ttfamily Studio\+::\+Draw()}.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{m\_pStTools-\/>DrawStart(projMat, eyeMat, viewMat, shaderProg, translateVec);}
+\DoxyCodeLine{    }
+\DoxyCodeLine{glUniform1f(m\_gliSineControlValLoc, m\_fSineControlVal);}
+\DoxyCodeLine{glUniform1f(m\_gliPitchOutLoc, m\_fPitch);}
+\DoxyCodeLine{glUniform1f(m\_gliFreqOutLoc, *m\_vReturnVals[1]);}
+\DoxyCodeLine{}
+\DoxyCodeLine{m\_pStTools-\/>DrawEnd();}
+\end{DoxyCode}
+
+
+The function {\ttfamily Draw\+Start()} is accessed through the {\ttfamily m\+\_\+p\+St\+Tools} pointer. The projection matrix, eye matrix, view matrix, shader program handle and camera translation vector are passed to the function.\+Data can be passed to the shader here using {\ttfamily gl\+Uniform1f} or any of its variations. The uniform location handles are declared in {\ttfamily Studio\+::\+Setup()}. Finally, {\ttfamily Draw\+End()} is called which concludes the draw loop.\hypertarget{md__r_e_a_d_m_e_autotoc_md17}{}\doxysection{Mapping Overview}\label{md__r_e_a_d_m_e_autotoc_md17}
+As mentioned above, data can be mapped throughout the toolkit. Here is a brief overview of the functions used to map data.
+
+From {\ttfamily Studio()} to Csound\+:
+\begin{DoxyItemize}
+\item {\ttfamily Studio\+Tools\+::\+B\+Csound\+Send()} to {\ttfamily chnget}. From Csound to {\ttfamily Studio()}\+:
+\item {\ttfamily chnset} to {\ttfamily Studio\+Tools\+::\+B\+Csound\+Return()}. From {\ttfamily Studio()} to fragment shader\+:
+\item {\ttfamily gl\+Uniform1f} (and related Open\+GL calls \href{https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glUniform.xhtml}{\texttt{ https\+://www.\+khronos.\+org/registry/\+Open\+G\+L-\/\+Refpages/gl4/html/gl\+Uniform.\+xhtml}}) to {\ttfamily uniform ...}. From the fragment shader to {\ttfamily Studio()}\+:
+\item `out vec4 data\+Out' to {\ttfamily P\+B\+O\+Info\& pbo\+Info.\+pbo\+Ptr}.
+\end{DoxyItemize}\hypertarget{md__r_e_a_d_m_e_autotoc_md18}{}\doxysection{Machine Learning Walkthrough}\label{md__r_e_a_d_m_e_autotoc_md18}
+The Rapid\+Lib machine learning library is an integral part of the toolkit. Access to a neural network regression algorithm is provided through the functions {\ttfamily Studio\+::\+M\+L\+Regression\+Setup()} and {\ttfamily Studio\+::\+M\+L\+Regression\+Update()}. These functions will eventually be moved to {\ttfamily Studio\+Tools()} in order to keep {\ttfamily Studio()} as minimal as possible. {\ttfamily Studio\+::\+M\+L\+Regression\+Setup()} is called in {\ttfamily Studio\+::\+Setup()} and simply initialises various {\ttfamily bool}s and variables that are used in {\ttfamily Studio\+::\+M\+L\+Regression\+Update()}. {\ttfamily Studio\+::\+M\+L\+Regression\+Update()} is called in {\ttfamily Studio\+::\+Update()} and is passed the {\ttfamily machine\+Learning} struct which provides access to the machine learning controls. It is also passed the {\ttfamily pbo\+Info} struct which provides access to data returned from the fragment shader. Finally, it is passed {\ttfamily std\+::vector$<$M\+L\+Audio\+Parameter$>$ param\+Vec} which provdes access to discrete parameters that are to be processed by the neural network. {\ttfamily Studio\+::\+M\+L\+Regression\+Update()} is divided into several blocks of functionality. \begin{DoxyVerb}- Randomisation of parameters.
+- Recording of training examples.
+- Neural network training.
+- Running and halting of trained regression model.
+- Save trained model.
+- Load saved model.
+\end{DoxyVerb}
+
+
+The interactive machine learning (I\+ML) workflow is as follows\+: \begin{DoxyVerb}- Choose the input and output parameters for the neural network. 
+- Create input/output examples to train the neural network. The approach here is to randomise the parameters. There are many other approaches possible.
+- Record the training examples to create a training set.
+- Train the neural network.
+- Run the model.
+- Save the model.
+- Load a previously saved model next time.
+\end{DoxyVerb}
+
+
+Keyboard controls for {\ttfamily dev} mode\+: \begin{DoxyVerb}- Randomise parameters -> space bar.
+- Record training examples -> r.
+- Train neural network -> t.
+- Run trained model -> g.
+- Halt model -> h.
+- Save model -> k.
+- Load model -> l.
+\end{DoxyVerb}
+
+
+When using a VR system the controls can be mapped to the controller buttons using the Steam\+VR runtime interface. The machine learning functionality is discussed further below as it relates specifically to the \textquotesingle{}Cyclical Mapping Example\textquotesingle{}.\hypertarget{md__r_e_a_d_m_e_autotoc_md19}{}\doxysection{Example Walkthroughs}\label{md__r_e_a_d_m_e_autotoc_md19}
+This section describes the construction and execution of the examples. All of the examples are found in {\itshape Immersive\+A\+V/examples/}.\hypertarget{md__r_e_a_d_m_e_autotoc_md20}{}\doxysubsection{Audio Reactive}\label{md__r_e_a_d_m_e_autotoc_md20}
+This example demonstrates audio reactive mapping. The frequency is mapped from the audio engine to the visual structure.
+
+{\itshape {\bfseries{Link to video of example on You\+Tube}}}
+
+The file {\itshape audio\+Reactive\+\_\+example.\+csd} generates the audio tone. Below is the code for the {\itshape Example Instrument}.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{**************************************************}
+\DoxyCodeLine{instr 1 ; Example Instrument}
+\DoxyCodeLine{**************************************************}
+\DoxyCodeLine{}
+\DoxyCodeLine{kFreq   linseg  400, 2.0, 500, 2.0, 450, 4.0, 950, 5.0, 200}
+\DoxyCodeLine{}
+\DoxyCodeLine{        chnset  kFreq, "{}freqOut"{}}
+\DoxyCodeLine{}
+\DoxyCodeLine{aSig    oscil   0.7, kFreq}
+\DoxyCodeLine{gaOut = aSig}
+\DoxyCodeLine{}
+\DoxyCodeLine{endin}
+\end{DoxyCode}
+
+
+Here {\ttfamily chnset} is used to send the value {\ttfamily k\+Freq} to the {\ttfamily Studio()} class using the channel {\ttfamily \char`\"{}freq\+Out\char`\"{}}. The channel {\ttfamily \char`\"{}freq\+Out\char`\"{}} is declared in {\ttfamily Studio\+::\+Setup()}.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{//setup returns from Csound}
+\DoxyCodeLine{std::vector<const char*> returnNames;}
+\DoxyCodeLine{returnNames.push\_back("{}freqOut"{});}
+\DoxyCodeLine{}
+\DoxyCodeLine{m\_returnVals.push\_back(m\_pFreqOut);}
+\DoxyCodeLine{}
+\DoxyCodeLine{m\_pStTools-\/>BCsoundReturn(csSession, returnNames, m\_vReturnVals);}
+\end{DoxyCode}
+
+
+Here the string {\ttfamily \char`\"{}freq\+Out\char`\"{}} is pushed back into the vector {\ttfamily return\+Names}. The Csound pointer {\ttfamily m\+\_\+p\+Freq\+Out} points to the value returned from Csound. This is pushed back onto a member vector {\ttfamily return\+Vals}. These vectors are then used as arguments to the function {\ttfamily B\+Csound\+Return()} which sets up the channel.
+
+The frequency value is then sent to the frag shader using {\ttfamily gl\+Uniform1f()} which is called in {\ttfamily Studio\+::\+Draw()}.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{m\_pStTools-\/>DrawStart(projMat, eyeMat, viewMat, shaderProg, translateVec);}
+\DoxyCodeLine{glUniform1f(m\_gliFreqOutLoc, *m\_vReturnVals[1]);}
+\DoxyCodeLine{m\_pStTools-\/>DrawEnd();}
+\end{DoxyCode}
+
+
+The value is sent to the shader by dereferencing the specific element in the vector {\ttfamily m\+\_\+v\+Return\+Vals}. For the purposes of this walkthrough it is element 1 but in real use it depends in which order you push back elements in {\ttfamily Studio\+::\+Setup()}. The location of the uniform is given by the handle {\ttfamily m\+\_\+gli\+Freq\+Out\+Loc}. This is declared in {\ttfamily Studio\+::\+Setup()}.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{//shader uniforms}
+\DoxyCodeLine{m\_gliFreqOutLoc = glGetUniformLocation(shaderProg, "{}freqOut"{});}
+\end{DoxyCode}
+
+
+In the frag shader, the uniform {\ttfamily freq\+Out} is declared at the top. The value is then used to manupulate the size of the sphere in the distance estimator function.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{float DE(vec3 p)}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{    float rad = 1.0 * (1.0 / (freqOut * 0.01));}
+\DoxyCodeLine{    float sphereDist = sphereSDF(p, rad);}
+\DoxyCodeLine{    return sphereDist;}
+\DoxyCodeLine{\}}
+\end{DoxyCode}
+
+
+Here there is an inverse relationship between the value of {\ttfamily freq\+Out} and the radius of the sphere {\ttfamily rad}. Higher frequency values make the sphere smaller, lower frequency values make the sphere larger.\hypertarget{md__r_e_a_d_m_e_autotoc_md21}{}\doxysection{Simultaneous Data Mapping}\label{md__r_e_a_d_m_e_autotoc_md21}
+This example utilises the {\ttfamily Studio()} class to generate a stream of data. This data is then sent to the audio engine and fragment shader to simultaneously affect the audio and visuals.
+
+{\itshape {\bfseries{Link to video of example on You\+Tube}}}
+
+The data signal is initially generated in {\ttfamily Studio\+::\+Update()}.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{//example control signal -\/ sine function}
+\DoxyCodeLine{//sent to shader and csound}
+\DoxyCodeLine{m\_fSineControlVal = sin(glfwGetTime() * 0.33f);}
+\DoxyCodeLine{*m\_vSendVals[0] = (MYFLT)m\_fSineControlVal;}
+\end{DoxyCode}
+
+
+The sine control value is generated using {\ttfamily sin()}. Then it is cast to type {\ttfamily M\+Y\+F\+LT} and assigned to element 0 of the vector {\ttfamily m\+\_\+v\+Send\+Vals}. This element was assigned to the sine control signal in {\ttfamily Studio\+::\+Setup()}.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{//setup sends to csound}
+\DoxyCodeLine{std::vector<const char*> sendNames;}
+\DoxyCodeLine{sendNames.push\_back("{}sineControlVal"{});}
+\DoxyCodeLine{m\_vSendVals.push\_back(m\_cspSineControlVal);}
+\DoxyCodeLine{m\_pStTools-\/>BCsoundSend(csSession, sendNames, m\_vSendVals);}
+\end{DoxyCode}
+
+
+Here element 0 of {\ttfamily send\+Names} is assigned to {\ttfamily \char`\"{}sine\+Control\+Val\char`\"{}}. The next line then assignes the Csound pointer {\ttfamily m\+\_\+csp\+Sine\+Control\+Val} to element 0 of {\ttfamily m\+\_\+v\+Send\+Vals}. The elements in these two vectors need to be aligned or else the values will get paired with incorrectly names channels when they are received by Csound. Both vectors are then used as arguments for the function {\ttfamily B\+Csound\+Send()}. This sets up the send channel with the instance of Csound. The file {\itshape simultaneous\+Data\+Mapping.\+csd} receives the data stream through the channel named {\ttfamily \char`\"{}sine\+Control\+Val\char`\"{}}.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{********************************************************}
+\DoxyCodeLine{instr 1 ; Example Instrument}
+\DoxyCodeLine{********************************************************}
+\DoxyCodeLine{kSineControlVal     chnget      "{}sineControlVal"{}}
+\DoxyCodeLine{}
+\DoxyCodeLine{aSig        oscil   0.7, 400.0 * (1 / kSineControlVal)}
+\DoxyCodeLine{gaOut       aSig}
+\DoxyCodeLine{}
+\DoxyCodeLine{endin}
+\end{DoxyCode}
+
+
+Here the opcode {\ttfamily chnget} is used to assigne the control data to {\ttfamily k\+Sine\+Control\+Val}. This is then used to alter the frequency value. The sine data is also sent from {\ttfamily Studio\+::\+Draw()} to the frag shader.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{m\_pStTools-\/>DrawStart(projMat, eyeMat, viewMat, shaderProg, translateVec);}
+\DoxyCodeLine{glUniform1f(m\_gliSineControlValLoc, m\_fSineControlVal);}
+\DoxyCodeLine{m\_pStTools-\/>DrawEnd();}
+\end{DoxyCode}
+
+
+Here the float value is sent as a uniform using the {\ttfamily m\+\_\+gli\+Sine\+Control\+Val\+Loc} handle that was set up in {\ttfamily Studio\+::\+Setup()}.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{//shader uniforms}
+\DoxyCodeLine{m\_gliSineControlValLoc = glGetUniformLocation(shaderProg, "{}sineControlVal"{});}
+\end{DoxyCode}
+
+
+The name of the shader is specified as {\ttfamily \char`\"{}sine\+Control\+Val\char`\"{}} within the shader.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{uniform float sineControlVal;}
+\DoxyCodeLine{}
+\DoxyCodeLine{float DE(vec3 p)}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{    p.y *= 1.0 * sineControlVal;}
+\DoxyCodeLine{    float rad = 2.0;}
+\DoxyCodeLine{    float sphereDist = sphereSDF(p, rad);}
+\DoxyCodeLine{    return sphereDist;}
+\DoxyCodeLine{\}}
+\end{DoxyCode}
+
+
+Here {\ttfamily sine\+Control\+Val} is used to increase and decrease {\ttfamily p.\+y} which is the height of the sphere. The point {\ttfamily p} is then send to {\ttfamily sphere\+S\+D\+F()} which estimates the distance to the spere.\hypertarget{md__r_e_a_d_m_e_autotoc_md22}{}\doxysection{Cyclical Mapping Example}\label{md__r_e_a_d_m_e_autotoc_md22}
+This example demonstrates a method of mapping data in a cyclical way between the audio and visuals using a neural network based regression algorithm. Pixel data from the fragment shader is used as input into the neural network. Ocsillator frequency values are then output and sent to the audio engine. An F\+FT analysis is used to determine the pitch of the resulting audio signal. This pitch value is sent to the shader to inversely affect the size of the sphere. The pixel data changes accordingly and is sent back to the neural network beginning the cycle again.
+
+{\itshape {\bfseries{link to video of example on You\+Tube}}}
+
+The frequency of the audio signal is set up to be randomised. The random parameter is defined in {\ttfamily Studio\+::\+Update()} using the {\ttfamily M\+L\+Audio\+Parameter} struct.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{//run machine learning}
+\DoxyCodeLine{MLAudioParameter paramData;}
+\DoxyCodeLine{paramData.distributionLow = 400.0f;}
+\DoxyCodeLine{paramData.distributionHigh = 1000.0f;}
+\DoxyCodeLine{paramData.sendVecPosition = 1;}
+\DoxyCodeLine{std::vector<MLAudioParameter> paramVec;}
+\DoxyCodeLine{paramVec.push\_back(paramData);}
+\DoxyCodeLine{MLRegressionUpdate(machineLearning, pboInfo, paramVec);}
+\end{DoxyCode}
+
+
+The value will always be between {\ttfamily 400.\+0f} and {\ttfamily 1000.\+0f}. It is assigned to element number 1 in the vector {\ttfamily m\+\_\+v\+Send\+Vals}. This is declared in {\ttfamily Studio\+::\+Setup()} where the channel is named {\ttfamily \char`\"{}random\+Val\char`\"{}}. This allows Csound to receive the random value on this channel. The object {\ttfamily param\+Data} is then pushed back onto the vector {\ttfamily param\+Vec} and passed to {\ttfamily Studio\+::\+M\+L\+Regression\+Update()}. When the randomise button is pressed (space bar in dev mode), this random value is calculated and sent to Csound.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{for(int i = 0; i < params.size(); i++)}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{    std::uniform\_real\_distribution<float> distribution(params[i].distributionLow, params[i].distributionHigh);}
+\DoxyCodeLine{    std::default\_random\_engine generator(rd());}
+\DoxyCodeLine{    float val = distribution(generator);}
+\DoxyCodeLine{    *m\_vSendVals[params[i].sendVecPosition] = (MYFLT)val;}
+\DoxyCodeLine{\}}
+\end{DoxyCode}
+
+
+This {\ttfamily for} loop iterates through the vector {\ttfamily std\+::vector$<$M\+L\+Audio\+Parameter$>$ params}. For each parameter it calculates the {\ttfamily float val} within the given range. It then casts the value to {\ttfamily M\+Y\+F\+LT} and assigns it to the relevant position in the vector {\ttfamily m\+\_\+v\+Send\+Vals}. This assigns the value to the previously declared channel which is received in the file {\ttfamily cyclical\+Mapping\+\_\+example.\+csd}.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{;**************************************************************************************}
+\DoxyCodeLine{instr 1 ; Example Instrument}
+\DoxyCodeLine{;**************************************************************************************}
+\DoxyCodeLine{kRandomParam chnget "{}randomVal"{}}
+\DoxyCodeLine{}
+\DoxyCodeLine{aSig oscil .7, kRandomParam }
+\DoxyCodeLine{}
+\DoxyCodeLine{gaOut = aSig}
+\DoxyCodeLine{}
+\DoxyCodeLine{iFftSize = 1024}
+\DoxyCodeLine{iOverlap = iFftSize / 4 }
+\DoxyCodeLine{iWinSize = iFftSize }
+\DoxyCodeLine{iWinType = 1}
+\DoxyCodeLine{}
+\DoxyCodeLine{fSig    pvsanal aSig, iFftSize, iOverlap, iWinSize, iWinType}
+\DoxyCodeLine{}
+\DoxyCodeLine{kThresh = 0.1}
+\DoxyCodeLine{kPitch, kAmp    pvspitch fSig, kThresh}
+\DoxyCodeLine{}
+\DoxyCodeLine{    chnset  kPitch, "{}pitchOut"{}}
+\DoxyCodeLine{}
+\DoxyCodeLine{endin}
+\end{DoxyCode}
+
+
+Here the value recieved on the {\ttfamily \char`\"{}random\+Val\char`\"{}} channel is stored in {\ttfamily k\+Random\+Param}. This is then used as the frequency value for {\ttfamily oscil}. The signal {\ttfamily a\+Sig} is sent to the output. It is also passed to {\ttfamily pvsanal} where an F\+FT analysis converts the time domain signal to the frequency domain. This signal, {\ttfamily f\+Sig} is then passed to {\ttfamily pvspitch} which calculates its pitch and amplitude. The pitch value, {\ttfamily k\+Pitch} is then sent back to {\ttfamily Studio()} on the channel {\ttfamily \char`\"{}pitch\+Out\char`\"{}}, which was defined in {\ttfamily Studio\+::\+Setup()}. This data stream is then processed in {\ttfamily Studio\+::\+Update()}.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{// spectral pitch data processing}
+\DoxyCodeLine{m\_fCurrentFrame = glfwGetTime();}
+\DoxyCodeLine{m\_fDeltaTime = m\_fCurrentFrame -\/ m\_fLastFrame;  }
+\DoxyCodeLine{m\_fDeltaTime *= 1000.0f;}
+\DoxyCodeLine{if(*m\_vReturnVals[0] > 0) m\_fTargetVal = *m\_vReturnVals[0]; }
+\DoxyCodeLine{if(m\_fTargetVal > m\_fCurrentVal)}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{    m\_fCurrentVal += m\_fDeltaTime;}
+\DoxyCodeLine{\} else if(m\_fTargetVal <= m\_fCurrentVal)}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{    m\_fCurrentVal -\/= m\_fDeltaTime;}
+\DoxyCodeLine{\} else if(m\_fTargetVal == m\_fCurrentVal)}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{    m\_fCurrentVal = m\_fTargetVal;}
+\DoxyCodeLine{\}}
+\DoxyCodeLine{if(m\_fCurrentVal < 0.0f) m\_fCurrentVal = 0.0f;}
+\DoxyCodeLine{m\_fPitch = m\_fCurrentVal;}
+\end{DoxyCode}
+
+
+Here element 0 of {\ttfamily m\+\_\+v\+Return\+Vals\mbox{[}\mbox{]}} is dereferenced and assigned to the {\ttfamily float m\+\_\+f\+Target\+Val}. The values in the data stream can vary quickly. To create smooth visual movement, it is necessary to move gradually from one value to the next rather than instantly jump between values. The {\ttfamily m\+\_\+f\+Target\+Val} value is compared to the value represented by {\ttfamily m\+\_\+f\+Current\+Val}. If it is larger, {\ttfamily m\+\_\+f\+Current\+Val} is increased gradually by {\ttfamily m\+\_\+f\+Delta\+Time} increments each frame. These increments are calculated by taking the timestamp of the current frame and subtracting it from the timestamp of the next frame. This gives a constant value from frame to frame. If {\ttfamily m\+\_\+f\+Target\+Val} is less than {\ttfamily m\+\_\+f\+Current\+Val}, it is decreased by {\ttfamily m\+\_\+f\+Delta\+Time} increments each frame. If the two values are equal, then the value of {\ttfamily m\+\_\+f\+Target\+Val} is assigned to {\ttfamily m\+\_\+f\+Current\+Val}. Finally, {\ttfamily m\+\_\+f\+Current\+Val} is checked to make sure it is greater than zero before being assigned to {\ttfamily m\+\_\+f\+Pitch}. This {\ttfamily float} is passed to the shader through the uniform {\ttfamily \char`\"{}pitch\+Out\char`\"{}}.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{m\_pStTools-\/>DrawStart(projMat, eyeMat, viewMat, shaderProg, translateVec);}
+\DoxyCodeLine{glUniform1f(m\_gliPitchOutLoc, m\_fPitch);}
+\DoxyCodeLine{m\_pStTools-\/>DrawEnd();}
+\end{DoxyCode}
+
+
+In a similar way to the audio reactive example above, the uniform value is used to affect the size of the sphere.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{float DE(vec3 p)}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{    p.y -\/= 1.0;}
+\DoxyCodeLine{    float rad = 1.0 * (1.0 / (pitchOut * 0.01));}
+\DoxyCodeLine{    float sphereDist = sphereSDF(p, rad);}
+\DoxyCodeLine{    return sphereDist;}
+\DoxyCodeLine{\}}
+\end{DoxyCode}
+
+
+The value {\ttfamily pitch\+Out} is inversely related to the radius of the sphere which means the higher the pitch value the smaller the sphere. Conversely, the lower the pitch value, the larger the sphere. The fragment shader sends pixel colour data back to {\ttfamily Studio()} asynchronously using a pixel buffer object (P\+BO).
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{layout(location = 0) out vec4 fragColour; }
+\DoxyCodeLine{layout(location = 1) out vec4 dataOut;}
+\DoxyCodeLine{}
+\DoxyCodeLine{// Output to screen}
+\DoxyCodeLine{fragColour = vec4(colour,1.0);}
+\DoxyCodeLine{}
+\DoxyCodeLine{// Output to PBO}
+\DoxyCodeLine{dataOut = fragColour;}
+\end{DoxyCode}
+
+
+There are two outputs of type {\ttfamily vec4} specified in the fragment shader. The vector {\ttfamily frag\+Colour} at {\ttfamily location = 0} is the usual output of the fragment colour to the screen. The other output, {\ttfamily data\+Out}, writes the data to a P\+BO. In this example, the colour vector of the fragment is passed to it. The data in the P\+BO is then read back into memory on the C\+PU and is accessible from {\ttfamily Studio\+::\+Update()} through the struct {\ttfamily P\+B\+O\+Info}. This struct is then passed to {\ttfamily M\+L\+Regression\+Update()} where the data can be used as input to the neural network.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{if(machineLearning.bRecord)}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{    //shader values provide input to neural network}
+\DoxyCodeLine{    for(int i = 0; i < pboInfo.pboSize; i+=pboInfo.pboSize * 0.01)}
+\DoxyCodeLine{    \{}
+\DoxyCodeLine{        inputData.push\_back((double)pboInfo.pboPtr[i]);}
+\DoxyCodeLine{    \}}
+\DoxyCodeLine{}
+\DoxyCodeLine{    //neural network outputs to audio engine }
+\DoxyCodeLine{    for(int i = 0; i < params.size(); i++)}
+\DoxyCodeLine{    \{}
+\DoxyCodeLine{        outputData.push\_back((double)*m\_vSendVals[params[i].sendVecPosition]);}
+\DoxyCodeLine{    \}}
+\DoxyCodeLine{}
+\DoxyCodeLine{    trainingData.input = inputData;}
+\DoxyCodeLine{    trainingData.output = outputData;}
+\DoxyCodeLine{    trainingSet.push\_back(trainingData);}
+\DoxyCodeLine{}
+\DoxyCodeLine{    std::cout << "{}Recording Data"{} << std::endl;}
+\DoxyCodeLine{    inputData.clear();}
+\DoxyCodeLine{    outputData.clear();}
+\DoxyCodeLine{\}}
+\DoxyCodeLine{machineLearning.bRecord = false;}
+\end{DoxyCode}
+
+
+When a desired sound and visual pairing is found, they can then be recorded ({\ttfamily R} in {\ttfamily dev} mode) to create a training example. In this example you would be pairing the position of the sphere in the visual field and the perceived pitch of the tone. This process can be repeated as many times as needed to create a {\itshape training set}. When the record button is pressed, a {\ttfamily for loop} steps through the buffer in {\ttfamily pbo\+Info.\+pbo\+Size $\ast$ 0.\+01} increments. This is to ensure the number of input values is reduced to cut down on training time. The values are pushed back onto the vector {\ttfamily input\+Data}. The format of the shader data is {\ttfamily unsigned char}. Therefore each value will be between 0 and 255. In a real world situation these values should be normalised before they are used as training data. The next {\ttfamily for loop} iterates through the {\ttfamily params} vector and retrieves the {\ttfamily send\+Vec\+Position} of each one. Here there is only one parameter. This is then used as an index to the {\ttfamily m\+\_\+v\+Send\+Vals} vector. The value at this position in the vector is pushed back into the {\ttfamily output\+Data} vector. The input and output vectors are then added to the {\ttfamily training\+Data} struct and pushed back into the {\ttfamily training\+Set} vector. Once the training set is complete, the neural network is trained ({\ttfamily T} in {\ttfamily dev} mode). Once training is complete, the model can be activated by pressing the run button ({\ttfamily G} in {\ttfamily dev} mode) or deactivated by pressing the halt button ({\ttfamily H} in {\ttfamily dev} mode). The model can then be saved ({\ttfamily K} in {\ttfamily dev} mode) and loaded ({\ttfamily L} in {\ttfamily dev} mode) for easy future access. When not in {\ttfamily dev} mode the controls can be assigned to the controller buttons through the desktop interface.
+
+To summarize, when the neural network is trained and running, it is processing pixel colour values and mapping them to a specific frequency value. The audio is then analysed using an F\+FT and a pitch value is calculated. This pitch value is mapped to the size of the sphere. The changes in pixel values are then fed back into the neural network to produce another frequency value. This results in a continuous mapping of data between the audio and the visuals. In this example it results in a glitchy type audio effect and rapidly moving visuals that are tightly synchronised. 
