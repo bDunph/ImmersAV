@@ -124,7 +124,7 @@ ImmersAV is an open source toolkit for immersive audiovisual composition. It was
         - hrtf-48000-right.dat
 4. Navigate (cd) to ImmersAV/build/src/.
 5. To run an example project type the following into the terminal:
-    - With VR rendering:
+    - With VR rendering (NB. virtual reality rendering has not been tested on macOS and will almost certainly not work at the moment.):
         - ./avr audioReactive_example
     - Without VR (for development):
         - ./avr audioReactive_example -dev
