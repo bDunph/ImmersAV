@@ -406,13 +406,20 @@ The function `DrawStart()` is accessed through the `m_pStTools` pointer. The pro
 As mentioned above, data can be mapped throughout the toolkit. Here is a brief overview of the functions used to map data.
 
 From `Studio()` to Csound:
-- `StudioTools::BCsoundSend()` to `chnget`.
+
+	- `StudioTools::BCsoundSend()` to `chnget`.
+
 From Csound to `Studio()`:
-- `chnset` to `StudioTools::BCsoundReturn()`.
+
+	- `chnset` to `StudioTools::BCsoundReturn()`.
+
 From `Studio()` to fragment shader:
-- `glUniform1f` (and related OpenGL calls https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glUniform.xhtml) to `uniform ...`.
+
+	- `glUniform1f` (and related OpenGL calls https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glUniform.xhtml) to `uniform ...`.
+
 From the fragment shader to `Studio()`:
-- `out vec4 dataOut' to `PBOInfo& pboInfo.pboPtr`. 
+
+	- `out vec4 dataOut' to `PBOInfo& pboInfo.pboPtr`. 
 
 ## Machine Learning Walkthrough
 The RapidLib machine learning library is an integral part of the toolkit. Access to a neural network regression algorithm is provided through the functions `Studio::MLRegressionSetup()` and `Studio::MLRegressionUpdate()`. These functions will eventually be moved to `StudioTools()` in order to keep `Studio()` as minimal as possible. `Studio::MLRegressionSetup()` is called in `Studio::Setup()` and simply initialises various `bool`s and variables that are used in `Studio::MLRegressionUpdate()`. `Studio::MLRegressionUpdate()` is called in `Studio::Update()` and is passed the `machineLearning` struct which provides access to the machine learning controls. It is also passed the `pboInfo` struct which provides access to data returned from the fragment shader. Finally, it is passed `std::vector<MLAudioParameter> paramVec` which provdes access to discrete parameters that are to be processed by the neural network. `Studio::MLRegressionUpdate()` is divided into several blocks of functionality.
