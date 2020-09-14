@@ -3,9 +3,9 @@ by Bryan Dunphy
 
 ImmersAV is an open source toolkit for immersive audiovisual composition. It was built around a focused approach to composition based on generative audio, raymarching and interactive machine learning techniques. Here are two examples of work created with the toolkit:
 
-###[obj_#3](https://youtu.be/RdvezMCTt-I)
+[obj_#3](https://youtu.be/RdvezMCTt-I)
 
-###[Ag Fás Ar Ais Arís](https://youtu.be/LewHeC5e1fM)
+[Ag Fás Ar Ais Arís](https://youtu.be/LewHeC5e1fM)
 
 ## Aims:
 - Provide well defined, independent areas for generating audio and visual material.
