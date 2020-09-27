@@ -1,43 +1,43 @@
 {
 	"default_bindings" : [
       {
-         "binding_url" : "avr_iml_default_bindings.json",
+         "binding_url" : "immersAV_iml_default_bindings.json",
          "controller_type" : "vive_controller"
       }
    ],
    "actions" : [
       {
-         "name" : "/actions/avr/in/HideThisController",
+         "name" : "/actions/immersAV/in/HideThisController",
          "requirement" : "optional",
          "type" : "boolean"
       },
       {
-         "name" : "/actions/avr/in/triggerhaptic",
+         "name" : "/actions/immersAV/in/triggerhaptic",
          "requirement" : "optional",
          "type" : "vector1"
       },
       {
-         "name" : "/actions/avr/in/AnalogInput",
+         "name" : "/actions/immersAV/in/AnalogInput",
          "requirement" : "optional",
          "type" : "vector2"
       },
       {
-         "name" : "/actions/avr/in/Hand_Right",
+         "name" : "/actions/immersAV/in/Hand_Right",
          "requirement" : "suggested",
          "type" : "pose"
       },
       {
-         "name" : "/actions/avr/in/Hand_Left",
+         "name" : "/actions/immersAV/in/Hand_Left",
          "requirement" : "suggested",
          "type" : "pose"
       },
       {
-         "name" : "/actions/avr/out/haptic_left",
+         "name" : "/actions/immersAV/out/haptic_left",
          "requirement" : "suggested",
          "type" : "vibration"
       },
       {
-         "name" : "/actions/avr/out/haptic_right",
+         "name" : "/actions/immersAV/out/haptic_right",
          "requirement" : "suggested",
          "type" : "vibration"
       },
@@ -79,7 +79,7 @@
    ],
    "action_sets" : [
       {
-         "name" : "/actions/avr",
+         "name" : "/actions/immersAV",
          "usage" : "leftright"
       },
       {
@@ -89,13 +89,13 @@
    ],
    "localization" : [
       {
-         "/actions/avr/in/AnalogInput" : "Analog Input",
-         "/actions/avr/in/Hand_Left" : "Left Hand Pose",
-         "/actions/avr/in/Hand_Right" : "Right Hand Pose",
-         "/actions/avr/in/HideThisController" : "Hide this Controller",
-         "/actions/avr/in/triggerhaptic" : "Trigger Haptic Pulse",
-         "/actions/avr/out/haptic_left" : "Left Haptic Feedback",
-         "/actions/avr/out/haptic_right" : "Right Haptic Feedback",
+         "/actions/immersAV/in/AnalogInput" : "Analog Input",
+         "/actions/immersAV/in/Hand_Left" : "Left Hand Pose",
+         "/actions/immersAV/in/Hand_Right" : "Right Hand Pose",
+         "/actions/immersAV/in/HideThisController" : "Hide this Controller",
+         "/actions/immersAV/in/triggerhaptic" : "Trigger Haptic Pulse",
+         "/actions/immersAV/out/haptic_left" : "Left Haptic Feedback",
+         "/actions/immersAV/out/haptic_right" : "Right Haptic Feedback",
          "/actions/machineLearning/in/AnalogInput" : "Movement Controls",
          "/actions/machineLearning/in/LoadModel" : "Load Model",
          "/actions/machineLearning/in/RandomiseParameters" : "Randomise Audio and Visual Paramters",

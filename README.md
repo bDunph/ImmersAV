@@ -74,14 +74,14 @@ ImmersAV is an open source toolkit for immersive audiovisual composition. It was
     - From ImmersAV/data/: 
         - hrtf-48000-left.dat
         - hrtf-48000-right.dat
-        - avr_iml_actions.json
-        - avr_iml_default_bindings.json
+        - immersAV_iml_actions.json
+        - immersAV_iml_default_bindings.json
 4. Navigate (cd) to ImmersAV/build/src/.
 5. Type the following command to run the application with one of the examples:
     - With VR rendering:
-        - avr audioReactive_example
+        - immersAV audioReactive_example
     - Without VR rendering (for development):
-        - avr audioReactive_example -dev
+        - immersAV audioReactive_example -dev
 
 ## MacOS:
 
@@ -129,9 +129,9 @@ ImmersAV is an open source toolkit for immersive audiovisual composition. It was
 4. Navigate (cd) to ImmersAV/build/src/.
 5. To run an example project type the following into the terminal:
     - With VR rendering (NB. virtual reality rendering has not been tested on macOS and will almost certainly not work at the moment.):
-        - ./avr audioReactive_example
+        - ./immersAV audioReactive_example
     - Without VR (for development):
-        - ./avr audioReactive_example -dev
+        - ./immersAV audioReactive_example -dev
     
 ## Workflow Overview
 The ImmersAV toolkit is intended to provide three main contexts for creating and mapping material.

@@ -1,10 +1,10 @@
 cmake_minimum_required(VERSION 3.13)
 
-project(avr)
+project(ImmersAV)
 
 #The version number
-set (avr_VERSION_MAJOR 0)
-set (avr_VERSION_MINOR 1)
+set (immersAV_VERSION_MAJOR 0)
+set (immersAV_VERSION_MINOR 1)
 set (CMAKE_CXX_STANDARD 17)
 set (CMAKE_CXX_STANDARD_REQUIRED ON)
 set (CMAKE_CXX_EXTENSIONS OFF)
@@ -76,12 +76,12 @@ endif()
 #configure a header file to pass some of the CMake settings
 #to the source code
 configure_file(
-	"${PROJECT_SOURCE_DIR}/avrConfig.h.in"
-	"${PROJECT_BINARY_DIR}/avrConfig.h"
+	"${PROJECT_SOURCE_DIR}/immersAVConfig.h.in"
+	"${PROJECT_BINARY_DIR}/immersAVConfig.h"
 	)
 
 #add the binary tree to the search path for include files
-#so that we will find avrConfig.h
+#so that we will find immersAVConfig.h
 if(WIN32)
 include_directories(
 		
@@ -123,9 +123,9 @@ add_subdirectory(ValveTools)
 endif()
 
 if(APPLE)
-	add_executable(avr main.cpp CsoundSession.cpp CsoundSession.hpp lodepng.cpp lodepng.h)
-	target_link_libraries(avr AvrApp VR ${OPENVR} Visual Studio RapidLib JSON LibSVM GLEW::GLEW glfw OpenGL::GL ${CSOUND_API} ${CSOUND_PERF_THREAD})
+	add_executable(immersAV main.cpp CsoundSession.cpp CsoundSession.hpp lodepng.cpp lodepng.h)
+	target_link_libraries(immersAV AvrApp VR ${OPENVR} Visual Studio RapidLib JSON LibSVM GLEW::GLEW glfw OpenGL::GL ${CSOUND_API} ${CSOUND_PERF_THREAD})
 elseif(WIN32)
-	add_executable(avr main.cpp CsoundSession.cpp CsoundSession.hpp csPerfThread.cpp csPerfThread.hpp lodepng.cpp lodepng.h)
-	target_link_libraries(avr AvrApp VR OpenVR_target ValveTools Visual Studio RapidLib JSON LibSVM Glew_target ${GLFW_WIN} ${OPENGL_gl_LIBRARY} Csound_target Libsndfile_target)
+	add_executable(immersAV main.cpp CsoundSession.cpp CsoundSession.hpp csPerfThread.cpp csPerfThread.hpp lodepng.cpp lodepng.h)
+	target_link_libraries(immersAV AvrApp VR OpenVR_target ValveTools Visual Studio RapidLib JSON LibSVM Glew_target ${GLFW_WIN} ${OPENGL_gl_LIBRARY} Csound_target Libsndfile_target)
 endif()

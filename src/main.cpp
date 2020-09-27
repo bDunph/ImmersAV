@@ -1,5 +1,5 @@
-#include "avrConfig.h"
-#include "AvrApp.hpp"
+#include "immersAVConfig.h"
+#include "ImmersAVApp.hpp"
 
 #include <iostream>
 #include <memory>
@@ -7,26 +7,26 @@
 int main(int argc, char** argv){
 	
 	//output version number
-	std::cout << argv[0] <<  " Version " << avr_VERSION_MAJOR << "." << avr_VERSION_MINOR << std::endl; 
+	std::cout << argv[0] <<  " Version " << immersAV_VERSION_MAJOR << "." << immersAV_VERSION_MINOR << std::endl; 
 	
 //	if(argc <= 1){
 //		std::cout << "Error: need to provide name of csd file" << std::endl;
 //		return 1;
 //	}
 
-	std::unique_ptr<AvrApp> avr = std::make_unique<AvrApp>(argc, argv);
-	bool avrInit = avr->BInitialise();
+	std::unique_ptr<ImmersAVApp> immersAV = std::make_unique<ImmersAVApp>(argc, argv);
+	bool immersAVInit = immersAV->BInitialise();
 
-	if(!avrInit){
-		std::cout << "Error: Avr failed to initialise!" << std::endl;
+	if(!immersAVInit){
+		std::cout << "Error: ImmersAV failed to initialise!" << std::endl;
 		return 1;
 	}
 
-	std::cout << "Avr initialised" << std::endl;
+	std::cout << "ImmersAV initialised" << std::endl;
 
-	avr->RunMainLoop();
+	immersAV->RunMainLoop();
 	
-	avr->Exit();
+	immersAV->Exit();
 
 	return 0;
 }

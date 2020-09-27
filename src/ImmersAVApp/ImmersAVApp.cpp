@@ -1,4 +1,4 @@
-#include "AvrApp.hpp"
+#include "ImmersAVApp.hpp"
 
 #include <iostream>
 
@@ -8,7 +8,7 @@
 #endif
 
 //--------------------------------------------
-AvrApp::AvrApp(int argc, char** argv) : 
+ImmersAVApp::ImmersAVApp(int argc, char** argv) : 
 	m_pVR(nullptr), 
 	m_pGraphics(nullptr), 
 	m_pExFlags(nullptr),
@@ -56,7 +56,7 @@ AvrApp::AvrApp(int argc, char** argv) :
 }
 
 //--------------------------------------------
-bool AvrApp::BInitialise()
+bool ImmersAVApp::BInitialise()
 {
 	if(!m_pExFlags->flagDevMode)
 	{
@@ -124,7 +124,7 @@ bool AvrApp::BInitialise()
 //-----------------------------------------------------------------------------
 // Purpose:
 //-----------------------------------------------------------------------------
-void AvrApp::RunMainLoop()
+void ImmersAVApp::RunMainLoop()
 {
 
 	bool bQuit = false;
@@ -143,7 +143,7 @@ void AvrApp::RunMainLoop()
 //-----------------------------------------
 // Clean up each of the modules
 // ----------------------------------------
-void AvrApp::Exit(){
+void ImmersAVApp::Exit(){
 
 	if(!m_pExFlags->flagDevMode){
 		m_pVR->ExitVR();

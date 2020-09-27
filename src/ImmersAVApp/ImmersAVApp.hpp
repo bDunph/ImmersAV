@@ -1,5 +1,5 @@
-#ifndef AVRAPP_HPP
-#define AVRAPP_HPP
+#ifndef IMMERSAVAPP_HPP
+#define IMMERSAVAPP_HPP
 
 #include "VR_Manager.hpp"
 #include "Graphics.hpp"
@@ -9,10 +9,10 @@
 #include <string>
 #include <memory>
 
-class AvrApp {
+class ImmersAVApp {
 
 public:
-	AvrApp(int argc, char** argv);
+	ImmersAVApp(int argc, char** argv);
 	bool BInitialise();
 	void Exit();
 	void RunMainLoop();
