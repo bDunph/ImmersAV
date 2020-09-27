@@ -92,7 +92,7 @@ include_directories(
 		"${PROJECT_SOURCE_DIR}/Studio"
 		"${PROJECT_SOURCE_DIR}/Visual"
 		"${PROJECT_SOURCE_DIR}/VR"
-		"${PROJECT_SOURCE_DIR}/AvrApp"
+		"${PROJECT_SOURCE_DIR}/ImmersAVApp"
 		"${PROJECT_SOURCE_DIR}/ValveTools"
 	)
 elseif(APPLE)
@@ -114,7 +114,7 @@ endif()
 add_subdirectory(Studio)
 add_subdirectory(Visual)
 add_subdirectory(VR)
-add_subdirectory(AvrApp)
+add_subdirectory(ImmersAVApp)
 add_subdirectory(RapidLib)
 add_subdirectory(JSON)
 add_subdirectory(LibSVM)
@@ -124,8 +124,8 @@ endif()
 
 if(APPLE)
 	add_executable(immersAV main.cpp CsoundSession.cpp CsoundSession.hpp lodepng.cpp lodepng.h)
-	target_link_libraries(immersAV AvrApp VR ${OPENVR} Visual Studio RapidLib JSON LibSVM GLEW::GLEW glfw OpenGL::GL ${CSOUND_API} ${CSOUND_PERF_THREAD})
+	target_link_libraries(immersAV ImmersAVApp VR ${OPENVR} Visual Studio RapidLib JSON LibSVM GLEW::GLEW glfw OpenGL::GL ${CSOUND_API} ${CSOUND_PERF_THREAD})
 elseif(WIN32)
 	add_executable(immersAV main.cpp CsoundSession.cpp CsoundSession.hpp csPerfThread.cpp csPerfThread.hpp lodepng.cpp lodepng.h)
-	target_link_libraries(immersAV AvrApp VR OpenVR_target ValveTools Visual Studio RapidLib JSON LibSVM Glew_target ${GLFW_WIN} ${OPENGL_gl_LIBRARY} Csound_target Libsndfile_target)
+	target_link_libraries(immersAV ImmersAVApp VR OpenVR_target ValveTools Visual Studio RapidLib JSON LibSVM Glew_target ${GLFW_WIN} ${OPENGL_gl_LIBRARY} Csound_target Libsndfile_target)
 endif()

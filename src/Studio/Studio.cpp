@@ -310,7 +310,7 @@ void Studio::MLRegressionUpdate(MachineLearning& machineLearning, PBOInfo& pboIn
 	}
 		
 	// save model
-	std::string mySavedModel = "mySavedModel.json";
+	std::string mySavedModel = "mySavedModel_cyclicalEx.json";
 	bool currentSaveState = m_bPrevSaveState;
 	if(machineLearning.bSaveModel!= currentSaveState && machineLearning.bSaveModel == true)
 	{
