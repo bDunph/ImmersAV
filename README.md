@@ -590,6 +590,7 @@ Here `sineControlVal` is used to increase and decrease `p.y` which is the height
 This example demonstrates a method of mapping data in a cyclical way between the audio and visuals using a neural network based regression algorithm. Pixel data from the fragment shader is used as input into the neural network. Ocsillator frequency values are then output and sent to the audio engine. An FFT analysis is used to determine the pitch of the resulting audio signal. This pitch value is sent to the shader to inversely affect the size of the sphere. The pixel data changes accordingly and is sent back to the neural network beginning the cycle again.
 
 [***Example Video 1***](https://youtu.be/7E4uOEJfCEg)
+
 [***Example Video 2***](https://youtu.be/Zm7Ipx0HCCg)
 
 The frequency of the audio signal is set up to be randomised. The random parameter is defined in `Studio::Update()` using the `MLAudioParameter` struct.
