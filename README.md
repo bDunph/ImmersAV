@@ -459,7 +459,7 @@ This section describes the construction and execution of the examples. All of th
 ### Audio Reactive
 This example demonstrates audio reactive mapping. The frequency is mapped from the audio engine to the visual structure.
 
-***Link to video of example on YouTube***
+[***Example Video***](https://youtu.be/nAH7aKPWTZw)
 
 The file *audioReactive_example.csd* generates the audio tone. Below is the code for the *Example Instrument*.
 
