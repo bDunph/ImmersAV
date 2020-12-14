@@ -1,6 +1,8 @@
 # ImmersAV 
 by Bryan Dunphy
 
+With special thanks to Prof. Mick Grierson and Dr. Simon Katan for their guidance in the development of the toolkit.
+
 ImmersAV is an open source toolkit for immersive audiovisual composition. It was built around a focused approach to composition based on generative audio, raymarching and interactive machine learning techniques. Here are two examples of work created with the toolkit:
 
 [obj_#3](https://youtu.be/RdvezMCTt-I)
