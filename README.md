@@ -32,53 +32,59 @@ ImmersAV is an open source toolkit for immersive audiovisual composition. It was
 
 ### Setup:
 1. Download (64 bit):
-    - CMake:        https://cmake.org/download/
-    - OpenVR:       https://github.com/ValveSoftware/openvr
-    - Csound 6:     https://csound.com/download.html
-    - glm:          https://github.com/g-truc/glm/tags
-    - glfw3:        https://www.glfw.org/download.html
-    - glew:         http://glew.sourceforge.net/
-    - libsndfile:   http://www.mega-nerd.com/libsndfile/#Download
+    	- CMake:        		https://cmake.org/download/
+    	- OpenVR (version 1.0.17):	https://github.com/ValveSoftware/openvr/releases/tag/v1.0.17
+    	- Csound 6:     		https://csound.com/download.html
+    	- glm:          		https://github.com/g-truc/glm/tags
+    	- glfw3:        		https://www.glfw.org/download.html
+    	- glew:         		http://glew.sourceforge.net/
+    	- libsndfile:   		http://www.mega-nerd.com/libsndfile/#Download
 2. Install CMake and Csound according to their instructions.
 3. Create directories:
-    - ImmersAV/bin/
-    - ImmersAV/lib/ 
-    - ImmersAV/include/ 
-4. Move the following files to bin/:
-    - csound64.dll
-    - glew32.dll
-    - openvr_api.dll
-    - libsndfile-1.dll
-5. Move the following files to lib/:
-    - csound64.lib
-    - openvr_api.lib
-    - glew32.lib
-    - glfw3.lib
-    - libsndfile-1.lib
-6. Move header files from OpenVR to include/.
+    	- ImmersAV\bin\
+    	- ImmersAV\lib\ 
+    	- ImmersAV\include\ 
+4. Move the following files to bin\:
+	- csound64.dll
+    	- glew32.dll
+    	- openvr_api.dll
+    	- libsndfile-1.dll
+5. Move the following files to lib\:
+    	- csound64.lib
+    	- openvr_api.lib
+    	- glew32.lib
+    	- glfw3.lib
+    	- libsndfile-1.lib
+6. Move the following files to include\:
+	- all files from 'openvr-1.0.17\headers\' (copy the files themselves and not the containing folder)
+	- sndfile.h from 'C:\Program Files\Mega-Nerd\libsndfile\include\' (location of this folder is specified during installation of libsndfile)
+	- glfw3.h from 'glfw-3.3.2.bin.WIN64\include\GLFW\'
+	- glm\ directory from 'glm\' (this is the entire glm directory under the top glm root)
+	- GL\ directory from 'glew-2.1.0\include\'
+	- csound\ directory from 'C:Program Files\Csound64_x64\include\'
 
 ### Build and run using the Visual Studio command line:
 
 1. Run the newCmakeBuild.bat script.
 2. Use the following commands to build the project:
-    - cd build/
+    - cd build\
     - nmake
-3. Move the following files to ImmersAV/build/src/:
-    - From ImmersAV/bin/:
+3. Move the following files to ImmersAV\build\src\:
+    - From ImmersAV\bin\:
         - csound64.dll
         - openvr_api.dll
         - glew32.dll
         - libsndfile-1.dll
-    - From ImmersAV/examples/:
+    - From ImmersAV\examples\:
         - *_example.csd
         - *_example.vert
         - *_example.frag
-    - From ImmersAV/data/: 
+    - From ImmersAV\data\: 
         - hrtf-48000-left.dat
         - hrtf-48000-right.dat
         - immersAV_iml_actions.json
         - immersAV_iml_default_bindings.json
-4. Navigate (cd) to ImmersAV/build/src/.
+4. Navigate (cd) to ImmersAV\build\src\.
 5. Type the following command to run the application with one of the examples:
     - With VR rendering:
         - immersAV audioReactive_example
