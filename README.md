@@ -32,13 +32,13 @@ ImmersAV is an open source toolkit for immersive audiovisual composition. It was
 
 ### Setup:
 1. Download (64 bit):
-    	- CMake:        		https://cmake.org/download/
-    	- OpenVR (version 1.0.17):	https://github.com/ValveSoftware/openvr/releases/tag/v1.0.17
-    	- Csound 6:     		https://csound.com/download.html
-    	- glm:          		https://github.com/g-truc/glm/tags
-    	- glfw3:        		https://www.glfw.org/download.html
-    	- glew:         		http://glew.sourceforge.net/
-    	- libsndfile:   		http://www.mega-nerd.com/libsndfile/#Download
+    - CMake:        		https://cmake.org/download/
+    - OpenVR (version 1.0.17):	https://github.com/ValveSoftware/openvr/releases/tag/v1.0.17
+    - Csound 6:     		https://csound.com/download.html
+    - glm:          		https://github.com/g-truc/glm/tags
+    - glfw3:        		https://www.glfw.org/download.html
+    - glew:         		http://glew.sourceforge.net/
+    - libsndfile:   		http://www.mega-nerd.com/libsndfile/#Download
 2. Install CMake and Csound according to their instructions.
 3. Create directories:
     	- ImmersAV\bin\
