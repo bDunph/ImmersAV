@@ -44,18 +44,18 @@ ImmersAV is an open source toolkit for immersive audiovisual composition. It was
     	- ImmersAV\bin\
     	- ImmersAV\lib\ 
     	- ImmersAV\include\ 
-4. Move the following files to bin\:
+4. Move the following files to bin\\:
 	- csound64.dll
     	- glew32.dll
     	- openvr_api.dll
     	- libsndfile-1.dll
-5. Move the following files to lib\:
-    	- csound64.lib
-    	- openvr_api.lib
-    	- glew32.lib
-    	- glfw3.lib
-    	- libsndfile-1.lib
-6. Move the following files to include\:
+5. Move the following files to lib\\:
+    - csound64.lib
+    - openvr_api.lib
+    - glew32.lib
+    - glfw3.lib
+    - libsndfile-1.lib
+6. Move the following files to include\\:
 	- all files from 'openvr-1.0.17\headers\' (copy the files themselves and not the containing folder)
 	- sndfile.h from 'C:\Program Files\Mega-Nerd\libsndfile\include\' (location of this folder is specified during installation of libsndfile)
 	- glfw3.h from 'glfw-3.3.2.bin.WIN64\include\GLFW\'
