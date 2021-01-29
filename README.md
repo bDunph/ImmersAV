@@ -46,9 +46,9 @@ ImmersAV is an open source toolkit for immersive audiovisual composition. It was
     - ImmersAV\include\ 
 4. Move the following files to bin\\:
 	- csound64.dll
-    	- glew32.dll
-    	- openvr_api.dll
-    	- libsndfile-1.dll
+    - glew32.dll
+    - openvr_api.dll
+    - libsndfile-1.dll
 5. Move the following files to lib\\:
     - csound64.lib
     - openvr_api.lib
