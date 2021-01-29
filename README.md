@@ -40,7 +40,7 @@ ImmersAV is an open source toolkit for immersive audiovisual composition. It was
     - glew:         		http://glew.sourceforge.net/
     - libsndfile:   		http://www.mega-nerd.com/libsndfile/#Download
 2. Install CMake and Csound according to their instructions.
-3. Create directories\\:
+3. Create directories:
     - ImmersAV\bin\
     - ImmersAV\lib\ 
     - ImmersAV\include\ 
