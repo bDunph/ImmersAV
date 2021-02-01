@@ -21,12 +21,12 @@ ImmersAV is an open source toolkit for immersive audiovisual composition. It was
 - OpenVR (version 1.0.17)
 - Csound6 (64 bit) 
 - OpenGL4 (Currently 4.1)
-- glm 
+- glm (0.9.9.8)
 - glfw3 (3.3.2)
 - Glew (2.1.0)
-- CMake3
+- CMake3 (3.19.4)
 - RapidLib
-- libsndfile
+- libsndfile (1.0.28)
 
 ## Windows:
 
