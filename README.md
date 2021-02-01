@@ -18,12 +18,12 @@ ImmersAV is an open source toolkit for immersive audiovisual composition. It was
 - Allow for direct rendering on a VR headset.
 
 ## Dependencies:
-- OpenVR
-- Csound6
-- OpenGL4
-- glm
-- glfw3
-- Glew
+- OpenVR (version 1.0.17)
+- Csound6 (64 bit) 
+- OpenGL4 (Currently 4.1)
+- glm 
+- glfw3 (3.3.2)
+- Glew (2.1.0)
 - CMake3
 - RapidLib
 - libsndfile
@@ -37,7 +37,7 @@ ImmersAV is an open source toolkit for immersive audiovisual composition. It was
     - Csound 6:     		https://csound.com/download.html
     - glm:          		https://github.com/g-truc/glm/tags
     - glfw3:        		https://www.glfw.org/download.html
-    - glew:         		http://glew.sourceforge.net/
+    - glew:         		http://glew.sourceforge.net/ (download the Windows 64 bit binary from the link on this page)
     - libsndfile:   		http://www.mega-nerd.com/libsndfile/#Download
 2. Install CMake and Csound according to their instructions.
 3. Create directories:
@@ -64,12 +64,13 @@ ImmersAV is an open source toolkit for immersive audiovisual composition. It was
 	- csound\ directory from 'C:Program Files\Csound64_x64\include\'
 
 ### Build and run using the Visual Studio command line:
-
-1. Run the newCmakeBuild.bat script.
-2. Use the following commands to build the project:
+1. Type 'x64 Native Command Prompt for VS2019' into the search bar in the bottom left of the desktop screen.
+2. Open the command prompt and navigate to the ImmersAV root folder using 'cd path\to\folder\'.
+3. Run the newCmakeBuild.bat script.
+4. Use the following commands to build the project:
     - cd build\
     - nmake
-3. Move the following files to ImmersAV\build\src\:
+5. Move the following files to ImmersAV\build\src\:
     - From ImmersAV\bin\:
         - csound64.dll
         - openvr_api.dll
@@ -84,14 +85,16 @@ ImmersAV is an open source toolkit for immersive audiovisual composition. It was
         - hrtf-48000-right.dat
         - immersAV_iml_actions.json
         - immersAV_iml_default_bindings.json
-4. Navigate (cd) to ImmersAV\build\src\.
-5. Type the following command to run the application with one of the examples:
+6. Navigate (cd) to ImmersAV\build\src\.
+7. Type the following command to run the application with one of the examples:
     - With VR rendering:
         - immersAV audioReactive_example
     - Without VR rendering (for development):
         - immersAV audioReactive_example -dev
 
 ## MacOS:
+
+### Note that VR rendering has not been tested on macOS and will almost certainly not work. However you will still be able to run the toolkit in -dev mode ###
 
 ### Setup:
 1. Download (64 bit):
