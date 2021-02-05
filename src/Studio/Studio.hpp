@@ -56,17 +56,30 @@ private:
 	
 	MYFLT* m_pPitchOut;
 	MYFLT* m_pFreqOut;
-	MYFLT* m_cspSineControlVal;
-	MYFLT* m_cspRandVal;
 
-	GLint m_gliSineControlValLoc;
-	GLint m_gliPitchOutLoc;
-	GLint m_gliFreqOutLoc;
-	
+	// audio parameters for machine learning
+	MYFLT* m_cspGrainFreq;
+	MYFLT* m_cspGrainPhase;
+	MYFLT* m_cspRandFreq;
+	MYFLT* m_cspRandPhase;
+	MYFLT* m_cspGrainDur;
+	MYFLT* m_cspGrainDensity;
+	MYFLT* m_cspGrainFreqVariationDistrib;
+	MYFLT* m_cspGrainPhaseVariationDistrib;
+
+	// visual parameters for machine learning
+	GLint m_gliSizeLoc;
+	GLint m_gliLowFreqValScalingAmountLoc;
+	GLint m_gliThetaScaleLoc;
+	GLint m_gliPhiScaleLoc;
+
+	float m_fSize;
+	float m_fLowFreqValScalingAmount;
+	float m_fThetaScale;
+	float m_fPhiScale;
+
 	//control variables
 	bool m_bFirstLoop; 
-	float m_fSineControlVal;
-	float m_fPitch;
 	float m_fDeltaTime;
 	float m_fLastFrame;
 	float m_fCurrentFrame;

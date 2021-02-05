@@ -35,11 +35,29 @@ bool Studio::Setup(std::string csd, GLuint shaderProg)
 	//setup sends to csound
 	std::vector<const char*> sendNames;
 
-	sendNames.push_back("sineControlVal");
-	m_vSendVals.push_back(m_cspSineControlVal);	
+	sendNames.push_back("grainFreq");
+	m_vSendVals.push_back(m_cspGrainFreq);	
 
-	sendNames.push_back("randomVal");
-	m_vSendVals.push_back(m_cspRandVal);
+	sendNames.push_back("grainPhase");
+	m_vSendVals.push_back(m_cspGrainPhase);
+
+	sendNames.push_back("randFreq");
+	m_vSendVals.push_back(m_cspRandFreq);
+	
+	sendNames.push_back("randPhase");
+	m_vSendVals.push_back(m_cspRandPhase);
+
+	sendNames.push_back("grainDur");
+	m_vSendVals.push_back(m_cspGrainDur);
+
+	sendNames.push_back("grainDensity");
+	m_vSendVals.push_back(m_cspGrainDensity);
+
+	sendNames.push_back("grainFreqVariationDistrib");
+	m_vSendVals.push_back(m_cspGrainFreqVariationDistrib);
+
+	sendNames.push_back("grainPhaseVariationDistrib");
+	m_vSendVals.push_back(m_cspGrainFreqVariationDistrib);
 
 	m_pStTools->BCsoundSend(csSession, sendNames, m_vSendVals);
 
@@ -58,9 +76,10 @@ bool Studio::Setup(std::string csd, GLuint shaderProg)
 	m_pStTools->RaymarchQuadSetup(shaderProg);
 	
 	//shader uniforms
-	m_gliSineControlValLoc = glGetUniformLocation(shaderProg, "sineControlVal");
-	m_gliPitchOutLoc = glGetUniformLocation(shaderProg, "pitchOut");
-	m_gliFreqOutLoc = glGetUniformLocation(shaderProg, "freqOut");
+	m_gliSizeLoc = glGetUniformLocation(shaderProg, "size");
+	m_gliLowFreqValScalingAmountLoc = glGetUniformLocation(shaderProg, "lowFreqVal");
+	m_gliThetaScaleLoc = glGetUniformLocation(shaderProg, "thetaScale");
+	m_gliPhiScaleLoc = glGetUniformLocation(shaderProg, "phiScale");
 	
 	//machine learning setup
 	MLRegressionSetup();
@@ -97,7 +116,7 @@ void Studio::Update(glm::mat4 viewMat, MachineLearning& machineLearning, glm::ve
 		m_fCurrentVal = m_fTargetVal;
 	}
 	if(m_fCurrentVal < 0.0f) m_fCurrentVal = 0.0f;
-	m_fPitch = m_fCurrentVal;
+	//m_fPitch = m_fCurrentVal;
 	
 	// example sound source at origin
 	StudioTools::SoundSourceData soundSource1;
@@ -110,8 +129,8 @@ void Studio::Update(glm::mat4 viewMat, MachineLearning& machineLearning, glm::ve
 
 	//example control signal - sine function
 	//sent to shader and csound
-	m_fSineControlVal = sin(glfwGetTime() * 0.33f);
-	*m_vSendVals[0] = (MYFLT)m_fSineControlVal;
+	//m_fSineControlVal = sin(glfwGetTime() * 0.33f);
+	//*m_vSendVals[0] = (MYFLT)m_fSineControlVal;
 
 	//run machine learning
 	MLAudioParameter paramData;
@@ -132,9 +151,9 @@ void Studio::Draw(glm::mat4 projMat, glm::mat4 viewMat, glm::mat4 eyeMat, GLuint
 {
 	m_pStTools->DrawStart(projMat, eyeMat, viewMat, shaderProg, translateVec);
 	
-	glUniform1f(m_gliSineControlValLoc, m_fSineControlVal);
-	glUniform1f(m_gliPitchOutLoc, m_fPitch);
-	glUniform1f(m_gliFreqOutLoc, *m_vReturnVals[1]);
+	//glUniform1f(m_gliSineControlValLoc, m_fSineControlVal);
+	//glUniform1f(m_gliPitchOutLoc, m_fPitch);
+	//glUniform1f(m_gliFreqOutLoc, *m_vReturnVals[1]);
 
 	m_pStTools->DrawEnd();
 
