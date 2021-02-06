@@ -59,21 +59,21 @@ endin
 instr 2 ; Granular Instrument 
 ;**************************************************************************************
 
-;kCps	chnget	"grainFreq"
-;kPhs	chnget	"grainPhase"
-;kFmd	chnget	"randFreq"
+kCps	chnget	"grainFreq"
+kPhs	chnget	"grainPhase"
+kFmd	chnget	"randFreq"
 ;kPmd	chnget	"randPhase"
 ;kGDur	chnget	"grainDur"
-;kDens	chnget	"grainDensity"
+kDens	chnget	"grainDensity"
 ;kFrPow	chnget	"grainFreqVariationDistrib"
 ;kPrPow	chnget	"grainPhaseVariationDistrib"
 
-kCps = 300
-kPhs = 0.5
-kFmd = 250
+;kCps = 300
+;kPhs = 0.5
+;kFmd = 250
 kPmd = 0.5
 kGDur = 0.1
-kDens = 250
+;kDens = 250
 kFrPow = 0.2
 kPrPow = 0.2
 

@@ -44,20 +44,8 @@ bool Studio::Setup(std::string csd, GLuint shaderProg)
 	sendNames.push_back("randFreq");
 	m_vSendVals.push_back(m_cspRandFreq);
 	
-	sendNames.push_back("randPhase");
-	m_vSendVals.push_back(m_cspRandPhase);
-
-	sendNames.push_back("grainDur");
-	m_vSendVals.push_back(m_cspGrainDur);
-
 	sendNames.push_back("grainDensity");
 	m_vSendVals.push_back(m_cspGrainDensity);
-
-	sendNames.push_back("grainFreqVariationDistrib");
-	m_vSendVals.push_back(m_cspGrainFreqVariationDistrib);
-
-	sendNames.push_back("grainPhaseVariationDistrib");
-	m_vSendVals.push_back(m_cspGrainFreqVariationDistrib);
 
 	m_pStTools->BCsoundSend(csSession, sendNames, m_vSendVals);
 
@@ -100,6 +88,7 @@ void Studio::Update(glm::mat4 viewMat, MachineLearning& machineLearning, glm::ve
 	//if(!m_bFirstLoop)
 	//std::cout << (double)pboInfo.pboPtr[0] << std::endl;
 
+	
 	// spectral pitch data processing
 	m_fCurrentFrame = glfwGetTime();
 	m_fDeltaTime = m_fCurrentFrame - m_fLastFrame;	
@@ -132,14 +121,80 @@ void Studio::Update(glm::mat4 viewMat, MachineLearning& machineLearning, glm::ve
 	//m_fSineControlVal = sin(glfwGetTime() * 0.33f);
 	//*m_vSendVals[0] = (MYFLT)m_fSineControlVal;
 
-	//run machine learning
-	MLAudioParameter paramData;
-	paramData.distributionLow = 400.0f;
-	paramData.distributionHigh = 1000.0f;
-	paramData.sendVecPosition = 1;
-	std::vector<MLAudioParameter> paramVec;
-	paramVec.push_back(paramData);
-	MLRegressionUpdate(machineLearning, pboInfo, paramVec);	
+	//send audiovisual parameters to machine learning
+	std::vector<AVParameter> paramVec;
+
+	//visual params
+	AVParameter size;
+	size.distributionLow = 0.1f;
+	size.distributionHigh = 0.8f;
+	size.isAudio = false;
+	size.visualParam = &m_fSize;
+	paramVec.push_back(size);
+
+	AVParameter lowFreqValScalingAmount;
+	lowFreqValScalingAmount.distributionLow = 2.0f;
+	lowFreqValScalingAmount.distributionHigh = 100.0f;
+	lowFreqValScalingAmount.isAudio = false;
+	lowFreqValScalingAmount.visualParam = &m_fLowFreqValScalingAmount;
+	paramVec.push_back(lowFreqValScalingAmount);
+
+	AVParameter thetaScale;
+	thetaScale.distributionLow = 0.1f;
+	thetaScale.distributionHigh = 1.0f;
+	thetaScale.isAudio = false;
+	thetaScale.visualParam = &m_fThetaScale;
+	paramVec.push_back(thetaScale);
+
+	AVParameter phiScale;
+	phiScale.distributionLow = 0.1f;
+	phiScale.distributionHigh = 1.0f;
+	phiScale.isAudio = false;
+	phiScale.visualParam = &m_fPhiScale;
+	paramVec.push_back(phiScale);
+
+	// audio params
+	AVParameter grainFreq;
+	grainFreq.distributionLow = 50.0f;
+	grainFreq.distributionHigh = 100.0f;
+	grainFreq.isAudio = true;
+	grainFreq.sendVecPosition = 0;
+	paramVec.push_back(grainFreq);
+
+	AVParameter grainPhase;
+	grainPhase.distributionLow = 0.0f;
+	grainPhase.distributionHigh = 1.0f;
+	grainPhase.isAudio = true;
+	grainPhase.sendVecPosition = 1;
+	paramVec.push_back(grainPhase);
+
+	AVParameter randFreq;
+	randFreq.distributionLow = 20.0f;
+	randFreq.distributionHigh = 500.0f;
+	randFreq.isAudio = true;
+	randFreq.sendVecPosition = 2;
+	paramVec.push_back(randFreq);
+
+	AVParameter grainDensity;
+	grainDensity.distributionLow = 50.0f;
+	grainDensity.distributionHigh = 500.0f;
+	grainDensity.isAudio = true;
+	grainDensity.sendVecPosition = 3;
+	paramVec.push_back(grainDensity);
+
+	// controller data to send to machine learning
+	ControllerData data;
+	data.worldPos_0 = controllerWorldPos_0;
+	data.worldPos_1 = controllerWorldPos_1;
+	data.quat_0 = controllerQuat_0;
+	data.quat_1 = controllerQuat_1;
+
+	// if in dev mode take the relative position of the mandelbulb to the camera as 
+	// input to the neural network 
+	glm::vec4 coords =  viewMat * sourcePosWorldSpace;
+	data.devWorldPos = glm::vec3(coords.x, coords.y, coords.z);
+
+	MLRegressionUpdate(machineLearning, pboInfo, paramVec, data);	
 }
 //*********************************************************************************************
 
@@ -151,9 +206,10 @@ void Studio::Draw(glm::mat4 projMat, glm::mat4 viewMat, glm::mat4 eyeMat, GLuint
 {
 	m_pStTools->DrawStart(projMat, eyeMat, viewMat, shaderProg, translateVec);
 	
-	//glUniform1f(m_gliSineControlValLoc, m_fSineControlVal);
-	//glUniform1f(m_gliPitchOutLoc, m_fPitch);
-	//glUniform1f(m_gliFreqOutLoc, *m_vReturnVals[1]);
+	glUniform1f(m_gliSizeLoc, m_fSize);
+	glUniform1f(m_gliLowFreqValScalingAmountLoc, m_fLowFreqValScalingAmount);
+	glUniform1f(m_gliThetaScaleLoc, m_fThetaScale);
+	glUniform1f(m_gliPhiScaleLoc, m_fPhiScale);
 
 	m_pStTools->DrawEnd();
 
@@ -184,7 +240,7 @@ void Studio::MLRegressionSetup()
 	m_bModelTrained = false;
 }
 
-void Studio::MLRegressionUpdate(MachineLearning& machineLearning, PBOInfo& pboInfo, std::vector<MLAudioParameter>& params)
+void Studio::MLRegressionUpdate(MachineLearning& machineLearning, PBOInfo& pboInfo, std::vector<AVParameter>& params, ControllerData& controllerData)
 {
 
 	bool currentRandomState = m_bPrevRandomState;
@@ -195,14 +251,21 @@ void Studio::MLRegressionUpdate(MachineLearning& machineLearning, PBOInfo& pboIn
 		//random device
 		std::random_device rd;
 
-		//random audio params
+		//random params
 		for(int i = 0; i < params.size(); i++)
 		{
 
 			std::uniform_real_distribution<float> distribution(params[i].distributionLow, params[i].distributionHigh);
 			std::default_random_engine generator(rd());
 			float val = distribution(generator);
-			*m_vSendVals[params[i].sendVecPosition] = (MYFLT)val;		
+			if(params[i].isAudio)
+			{
+				*m_vSendVals[params[i].sendVecPosition] = (MYFLT)val;		
+			}
+			else
+			{
+				*params[i].visualParam = val;
+			}
 		}
 			
 	}
@@ -212,15 +275,46 @@ void Studio::MLRegressionUpdate(MachineLearning& machineLearning, PBOInfo& pboIn
 	if(machineLearning.bRecord)
 	{
 		//shader values provide input to neural network
-		for(int i = 0; i < pboInfo.pboSize; i+=pboInfo.pboSize * 0.01)
+		//for(int i = 0; i < pboInfo.pboSize; i+=pboInfo.pboSize * 0.01)
+		//{
+		//	inputData.push_back((double)pboInfo.pboPtr[i]);
+		//}
+		if(machineLearning.bDevMode)
 		{
-			inputData.push_back((double)pboInfo.pboPtr[i]);
+			inputData.push_back((double)controllerData.devWorldPos.x);
+			inputData.push_back((double)controllerData.devWorldPos.y);
+			inputData.push_back((double)controllerData.devWorldPos.z);
 		}
-
+		else
+		{
+			// controller data provides input to the neural network
+			inputData.push_back((double)controllerData.worldPos_0.x); //0
+			inputData.push_back((double)controllerData.worldPos_0.y); //1
+			inputData.push_back((double)controllerData.worldPos_0.z); //2
+			inputData.push_back((double)controllerData.worldPos_1.x); //3
+			inputData.push_back((double)controllerData.worldPos_1.y); //4
+			inputData.push_back((double)controllerData.worldPos_1.z); //5
+			inputData.push_back((double)controllerData.quat_0.w); //6
+			inputData.push_back((double)controllerData.quat_0.x); //7
+			inputData.push_back((double)controllerData.quat_0.y); //8
+			inputData.push_back((double)controllerData.quat_0.z); //9
+			inputData.push_back((double)controllerData.quat_1.w); //10
+			inputData.push_back((double)controllerData.quat_1.x); //11
+			inputData.push_back((double)controllerData.quat_1.y); //12
+			inputData.push_back((double)controllerData.quat_1.z); //13
+		}
+	
 		//neural network outputs to audio engine 
 		for(int i = 0; i < params.size(); i++)
 		{
-			outputData.push_back((double)*m_vSendVals[params[i].sendVecPosition]);
+			if(!params[i].isAudio)
+			{
+				outputData.push_back((double) *params[i].visualParam); // 0 - 3
+			}
+			else
+			{
+				outputData.push_back((double)*m_vSendVals[params[i].sendVecPosition]); // 4 - 7
+			}
 		}
 
 		trainingData.input = inputData;
@@ -258,18 +352,29 @@ void Studio::MLRegressionUpdate(MachineLearning& machineLearning, PBOInfo& pboIn
 			std::vector<double> modelOut;
 			std::vector<double> modelIn;
 
-			for(int i = 0; i < pboInfo.pboSize; i+=pboInfo.pboSize * 0.01)
-			{
-				modelIn.push_back((double)pboInfo.pboPtr[i]); 
-			}
+			//for(int i = 0; i < pboInfo.pboSize; i+=pboInfo.pboSize * 0.01)
+			//{
+			//	modelIn.push_back((double)pboInfo.pboPtr[i]); 
+			//}
 			
+			modelIn.push_back((double)controllerData.devWorldPos.x);
+			modelIn.push_back((double)controllerData.devWorldPos.y);
+			modelIn.push_back((double)controllerData.devWorldPos.z);
+
 			modelOut = staticRegression.run(modelIn);
 			
 			for(int i = 0; i < modelOut.size(); i++)
 			{
 				if(modelOut[i] > params[i].distributionHigh) modelOut[i] = params[i].distributionHigh;
 				if(modelOut[i] < params[i].distributionLow) modelOut[i] = params[i].distributionLow;
-				*m_vSendVals[params[i].sendVecPosition] = (MYFLT)modelOut[i];
+				if(!params[i].isAudio)
+				{
+					*params[i].visualParam = modelOut[i];
+				}
+				else
+				{
+					*m_vSendVals[params[i].sendVecPosition] = (MYFLT)modelOut[i];
+				}
 			}
 			
 			std::cout << "Model Running" << std::endl;
@@ -289,10 +394,26 @@ void Studio::MLRegressionUpdate(MachineLearning& machineLearning, PBOInfo& pboIn
 			std::vector<double> modelOut;
 			std::vector<double> modelIn;
 
-			for(int i = 0; i < pboInfo.pboSize; i+=pboInfo.pboSize * 0.01)
-			{
-				modelIn.push_back((double)pboInfo.pboPtr[i]); 
-			}
+			//for(int i = 0; i < pboInfo.pboSize; i+=pboInfo.pboSize * 0.01)
+			//{
+			//	modelIn.push_back((double)pboInfo.pboPtr[i]); 
+			//}
+
+			// controller data provides input to the neural network
+			modelIn.push_back((double)controllerData.worldPos_0.x); //0
+			modelIn.push_back((double)controllerData.worldPos_0.y); //1
+			modelIn.push_back((double)controllerData.worldPos_0.z); //2
+			modelIn.push_back((double)controllerData.worldPos_1.x); //3
+			modelIn.push_back((double)controllerData.worldPos_1.y); //4
+			modelIn.push_back((double)controllerData.worldPos_1.z); //5
+			modelIn.push_back((double)controllerData.quat_0.w); //6
+			modelIn.push_back((double)controllerData.quat_0.x); //7
+			modelIn.push_back((double)controllerData.quat_0.y); //8
+			modelIn.push_back((double)controllerData.quat_0.z); //9
+			modelIn.push_back((double)controllerData.quat_1.w); //10
+			modelIn.push_back((double)controllerData.quat_1.x); //11
+			modelIn.push_back((double)controllerData.quat_1.y); //12
+			modelIn.push_back((double)controllerData.quat_1.z); //13
 
 			modelOut = staticRegression.run(modelIn);
 			
@@ -300,7 +421,14 @@ void Studio::MLRegressionUpdate(MachineLearning& machineLearning, PBOInfo& pboIn
 			{
 				if(modelOut[i] > params[i].distributionHigh) modelOut[i] = params[i].distributionHigh;;
 				if(modelOut[i] < params[i].distributionLow) modelOut[i] = params[i].distributionLow;
-				*m_vSendVals[params[i].sendVecPosition] = (MYFLT)modelOut[i];
+				if(!params[i].isAudio)
+				{
+					*params[i].visualParam = modelOut[i];
+				}
+				else
+				{
+					*m_vSendVals[params[i].sendVecPosition] = (MYFLT)modelOut[i];
+				}
 			}
 
 			bool prevRunMsgState = m_bCurrentRunMsgState;

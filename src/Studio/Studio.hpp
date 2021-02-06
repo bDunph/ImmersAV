@@ -33,19 +33,30 @@ public:
 		bool bDevMode;
 	};
 
-	struct MLAudioParameter 
+	struct AVParameter 
 	{
 		float distributionLow;
 		float distributionHigh;
 		int sendVecPosition;
+		bool isAudio;
+		float* visualParam;
 	};
+
+	struct ControllerData
+	{
+		glm::vec3 worldPos_0;
+		glm::vec3 worldPos_1;
+		glm::quat quat_0;
+		glm::quat quat_1;
+		glm::vec3 devWorldPos;
+	};	
 
 	bool Setup(std::string csd, GLuint shaderProg);
 	void Update(glm::mat4 viewMat, MachineLearning& machineLearning, glm::vec3 controllerWorldPos_0, glm::vec3 controllerWorldPos_1, glm::quat controllerQuat_0, glm::quat controllerQuat_1, PBOInfo& pboInfo);
 	void Draw(glm::mat4 projMat, glm::mat4 viewMat, glm::mat4 eyeMat, GLuint mengerProg, glm::vec3 translateVec);
 	bool BCsoundReturn(CsoundSession* _session, std::vector<const char*>& returnName, std::vector<MYFLT*>& returnVal);
 	void MLRegressionSetup();
-	void MLRegressionUpdate(MachineLearning& machineLearning, PBOInfo& pboInfo, std::vector<MLAudioParameter>& params);
+	void MLRegressionUpdate(MachineLearning& machineLearning, PBOInfo& pboInfo, std::vector<AVParameter>& params, ControllerData& controllerData);
 	void Exit();
 
 private:
@@ -58,14 +69,10 @@ private:
 	MYFLT* m_pFreqOut;
 
 	// audio parameters for machine learning
-	MYFLT* m_cspGrainFreq;
-	MYFLT* m_cspGrainPhase;
-	MYFLT* m_cspRandFreq;
-	MYFLT* m_cspRandPhase;
-	MYFLT* m_cspGrainDur;
-	MYFLT* m_cspGrainDensity;
-	MYFLT* m_cspGrainFreqVariationDistrib;
-	MYFLT* m_cspGrainPhaseVariationDistrib;
+	MYFLT* m_cspGrainFreq; // 4
+	MYFLT* m_cspGrainPhase; // 5
+	MYFLT* m_cspRandFreq; // 6
+	MYFLT* m_cspGrainDensity; // 7
 
 	// visual parameters for machine learning
 	GLint m_gliSizeLoc;
@@ -73,10 +80,10 @@ private:
 	GLint m_gliThetaScaleLoc;
 	GLint m_gliPhiScaleLoc;
 
-	float m_fSize;
-	float m_fLowFreqValScalingAmount;
-	float m_fThetaScale;
-	float m_fPhiScale;
+	float m_fSize; // 0
+	float m_fLowFreqValScalingAmount; // 1
+	float m_fThetaScale; // 2
+	float m_fPhiScale; // 3
 
 	//control variables
 	bool m_bFirstLoop; 

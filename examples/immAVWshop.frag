@@ -44,8 +44,8 @@ float mandelbulbSDF(vec3 pos) {
     	    	if (r>1.5) break;
 
 		// convert to polar coordinates
-    	    	theta = acos(z.y/r);// * thetaScale;
-     	    	phi = atan(z.z,z.x);// * phiScale;
+    	    	theta = acos(z.y/r) * thetaScale;
+     	    	phi = atan(z.z,z.x) * phiScale;
 
 		// length of the running complex derivative
     	    	//dr =  pow(r, Power-1.0)*Power*dr*(0.7+lowFreqVal*fftBinValScale) + 1.0;
@@ -86,7 +86,7 @@ float sceneSDF(vec3 p)
 	planeDist = planeSDF(newPos + vec3(0.0, 2.0, 0.0), PLANE_NORMAL);
 
 	//mandelDist = mandelbulbSDF(p + vec3(0.0, -3.0, 0.0));
-	mandelDist = mandelbulbSDF(p);
+	mandelDist = mandelbulbSDF(p / size) * size;
 
 	return min(mandelDist, planeDist);
 }
