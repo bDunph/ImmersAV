@@ -68,11 +68,11 @@ bool ImmersAVApp::BInitialise()
 			std::cout << "Error: OpenVR system not initialised!" << std::endl;
 			return false;
 		} 
-		else if(!m_pVR->BInitCompositor())
-		{
-			std::cout << "Error: OpenVR compositor not initialised!" << std::endl;
-			return false;
-		} 
+		//else if(!m_pVR->BInitCompositor())
+		//{
+		//	std::cout << "Error: OpenVR compositor not initialised!" << std::endl;
+		//	return false;
+		//} 
 		else if(!m_pVR->BSetupCameras())
 		{ 
 			std::cout << "Error: Cameras not set up" << std::endl;

@@ -58,14 +58,12 @@ endin
 ;**************************************************************************************
 instr 2 ; Granular Instrument 
 ;**************************************************************************************
-
-kCps	chnget	"grainFreq"
-kPhs	chnget	"grainPhase"
-kFmd	chnget	"randFreq"
-kDens	chnget	"grainDensity"
-
+kCps = 300
+kPhs = 0.5
+kFmd = 250
 kPmd = 0.5
 kGDur = 0.1
+kDens = 250
 kFrPow = 0.2
 kPrPow = 0.2
 
@@ -84,9 +82,6 @@ kres linseg 0.1, p3 * 0.2, 0.3, p3 * 0.4, 0.25, p3 * 0.2, 0.5, p3 * 0.2, 0.35	;v
 afil moogladder aOut3, kfe, kres
 
 gaGranularOut = afil * kAmp
-;aGranularOut = afil * kAmp
-
-	;outs	aGranularOut, aGranularOut 
 
 endin
 

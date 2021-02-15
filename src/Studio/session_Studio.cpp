@@ -33,30 +33,16 @@ bool Studio::Setup(std::string csd, GLuint shaderProg)
 	}
 
 	//setup sends to csound
-	std::vector<const char*> sendNames;
+	std::vector<const char*> sendNames;	
 
-	sendNames.push_back("grainFreq");
-	m_vSendVals.push_back(m_cspGrainFreq);	
-
-	sendNames.push_back("grainPhase");
-	m_vSendVals.push_back(m_cspGrainPhase);
-
-	sendNames.push_back("randFreq");
-	m_vSendVals.push_back(m_cspRandFreq);
-	
-	sendNames.push_back("grainDensity");
-	m_vSendVals.push_back(m_cspGrainDensity);
+	/* define sends here */
 
 	m_pStTools->BCsoundSend(csSession, sendNames, m_vSendVals);
 
 	//setup returns from csound 
 	std::vector<const char*> returnNames;
 
-	returnNames.push_back("pitchOut");
-	m_vReturnVals.push_back(m_pPitchOut);
-
-	returnNames.push_back("freqOut");
-	m_vReturnVals.push_back(m_pFreqOut);
+	/* define returns here */
 
 	m_pStTools->BCsoundReturn(csSession, returnNames, m_vReturnVals);	
 	
@@ -64,10 +50,8 @@ bool Studio::Setup(std::string csd, GLuint shaderProg)
 	m_pStTools->RaymarchQuadSetup(shaderProg);
 	
 	//shader uniforms
-	m_gliSizeLoc = glGetUniformLocation(shaderProg, "size");
-	m_gliLowFreqValScalingAmountLoc = glGetUniformLocation(shaderProg, "lowFreqVal");
-	m_gliThetaScaleLoc = glGetUniformLocation(shaderProg, "thetaScale");
-	m_gliPhiScaleLoc = glGetUniformLocation(shaderProg, "phiScale");
+	
+	/* define shader uniforms here */
 	
 	//machine learning setup
 	MLRegressionSetup();
@@ -116,84 +100,21 @@ void Studio::Update(glm::mat4 viewMat, MachineLearning& machineLearning, glm::ve
 
 	m_pStTools->SoundSourceUpdate(soundSources, viewMat);
 
-	//example control signal - sine function
-	//sent to shader and csound
-	//m_fSineControlVal = sin(glfwGetTime() * 0.33f);
-	//*m_vSendVals[0] = (MYFLT)m_fSineControlVal;
-
-	//send audiovisual parameters to machine learning
+	/* send audiovisual parameters to MLRegressionUpdate() for
+	randomisation and neural network output */
 	std::vector<AVParameter> paramVec;
 
-	//visual params
-	AVParameter size;
-	size.distributionLow = 0.1f;
-	size.distributionHigh = 0.8f;
-	size.isAudio = false;
-	size.visualParam = &m_fSize;
-	paramVec.push_back(size);
+	/* visual params */
 
-	AVParameter lowFreqValScalingAmount;
-	lowFreqValScalingAmount.distributionLow = 2.0f;
-	lowFreqValScalingAmount.distributionHigh = 100.0f;
-	lowFreqValScalingAmount.isAudio = false;
-	lowFreqValScalingAmount.visualParam = &m_fLowFreqValScalingAmount;
-	paramVec.push_back(lowFreqValScalingAmount);
+	/* audio params */
 
-	AVParameter thetaScale;
-	thetaScale.distributionLow = 0.1f;
-	thetaScale.distributionHigh = 1.0f;
-	thetaScale.isAudio = false;
-	thetaScale.visualParam = &m_fThetaScale;
-	paramVec.push_back(thetaScale);
-
-	AVParameter phiScale;
-	phiScale.distributionLow = 0.1f;
-	phiScale.distributionHigh = 1.0f;
-	phiScale.isAudio = false;
-	phiScale.visualParam = &m_fPhiScale;
-	paramVec.push_back(phiScale);
-
-	// audio params
-	AVParameter grainFreq;
-	grainFreq.distributionLow = 50.0f;
-	grainFreq.distributionHigh = 100.0f;
-	grainFreq.isAudio = true;
-	grainFreq.sendVecPosition = 0;
-	paramVec.push_back(grainFreq);
-
-	AVParameter grainPhase;
-	grainPhase.distributionLow = 0.0f;
-	grainPhase.distributionHigh = 1.0f;
-	grainPhase.isAudio = true;
-	grainPhase.sendVecPosition = 1;
-	paramVec.push_back(grainPhase);
-
-	AVParameter randFreq;
-	randFreq.distributionLow = 20.0f;
-	randFreq.distributionHigh = 500.0f;
-	randFreq.isAudio = true;
-	randFreq.sendVecPosition = 2;
-	paramVec.push_back(randFreq);
-
-	AVParameter grainDensity;
-	grainDensity.distributionLow = 50.0f;
-	grainDensity.distributionHigh = 500.0f;
-	grainDensity.isAudio = true;
-	grainDensity.sendVecPosition = 3;
-	paramVec.push_back(grainDensity);
-
-	// controller data to send to machine learning
+	/* controller data to send to machine learning */
 	ControllerData data;
-	data.worldPos_0 = controllerWorldPos_0;
-	data.worldPos_1 = controllerWorldPos_1;
-	data.quat_0 = controllerQuat_0;
-	data.quat_1 = controllerQuat_1;
 
-	// if in dev mode take the relative position of the mandelbulb to the camera as 
-	// input to the neural network 
-	glm::vec4 coords =  viewMat * sourcePosWorldSpace;
-	data.devWorldPos = glm::vec3(coords.x, coords.y, coords.z);
+	/* if in dev mode take the relative position of the mandelbulb to the camera as 
+	input to the neural network */
 
+	/* pass the relevant structs and vectors to MLRegressionUpdate()*/
 	MLRegressionUpdate(machineLearning, pboInfo, paramVec, data);	
 }
 //*********************************************************************************************
@@ -387,8 +308,7 @@ void Studio::MLRegressionUpdate(MachineLearning& machineLearning, PBOInfo& pboIn
 			std::cout << "Model Stopped" << std::endl;
 		}
 		m_bPrevHaltState = machineLearning.bHaltModel;
-	} 
-	else 
+	} else 
 	{
 		if(machineLearning.bRunModel && m_bModelTrained)
 		{

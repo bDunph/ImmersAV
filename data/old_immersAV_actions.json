@@ -1,0 +1,112 @@
+{
+    "default_bindings": [
+        {
+            "controller_type" : "vive_controller",   
+            "binding_url" : "immersAV_bindings_vive_controller.json"
+        },
+        {
+            "controller_type" : "generic",
+            "binding_url" : "immersAV_bindings_generic.json"
+        }
+    ],
+    "actions": [
+        { 
+            "name" : "/actions/immersAV/in/HideThisController",
+            "requirement" : "optional",
+            "type" : "boolean"
+        },
+        {
+            "name" : "/actions/immersAV/in/TriggerHaptic",
+            "requirement" : "optional",
+            "type" : "vector1"
+        },
+        {
+            "name" : "/actions/immersAV/in/AnalogInput",
+            "requirement" : "optional",
+            "type" : "vector2"
+        },
+        {
+            "name" : "/actions/immersAV/in/Hand_Right",
+            "requirement" : "mandatory",
+            "type" : "pose"
+        },
+        {
+            "name" : "/actions/immersAV/in/Hand_Left",
+            "requirement" : "mandatory",
+            "type" : "pose"
+        },
+        {
+            "name" : "/actions/immersAV/out/Haptic_Left",
+            "requirement" : "suggested",
+            "type" : "vibration"
+        },
+        {
+            "name" : "/actions/immersAV/out/Haptic_Right",
+            "requirement" : "suggested",
+            "type" : "vibration"
+        },
+        {
+	        "name" : "/actions/immersAV/in/MovementControls",
+            "requirement" : "suggested",
+            "type" : "vector2"
+        },
+        {
+            "name" : "/actions/immersAV/in/RandomiseParameters",
+            "requirement" : "suggested",
+            "type" : "boolean"
+        },
+        {
+            "name" : "/actions/immersAV/in/RecordTrainingExample",
+            "requirement" : "suggested",
+            "type" : "boolean"
+        },
+        {
+            "name" : "/actions/immersAV/in/TrainModel",
+            "requirement" : "suggested",
+            "type" : "boolean"
+        },
+        {
+            "name" : "/actions/immersAV/in/RunModel",
+            "requirement" : "suggested",
+            "type" : "boolean"
+        },
+        {
+            "name" : "/actions/machinelearning/in/SaveModel",
+            "requirement" : "suggested",
+            "type" : "boolean"
+        },
+        {
+            "name" : "/actions/immersAV/in/LoadModel",
+            "requirement" : "suggested",
+            "type" : "boolean"
+        }
+    ],
+    "action_sets" : [
+        {
+            "name" : "/actions/immersAV",
+            "usage" : "leftright"
+        }
+    ],
+    "localization" : [
+        {
+            "language_tag" : "en_US",
+
+            "/actions/immersAV" : "ImmersAV Actions",
+
+            "/actions/immersAV/in/AnalogInput" : "Analog Input",
+            "/actions/immersAV/in/Hand_Left" : "Left Hand Pose",
+            "/actions/immersAV/in/Hand_Right" : "Right Hand Pose",
+            "/actions/immersAV/in/HideThisController" : "Hide this Controller",
+            "/actions/immersAV/in/TriggerHaptic" : "Trigger Haptic Pulse",
+            "/actions/immersAV/out/Haptic_Left" : "Left Haptic Feedback",
+            "/actions/immersAV/out/Haptic_Right" : "Right Haptic Feedback",
+            "/actions/immersAV/in/AnalogInput" : "Movement Controls",
+            "/actions/immersAV/in/LoadModel" : "Load Model",
+            "/actions/immersAV/in/RandomiseParameters" : "Randomise Audio and Visual Paramters",
+            "/actions/immersAV/in/RecordTrainingExample" : "Record A Training Example",
+            "/actions/immersAV/in/RunModel" : "Run Model",
+            "/actions/immersAV/in/SaveModel" : "Save Model",
+            "/actions/immersAV/in/TrainModel" : "Train Model", 
+        }
+    ]
+}

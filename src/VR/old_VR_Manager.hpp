@@ -91,14 +91,13 @@ private:
 	std::vector<CGLRenderModel*> m_vecRenderModels;
 	
 #ifdef __APPLE__
-	// immersAV actions
 	VRActionHandle_t m_actionHideThisController = vr::k_ulInvalidActionHandle;
 	VRActionHandle_t m_actionTriggerHaptic = vr::k_ulInvalidActionHandle;
 	VRActionHandle_t m_actionAnalongInput = vr::k_ulInvalidActionHandle;
 	
-	VRActionSetHandle_t m_actionSetImmersAV = vr::k_ulInvalidActionSetHandle;
+	VRActionSetHandle_t m_actionSetAvr = vr::k_ulInvalidActionSetHandle;
 
-	
+	//machine learning actions
 	VRActionHandle_t m_actionRandomParameters = vr::k_ulInvalidActionHandle;
 	VRActionHandle_t m_actionRecordTrainingExample = vr::k_ulInvalidActionHandle;
 	VRActionHandle_t m_actionTrainModel = vr::k_ulInvalidActionHandle;
@@ -107,14 +106,16 @@ private:
 	VRActionHandle_t m_actionLoadModel = vr::k_ulInvalidActionHandle;
 	VRActionHandle_t m_actionMoveCam = vr::k_ulInvalidActionHandle;
 
+	VRActionSetHandle_t m_actionSetMachineLearning = vr::k_ulInvalidActionSetHandle;
 #elif _WIN32
-	// immersAV actions
+	//generic actions
 	vr::VRActionHandle_t m_actionHideThisController = vr::k_ulInvalidActionHandle;
 	vr::VRActionHandle_t m_actionTriggerHaptic = vr::k_ulInvalidActionHandle;
 	vr::VRActionHandle_t m_actionAnalongInput = vr::k_ulInvalidActionHandle;
 
-	vr::VRActionSetHandle_t m_actionSetImmersAV = vr::k_ulInvalidActionSetHandle;
+	vr::VRActionSetHandle_t m_actionSetAvr = vr::k_ulInvalidActionSetHandle;
 
+	//machine learning actions
 	vr::VRActionHandle_t m_actionRandomParameters = vr::k_ulInvalidActionHandle;
 	vr::VRActionHandle_t m_actionRecordTrainingExample = vr::k_ulInvalidActionHandle;
 	vr::VRActionHandle_t m_actionTrainModel = vr::k_ulInvalidActionHandle;
@@ -123,6 +124,7 @@ private:
 	vr::VRActionHandle_t m_actionLoadModel = vr::k_ulInvalidActionHandle;
 	vr::VRActionHandle_t m_actionMoveCam = vr::k_ulInvalidActionHandle;
 
+	vr::VRActionSetHandle_t m_actionSetMachineLearning = vr::k_ulInvalidActionSetHandle;
 #endif
 
 	//machine learning bools from vive controller

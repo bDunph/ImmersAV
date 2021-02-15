@@ -76,13 +76,11 @@ bool VR_Manager::BInit(){
 #ifdef __APPLE__
 	std::string manifestPath = "../../data/immersAV_actions.json";
 	vr::VRInput()->SetActionManifestPath(manifestPath.c_str()); 
-	//vr::VRInput()->SetApplicationManifestPath(manifestPath.c_str());
 #elif _WIN32
 	vr::VRInput()->SetActionManifestPath( Path_MakeAbsolute( "immersAV_actions.json", Path_StripFilename( Path_GetExecutablePath() ) ).c_str() );
-	//vr::VRInput()->SetApplicationManifestPath(Path_MakeAbsolute("immersAV_actions.json", Path_StripFilename(Path_GetExecutablePath())).c_str() );
 #endif
 	
-	//immersAV actions
+	//generic actions
 	vr::VRInput()->GetActionHandle( "/actions/immersAV/in/HideThisController", &m_actionHideThisController);
 	vr::VRInput()->GetActionHandle( "/actions/immersAV/in/TriggerHaptic", &m_actionTriggerHaptic );
 	vr::VRInput()->GetActionHandle( "/actions/immersAV/in/AnalogInput", &m_actionAnalongInput );
@@ -95,16 +93,19 @@ bool VR_Manager::BInit(){
 	vr::VRInput()->GetInputSourceHandle( "/user/hand/right", &m_rHand[Right].m_source );
 	vr::VRInput()->GetActionHandle( "/actions/immersAV/in/Hand_Right", &m_rHand[Right].m_actionPose );
 
-	vr::VRInput()->GetActionHandle("/actions/immersAV/in/RandomiseParameters", &m_actionRandomParameters);
-	vr::VRInput()->GetActionHandle("/actions/immersAV/in/RecordTrainingExample", &m_actionRecordTrainingExample);
-	vr::VRInput()->GetActionHandle("/actions/immersAV/in/TrainModel", &m_actionTrainModel);
-	vr::VRInput()->GetActionHandle("/actions/immersAV/in/RunModel", &m_actionRunModel);
-	vr::VRInput()->GetActionHandle("/actions/immersAV/in/Savemodel", &m_actionSaveModel);
-	vr::VRInput()->GetActionHandle("/actions/immersAV/in/LoadModel", &m_actionLoadModel);
-	vr::VRInput()->GetActionHandle("/actions/immersAV/in/MovementControls", &m_actionMoveCam);
-
-	vr::VRInput()->GetActionSetHandle( "/actions/immersAV", &m_actionSetImmersAV );
+	vr::VRInput()->GetActionSetHandle( "/actions/immersAV", &m_actionSetAvr );
 	
+	//machine learning actions
+	vr::VRInput()->GetActionHandle("/actions/machineLearning/in/RandomiseParameters", &m_actionRandomParameters);
+	vr::VRInput()->GetActionHandle("/actions/machineLearning/in/RecordTrainingExample", &m_actionRecordTrainingExample);
+	vr::VRInput()->GetActionHandle("/actions/machineLearning/in/TrainModel", &m_actionTrainModel);
+	vr::VRInput()->GetActionHandle("/actions/machineLearning/in/RunModel", &m_actionRunModel);
+	vr::VRInput()->GetActionHandle("/actions/machineLearning/in/Savemodel", &m_actionSaveModel);
+	vr::VRInput()->GetActionHandle("/actions/machineLearning/in/LoadModel", &m_actionLoadModel);
+	vr::VRInput()->GetActionHandle("/actions/machineLearning/in/MovementControls", &m_actionMoveCam);
+
+	vr::VRInput()->GetActionSetHandle("/actions/machineLearning", &m_actionSetMachineLearning);
+
 	m_fNearClip = 0.1f;
 	m_fFarClip = 10000.0f;
 
@@ -165,7 +166,7 @@ bool VR_Manager::HandleInput()
 	// UpdateActionState is called each frame to update the state of the actions themselves. The application
 	// controls which action sets are active with the provided array of VRActiveActionSet_t structs.
 	vr::VRActiveActionSet_t actionSet = {0};
-	actionSet.ulActionSet = m_actionSetImmersAV;
+	actionSet.ulActionSet = m_actionSetMachineLearning;
 	vr::VRInput()->UpdateActionState(&actionSet, sizeof(actionSet), 1);
 
 	//machine learning controls
@@ -233,6 +234,11 @@ bool VR_Manager::HandleInput()
 		m_vMoveCam[0] = ulMoveCam.x;
 		m_vMoveCam[1] = ulMoveCam.y;
 	}
+
+	//generic controls
+	vr::VRActiveActionSet_t immersAVActionSet = {0};
+	immersAVActionSet.ulActionSet = m_actionSetAvr;
+	vr::VRInput()->UpdateActionState(&immersAVActionSet, sizeof(immersAVActionSet), 1);
 
 	vr::VRInputValueHandle_t ulHapticDevice;
 	if (helper->GetDigitalActionRisingEdge(m_actionTriggerHaptic, &ulHapticDevice))

@@ -1,0 +1,94 @@
+{
+   "bindings" : {
+      "/actions/immersAV" : {
+         "poses" : [
+            {
+               "output" : "/actions/immersAV/in/Hand_Left",
+               "path" : "/user/hand/left/pose/raw"
+            },
+            {
+               "output" : "/actions/immersAV/in/Hand_Right",
+               "path" : "/user/hand/right/pose/raw"
+            }
+         ],
+         "haptics" : [
+            {
+               "output" : "/actions/immersAV/out/Haptic_Right",
+               "path" : "/user/hand/right/output/haptic"
+            },
+            {
+               "output" : "/actions/immersAV/out/Haptic_Left",
+               "path" : "/user/hand/left/output/haptic"
+            }
+         ],
+         "sources" : [
+            {
+                "inputs" : {
+                    "held" : {
+                        "output" : "/actions/immersAV/in/HideThisController"
+                    },
+                },
+                "mode" : "button",
+                "path" : "/user/hand/right/input/trigger"
+            },
+            {
+               "inputs" : {
+                  "click" : {
+                     "output" : "/actions/immersAV/in/RandomiseParameters"
+                  }
+               },
+               "mode" : "button",
+               "path" : "/user/hand/right/input/trigger"
+            },
+            {
+               "inputs" : {
+                  "held" : {
+                     "output" : "/actions/immersAV/in/RecordTrainingExample"
+                  }
+               },
+               "mode" : "button",
+               "path" : "/user/hand/left/input/trigger"
+            },
+            {
+               "inputs" : {
+                  "click" : {
+                     "output" : "/actions/immersAV/in/SaveModel"
+                  }
+               },
+               "mode" : "button",
+               "path" : "/user/hand/right/input/trackpad"
+            },
+            {
+               "inputs" : {
+                  "click" : {
+                     "output" : "/actions/immersAV/in/TrainModel"
+                  }
+               },
+               "mode" : "button",
+               "path" : "/user/hand/right/input/grip"
+            },
+            {
+               "inputs" : {
+                  "click" : {
+                     "output" : "/actions/immersAV/in/LoadModel"
+                  }
+               },
+               "mode" : "button",
+               "path" : "/user/hand/left/input/trackpad"
+            },
+            {
+               "inputs" : {
+                  "click" : {
+                     "output" : "/actions/immersAV/in/RunModel"
+                  }
+            },
+               "mode" : "button",
+               "path" : "/user/hand/left/input/grip"
+            }
+         ]
+      }
+   },
+   "controller_type" : "vive_controller",
+   "description" : "Bindings for immersAV machine learning controls",
+   "name" : "ImmersAV bindings for a Vive controller"
+}

@@ -1381,7 +1381,7 @@ void Graphics::RenderScene(vr::Hmd_Eye nEye, std::unique_ptr<VR_Manager>& vrm)
 	
 	// draw controllers before scene	
 	if(!m_bDevMode && vrm){
-	
+
 		bool bIsInputAvailable = vrm->m_pHMD->IsInputAvailable();
 
 		if (bIsInputAvailable)
@@ -1401,6 +1401,8 @@ void Graphics::RenderScene(vr::Hmd_Eye nEye, std::unique_ptr<VR_Manager>& vrm)
 		for (int i = 0; i <= 1; i++)
 		{
 			if(!vrm->m_rHand[i].m_bShowController || !vrm->m_rHand[i].m_pRenderModel)
+				//std::cout << "Value of m_bShowController: " << vrm->m_rHand[i].m_bShowController << std::endl;
+				//std::cout << "Value of m_pRenderModel: " << vrm->m_rHand[i].m_pRenderModel << std::endl;
 				continue;
 
 			//std::cout << "DRAW CONTROLLER" << std::endl;
