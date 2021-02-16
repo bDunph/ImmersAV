@@ -74,7 +74,7 @@ float sphereSDF(vec3 p)
 //----------------------------------------------------------------------------------------
 float planeSDF(vec3 pos, vec4 normal){
 	
-	return dot(pos, normal.xyz) + normal.w;
+	return abs(dot(pos, normal.xyz) + normal.w);
 }
 
 float sceneSDF(vec3 p)
@@ -121,12 +121,11 @@ vec2 march(vec3 origin, vec3 direction)
 				{
 					id = PLANE_ID;
 				}
-				break;
+				return vec2(depth, id);
 			}
 			depth += d * 0.99;
-			id = SKY_ID;
     	}
-    	return vec2(depth, id);
+    	return vec2(MAX_ITERATIONS, SKY_ID);
 }
 
 // finite difference normal from 
