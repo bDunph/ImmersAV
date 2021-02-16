@@ -83,7 +83,7 @@ kfe  expseg p4, p3*0.3, p5, p3*0.1, p6, p3*0.2, p7, p3*0.3, p8, p3*0.1, p9
 kres linseg 0.1, p3 * 0.2, 0.3, p3 * 0.4, 0.25, p3 * 0.2, 0.5, p3 * 0.2, 0.35	;vary resonance
 afil moogladder aOut3, kfe, kres
 
-gaGranularOut = afil * kAmp
+gaGranularOut = (afil * kAmp) * 0.5
 ;aGranularOut = afil * kAmp
 
 	;outs	aGranularOut, aGranularOut 
