@@ -63,18 +63,12 @@ float mandelbulbSDF(vec3 pos) {
 }
 //----------------------------------------------------------------------------------------
 
-float sphereSDF(vec3 p)
-{
-	float radius = 2.0;
-	return length(p) - radius;
-}
-
 //----------------------------------------------------------------------------------------
 // Ground plane SDF from https://www.iquilezles.org/www/articles/distfunctions/distfunctions.htm
 //----------------------------------------------------------------------------------------
 float planeSDF(vec3 pos, vec4 normal){
 	
-	return abs(dot(pos, normal.xyz) + normal.w);
+	return dot(pos, normal.xyz) + normal.w;
 }
 
 float sceneSDF(vec3 p)

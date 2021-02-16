@@ -2,9 +2,9 @@
 // raymarch basic setup adapted from dila's tutorial
 // https://www.youtube.com/watch?v=yxNnRSefK94
 
-#define MAX_ITERATIONS 500
+#define MAX_ITERATIONS 100
 #define SUN_DIR vec3(0.5, 0.8, 0.0)
-#define EPSILON 0.001
+#define EPSILON 0.01
 #define PLANE_NORMAL vec4(0.0, 1.0, 0.0, 0.0)
 #define PLANE_ID 0
 #define MANDEL_ID 1
@@ -35,7 +35,7 @@ float mandelbulbSDF(vec3 pos) {
     	vec3 z = pos;
     	float dr = 1.0, theta, phi;
 
-    	for (int i = 0; i < 10; i++) {
+    	for (int i = 0; i < 3; i++) {
     	    	r = length(z);
     	    	if (r>1.5) break;
 
@@ -107,12 +107,11 @@ vec2 march(vec3 origin, vec3 direction)
 				{
 					id = PLANE_ID;
 				}
-				break;
+				return vec2(depth, id);
 			}
 			depth += d * 0.99;
-			id = SKY_ID;
     	}
-    	return vec2(depth, id);
+    	return vec2(MAX_ITERATIONS, SKY_ID);
 }
 
 // finite difference normal from 
