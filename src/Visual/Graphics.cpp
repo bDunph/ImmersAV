@@ -1055,7 +1055,7 @@ bool Graphics::BRenderFrame(std::unique_ptr<VR_Manager>& vrm)
 	if ( !m_bDevMode && vrm->m_pHMD )
 	{
 		GetControllerEvents(vrm);
-		RenderControllerAxes(vrm);
+		//RenderControllerAxes(vrm);
 		RenderStereoTargets(vrm);
 		BlitDataTexture();
 		WriteDataToPBO();
