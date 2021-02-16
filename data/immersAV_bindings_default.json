@@ -88,7 +88,7 @@
          ]
       }
    },
-   "controller_type" : "generic",
+   "controller_type" : "vive_controller",
    "description" : "Bindings for immersAV machine learning controls",
-   "name" : "ImmersAV bindings for a generic controller"
+   "name" : "ImmersAV default bindings"
 }
