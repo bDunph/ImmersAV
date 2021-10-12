@@ -122,7 +122,10 @@ void main()
 	fragColor = vec4(colour,1.0);
 
 	// Output to PBO
-	dataOut = fragColor;
+	//TODO: When alpha channel is anything other than 1.0,
+	//	the PBO outputs unexpected values for all channels.
+	//	This needs to be investigated.
+	//dataOut = fragColor;
 
 //-----------------------------------------------------------------------------
 // To calculate depth for use with rasterized material e.g. VR controllers

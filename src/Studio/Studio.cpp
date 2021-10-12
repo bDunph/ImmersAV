@@ -75,11 +75,13 @@ bool Studio::Setup(std::string csd, GLuint shaderProg)
 //*******************************************************************************************
 void Studio::Update(glm::mat4 viewMat, MachineLearning& machineLearning, glm::vec3 controllerWorldPos_0, glm::vec3 controllerWorldPos_1, glm::quat controllerQuat_0, glm::quat controllerQuat_1, PBOInfo& pboInfo){
 
-	// For return values from shader
-	// vec4 for each fragment is returned in the order ABGR
-	// you have to wait until the 2nd frame to read from the buffer 
+	// For return values from shader.
+	// vec4 for each fragment is returned in the order RGBA. 
+	// You have to wait until the 2nd frame to read from the buffer. 
+	// At the moment, only the RGB channels are useable when the A channel is set to max.
+	// The values returned are unpredictable if A channel is anything other than max.
 	//if(!m_bFirstLoop)
-	//std::cout << (double)pboInfo.pboPtr[0] << std::endl;
+	//std::cout << (double)pboInfo.pboPtr[0] << ":" << (double)pboInfo.pboPtr[1] << ":" << (double)pboInfo.pboPtr[2] << ":" << (double)pboInfo.pboPtr[3] << std::endl;
 
 	// spectral pitch data processing
 	m_fCurrentFrame = glfwGetTime();
